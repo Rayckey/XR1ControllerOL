@@ -59,4 +59,4 @@ target_link_libraries(${PROJECT_NAME}
 
 add_executable(actuator_bridge src/actuator_bridge.cpp) 
 target_link_libraries(actuator_bridge ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(actuator_bridge ${PROJECT_NAME})
+add_dependencies(actuator_bridge ${PROJECT_NAME} ${catkin_LIBRARIES})
