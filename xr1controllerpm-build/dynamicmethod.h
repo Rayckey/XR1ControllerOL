@@ -10,7 +10,7 @@ class DynamicMethod
 {
 public:
 
-    DynamicMethod(ChainController * LeftArm_ptr , ChainController * RightArm_ptr , ChainController * Body_ptr , std::vector<double> InertiaParameters );
+    DynamicMethod(ChainController * LeftArm_ptr , ChainController * RightArm_ptr , ChainController * Body_ptr , std::vector<double> InertiaParameters , std::vector<double> GravityParameters);
 
     void NewtonEuler(bool lor);
 
@@ -88,7 +88,7 @@ protected:
     int Arm_IDX_offset;
 
     std::vector<double> Inertia_Parameters;
-
+    std::vector<double> Gravity_Parameters;
 
     //Intermediate for Newton Euler
 

@@ -90,7 +90,7 @@ public:
 
     virtual MatrixXd getEFFPositionMatrix();
 
-    virtual Matrix4d getEndEfftorTransformation();
+    virtual void getEndEfftorTransformation(Affine3d & transformationReference);
 
     // Update the the base
 //    void updateBaseTransformation(Matrix3d BaseT);
@@ -116,9 +116,9 @@ public:
 
 //    virtual bool setEFFPosition(const VectorXd& twist , const double &elbow_lift_angle);
 
-    virtual bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle);
+    virtual bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , const double elbow_lift_angle);
 
-    virtual bool setEFFPosition(const MatrixXd &transformation, const double &elbow_lift_angle);
+    virtual bool setEFFPosition(const Affine3d &transformation, double elbow_lift_angle);
 
 
     virtual void modeChange();

@@ -42,8 +42,8 @@ XR1ControllerOL::XR1ControllerOL() :
 	LeftHandModeChangeSubscriber 			= nh.subscribe("/XR1/LeftHandChainModeChange" , 10,  &XR1ControllerOL::subscribeLeftHandMode, this);
 	RightHandModeChangeSubscriber  			= nh.subscribe("/XR1/RightHandChainModeChange" , 10,  &XR1ControllerOL::subscribeRightHandMode, this);
 
-
-
+	LeftElbowSubscriber                     = nh.subscribe("LeftArm/ElbowAngle" , 1, &XR1ControllerOL::subscribeLeftElbowAngle , this);
+	RightElbowSubscriber                    = nh.subscribe("RightArm/ElbowAngle" , 1, &XR1ControllerOL::subscribeRightElbowAngle , this);
 
 	MainBodyPositionPublisher               = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Position" , 1);
 	MainBodyCurrentPublisher                = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Current" , 1);
@@ -122,6 +122,8 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
 	// Elbow lower anlges, measured from the top, by default:
+	// For left arm, the desirable range is 1.0 to 3.0
+	// For right arm, the desirable ranfge is -3.0 to -1.0
 	LeftElbowAngle   = 2.5;
 	RightElbowAngle  = -2.5;
 	ROS_INFO("OL finished");
@@ -557,13 +559,13 @@ void XR1ControllerOL::broadcastTransform() {
 	tf::StampedTransform transform;
 	XR1_ptr->triggerCalculation();
 
-	itsafine.matrix() = XR1_ptr->getEndEfftorTransformation(XR1::LeftArm);
+	XR1_ptr->getEndEfftorTransformation(XR1::LeftArm , itsafine);
 	tf::transformEigenToTF(itsafine , transform);
 	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "LeftArmBase", "LeftEndEffector"));
 
 
 
-	itsafine.matrix() = XR1_ptr->getEndEfftorTransformation(XR1::RightArm);
+	XR1_ptr->getEndEfftorTransformation(XR1::RightArm , itsafine);
 	tf::transformEigenToTF(itsafine , transform);
 	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "RightArmBase", "RightEndEffector"));
 
@@ -584,8 +586,7 @@ void XR1ControllerOL::lookupRightEFFTarget(tf::StampedTransform & transform, 	Ei
 	}
 
 	transformTFToEigen(transform, itsafine);
-	temp_4d = itsafine.matrix();
-	XR1_ptr->setEndEffectorPosition(XR1::RightArm, temp_4d , RightElbowAngle);
+	XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine , RightElbowAngle);
 }
 
 void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform & transform, 	Eigen::Affine3d & itsafine) {
@@ -598,8 +599,7 @@ void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform & transform, 	Eig
 	}
 
 	transformTFToEigen(transform, itsafine);
-	temp_4d = itsafine.matrix();
-	XR1_ptr->setEndEffectorPosition(XR1::LeftArm, temp_4d , LeftElbowAngle);
+	XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine , LeftElbowAngle);
 }
 
 void XR1ControllerOL::subscribeLeftElbowAngle(const std_msgs::Float64 & msg){

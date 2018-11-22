@@ -64,6 +64,8 @@ private:
 public:
 	VectorXd theta;
     VectorXd thetaPM;
+    VectorXd thetaTF;
+    Matrix3d rotTF;
 	Vector3d p_elbow, pv;
 	Matrix3d Rv;
 
@@ -71,7 +73,11 @@ public:
 
     IKsolver(double a1, double a2, double a3, double arm_angle);
 
-    void solve(const Vector3d& p, const Matrix3d& rot, const double &t);
+    bool solve(const Vector3d& p, const Matrix3d& rot, const double &t);
+
+    Matrix4d getEndEffectorTransform( VectorXd & PMAngles);
+
+    Matrix3d EulerYZX(double y, double z, double x, Matrix3d &rots);
 
     VectorXd queryPM();
 

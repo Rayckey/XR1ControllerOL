@@ -61,3 +61,7 @@ target_link_libraries(${PROJECT_NAME}
 add_executable(actuator_bridge src/actuator_bridge.cpp) 
 target_link_libraries(actuator_bridge ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(actuator_bridge ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_executable(xr1controllerIK_simulator src/xr1controllerIK_simulator.cpp) 
+target_link_libraries(xr1controllerIK_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(xr1controllerIK_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
