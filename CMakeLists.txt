@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   xr1controllerros
   roslib
+  tf_conversions
 )
 
 

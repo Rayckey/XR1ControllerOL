@@ -31,6 +31,8 @@ public:
 
     MatrixXd getEFFPositionMatrix();
 
+    Matrix4d getEndEfftorTransformation();
+
     Vector3d Matrix2XYZ(Matrix3d BaseRotation);
 
     // Update the the base
@@ -62,9 +64,9 @@ public:
 
 
     // Use this for points that are VERY CLOSE! it sets the target position straight up;
-    bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle);
+    bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle);
 
-    bool setEFFPosition(const MatrixXd &transformation, const double &elbow_lift_angle);
+    bool setEFFPosition(const MatrixXd &transformation, double elbow_lift_angle);
 
 
 

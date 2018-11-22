@@ -188,6 +188,7 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const MatrixXd &transformation, const double &elbow_lift_angle);
 
+    Matrix4d getEndEfftorTransformation(uint8_t control_group, bool IK = true);
 
 
     void setEndEffectorIncrement(uint8_t control_group ,const Vector3d& Linear , const Vector3d& Angular);

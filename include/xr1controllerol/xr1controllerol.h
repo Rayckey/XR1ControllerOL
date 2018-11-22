@@ -14,8 +14,11 @@
 #include "xr1controllerros/JointAttributeMsgs.h"
 
 #include "xr1controllerros/ChainModeChange.h"
-
-#include "std_msgs/Bool.h"
+#include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
+#include <tf_conversions/tf_eigen.h>
+#include <std_msgs/Bool.h>
+#include <std_msgs/Float64.h>
 
 #include "xr1controllerros/JointAttributeMsgs.h"
 // Messages for Communication
@@ -130,9 +133,17 @@ public:
 
 	Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs& msg);
 
+
+
+
+	// Things regarding actuator controller
 	void readingCallback(const ros::TimerEvent&);
 
 	void unleaseCallback(const ros::TimerEvent&);
+
+	void actuatorOperation(uint8_t nId, uint8_t nType);
+
+	bool allActuatorHasLaunched();
 protected:
 
 	void subscribeLaunch(const std_msgs::Bool& msg);
@@ -167,40 +178,41 @@ protected:
 	void subscribeRightHandMode(const xr1controllerros::ChainModeChange& msg);
 
 
-	bool allActuatorHasLaunched();
 
+	void broadcastTransform();
 
-xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition);
+	xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition);
 
-xr1controllerros::HandMsgs ConvertHandMsgs(std::vector<double> HandPosition);
+	xr1controllerros::HandMsgs ConvertHandMsgs(std::vector<double> HandPosition);
 
-xr1controllerros::ArmMsgs  ConvertArmMsgs(std::vector<double> input) ;
+	xr1controllerros::ArmMsgs  ConvertArmMsgs(std::vector<double> input) ;
 
-xr1controllerros::ArmMsgs  ConvertArmMsgs(Eigen::VectorXd input) ;
+	xr1controllerros::ArmMsgs  ConvertArmMsgs(Eigen::VectorXd input) ;
 
-xr1controllerros::BodyMsgs ConvertBodyMsgs(std::vector<double> input);
+	xr1controllerros::BodyMsgs ConvertBodyMsgs(std::vector<double> input);
 
-xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input);
+	xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input);
 
+	void lookupRightEFFTarget(tf::StampedTransform & transform, 	Affine3d & itsafine);
 
+	void lookupLeftEFFTarget(tf::StampedTransform & transform, 	Affine3d & itsafine);
 
+	void subscribeLeftElbowAngle(const std_msgs::Float64 & msg);
+	void subscribeRightElbowAngle(const std_msgs::Float64 & msg);
 private:
 
 	// Pay no Attention Here Plz
 	ros::NodeHandle nh;
-    ActuatorController * m_pController;
+	ActuatorController * m_pController;
 
-    XR1Controller * XR1_ptr;
+	XR1Controller * XR1_ptr;
 
-    bool hand_command_switch;
+	double LeftElbowAngle;
+	double RightElbowAngle;
+	Matrix4d temp_4d;
 
-
-
-
-	void actuatorOperation(uint8_t nId, uint8_t nType);
-
-	ros::Timer request_timer;	
-
+	tf::TransformBroadcaster EFF_Broadcaster;
+	tf::TransformListener EFF_Listener;
 
 
 	ros::Publisher ActuatorLaunchedPublisher;
@@ -245,6 +257,8 @@ private:
 
 	ros::Subscriber RightHandCurrentSubscriber;
 
+	ros::Subscriber LeftElbowSubscriber;
+	ros::Subscriber RightElbowSubscriber;
 
 	ros::Publisher JointAttributePublisher;
 
@@ -258,6 +272,15 @@ private:
 	ros::Publisher RightArmCurrentPublisher      ;
 	ros::Publisher LeftHandPositionPublisher   ;
 	ros::Publisher RightHandPositionPublisher  ;
+
+
+
+
+
+	// Very useless temp varibles
+	Matrix4d temp_trans;
+	bool hand_command_switch;
+
 
 }; //class
 

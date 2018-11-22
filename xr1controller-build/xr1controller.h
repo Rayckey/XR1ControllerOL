@@ -161,11 +161,12 @@ public:
     //-------------------End Effector (Wrist) Control ---------------------------
 
 
-    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle);
+    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle = 6);
 
-    bool setEndEffectorPosition(uint8_t control_group , const MatrixXd &transformation, const double &elbow_lift_angle);
+    bool setEndEffectorPosition(uint8_t control_group , const Matrix4d &transformation, double elbow_lift_angle = 6);
 
 
+    Matrix4d getEndEfftorTransformation(uint8_t control_group);
 
     void setEndEffectorIncrement(uint8_t control_group ,const Vector3d& Linear , const Vector3d& Angular);
 
