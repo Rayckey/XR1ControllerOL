@@ -72,9 +72,8 @@ public:
 
 
     //Transform 3d vector into Skew Matrix
-    virtual Matrix3d Hatty_Hattington(Vector3d x);
 
-    virtual void Hatty_Hattington(Vector3d x , Matrix3d & input);
+    virtual void Hatty_Hattington(Vector3d &x , Matrix3d & input);
 
     virtual void setPeriod(double reading_interval_in_second);
 

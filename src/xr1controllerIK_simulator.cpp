@@ -57,7 +57,7 @@ xr1controllerros::ArmMsgs ConvertArmMsgs(Eigen::VectorXd input) {
 void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & itsafine) {
 
   try {
-    EFF_Listener->lookupTransform( "/RightArmBase", "/RightEndEffectorTarget",
+    EFF_Listener->lookupTransform( "/Back_Y", "/RightEndEffectorTarget",
                                  ros::Time(0), transform);
   }
   catch (tf::TransformException &ex) {
@@ -72,7 +72,7 @@ void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & i
 
 void lookupLeftEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & itsafine) {
   try {
-    EFF_Listener->lookupTransform( "/LeftArmBase", "/LeftEndEffectorTarget",
+    EFF_Listener->lookupTransform( "/Back_Y", "/LeftEndEffectorTarget",
                                  ros::Time(0), transform);
   }
   catch (tf::TransformException &ex) {
@@ -112,14 +112,14 @@ void broadcastTransform(const ros::TimerEvent& event) {
   // Publish the left one
   XR1_ptr->getEndEfftorTransformation(XR1::LeftArm , itsafine);
   tf::transformEigenToTF(itsafine , transform);
-  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/LeftArmBase", "/LeftEndEffector"));
+  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/LeftEndEffector"));
 
 
   // Publish the right one
   XR1_ptr->getEndEfftorTransformation(XR1::RightArm , itsafine);
-  std::cout << itsafine.matrix() << std::endl;
+  // std::cout << itsafine.matrix() << std::endl;
   tf::transformEigenToTF(itsafine , transform);
-  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/RightArmBase", "/RightEndEffector"));
+  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
   lookupRightEFFTarget(transform, itsafine);
   lookupLeftEFFTarget(transform, itsafine);

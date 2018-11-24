@@ -129,11 +129,11 @@ private:
 
 
     // Saves Jacobian matrix as a the member variable
-    void Jacobeans(VectorXd Joint_Angles);
+    void Jacobeans();
 
 
     // Saves individual transformation in the transformation collection
-    void Transformation(VectorXd Joint_Angles);
+    void Transformation();
 
 
 
@@ -174,6 +174,9 @@ protected:
     MatrixXd Trans;
 
     MatrixXd Temp_Trans;
+
+    Affine3d ArmPit;
+    Affine3d TransferedGoal;
 
 };
 
