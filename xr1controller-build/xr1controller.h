@@ -155,7 +155,7 @@ public:
     //Used in XR1Controller
     //Argu: Vector of Joint ID (Only From LeftShoulderX to RightWristX)
     //Reutrns : A 6x7 Eigen::MatrixXd of Jacobians or A 6x7 Eigen::MatrixXd of zeros should an error occur
-    std::vector<MatrixXd> getJacobian(std::vector<uint8_t> joint_idx_list);
+//    std::vector<MatrixXd> getJacobian(std::vector<uint8_t> joint_idx_list);
 
 
     //-------------------End Effector (Wrist) Control ---------------------------

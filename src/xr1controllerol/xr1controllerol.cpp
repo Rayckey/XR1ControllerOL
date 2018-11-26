@@ -557,17 +557,21 @@ void XR1ControllerOL::broadcastTransform() {
 
 	Eigen::Affine3d itsafine;
 	tf::StampedTransform transform;
+
+	// This function triggers almost all the computation in the library
 	XR1_ptr->triggerCalculation();
 
+	// Publish the left one
 	XR1_ptr->getEndEfftorTransformation(XR1::LeftArm , itsafine);
 	tf::transformEigenToTF(itsafine , transform);
-	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "LeftArmBase", "LeftEndEffector"));
+	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/LeftEndEffector"));
 
 
-
+	// Publish the right one
 	XR1_ptr->getEndEfftorTransformation(XR1::RightArm , itsafine);
+	// std::cout << itsafine.matrix() << std::endl;
 	tf::transformEigenToTF(itsafine , transform);
-	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "RightArmBase", "RightEndEffector"));
+	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
 	lookupRightEFFTarget(transform, itsafine);
 	lookupLeftEFFTarget(transform, itsafine);
@@ -578,8 +582,8 @@ void XR1ControllerOL::broadcastTransform() {
 void XR1ControllerOL::lookupRightEFFTarget(tf::StampedTransform & transform, 	Eigen::Affine3d & itsafine) {
 
 	try {
-		EFF_Listener.lookupTransform("/RightEndEffectorTarget", "/RightArmBase",
-		                             ros::Time(0), transform);
+		EFF_Listener.lookupTransform( "/Back_Y", "/RightEndEffectorTarget",
+		                               ros::Time(0), transform);
 	}
 	catch (tf::TransformException &ex) {
 		return;
@@ -587,12 +591,14 @@ void XR1ControllerOL::lookupRightEFFTarget(tf::StampedTransform & transform, 	Ei
 
 	transformTFToEigen(transform, itsafine);
 	XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine , RightElbowAngle);
+
+	RightArmPositionPublisher.publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm)));
 }
 
 void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform & transform, 	Eigen::Affine3d & itsafine) {
 	try {
-		EFF_Listener.lookupTransform("/LeftEndEffectorTarget", "/LeftArmBase",
-		                             ros::Time(0), transform);
+		EFF_Listener.lookupTransform( "/Back_Y", "/LeftEndEffectorTarget",
+		                               ros::Time(0), transform);
 	}
 	catch (tf::TransformException &ex) {
 		return;
@@ -600,11 +606,13 @@ void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform & transform, 	Eig
 
 	transformTFToEigen(transform, itsafine);
 	XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine , LeftElbowAngle);
+
+	LeftArmPositionPublisher.publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
 }
 
-void XR1ControllerOL::subscribeLeftElbowAngle(const std_msgs::Float64 & msg){
+void XR1ControllerOL::subscribeLeftElbowAngle(const std_msgs::Float64 & msg) {
 	LeftElbowAngle = msg.data;
 }
-void XR1ControllerOL::subscribeRightElbowAngle(const std_msgs::Float64 & msg){
+void XR1ControllerOL::subscribeRightElbowAngle(const std_msgs::Float64 & msg) {
 	RightElbowAngle = msg.data;
 }

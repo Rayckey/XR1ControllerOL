@@ -176,9 +176,9 @@ public:
 
 
 
-    MatrixXd getJacobian(uint8_t joint_idx);
+    MatrixXd getJacobian(uint8_t control_group);
 
-    std::vector<MatrixXd> getJacobian(std::vector<uint8_t> joint_idx_list);
+//    std::vector<MatrixXd> getJacobian(std::vector<uint8_t> joint_idx_list);
 
 
     // Brutal Straight Forward Controls----------------------------------------------
