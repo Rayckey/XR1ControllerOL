@@ -139,7 +139,7 @@ private:
 
 
 
-    Matrix3d BaseRotationTransposed;
+    MatrixXd BaseTransformation;
 
 
     int NUM_PARA;
