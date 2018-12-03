@@ -9,6 +9,7 @@ using namespace Eigen;
 class HandController : public GenericController
 {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     HandController(uint8_t id , int num_joint);
 
 };

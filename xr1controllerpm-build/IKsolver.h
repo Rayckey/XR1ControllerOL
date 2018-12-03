@@ -1,8 +1,8 @@
 
 // Created by Chaojie Feng
-// Modified for XR1Controller PM by Weiqi Wang
-// Modified to match DH and wrist
-// Version 1.0
+// Modified and maintained by Weiqi Wang
+// Modified to match DH and wrist and pretty much everything I have
+// Version 2.0
 
 
 //#pragma once
@@ -62,6 +62,7 @@ private:
     Matrix4d getDransMat(int link_id, VectorXd t);
 
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 	VectorXd theta;
     VectorXd thetaPM;
     VectorXd thetaTF;
@@ -75,9 +76,9 @@ public:
 
     bool solve(const Vector3d& p, const Matrix3d& rot, const double &t);
 
-    Matrix4d getEndEffectorTransform( VectorXd & PMAngles);
+//    Matrix4d getEndEffectorTransform( VectorXd & PMAngles);
 
-    Matrix3d EulerYZX(double y, double z, double x, Matrix3d &rots);
+
 
     VectorXd queryPM();
 

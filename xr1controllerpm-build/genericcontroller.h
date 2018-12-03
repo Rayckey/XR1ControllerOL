@@ -3,12 +3,14 @@
 #include "Eigen/Dense"
 #include <vector>
 #include "xr1define.h"
+#include "xr1controllerutil.h"
 #include <iostream>
 
 using namespace Eigen;
 class GenericController
 {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     GenericController(uint8_t id , int num_joint);
 
     virtual void updateValue(VectorXd JointValue , uint8_t value_type);
@@ -73,7 +75,7 @@ public:
 
     //Transform 3d vector into Skew Matrix
 
-    virtual void Hatty_Hattington(Vector3d &x , Matrix3d & input);
+
 
     virtual void setPeriod(double reading_interval_in_second);
 
@@ -146,12 +148,8 @@ protected:
     VectorXd Target_Joint_Currents;
 
 
-    double simpleFilter(double new_val , double old_val , double ratios);
-
-    VectorXd simpleFilter(VectorXd new_val , VectorXd old_val , double ratios);
 
 
-    double sign(double input);
 };
 
 #endif // GENERICCONTROLLER_H

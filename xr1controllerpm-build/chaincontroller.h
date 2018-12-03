@@ -13,6 +13,7 @@ using namespace Eigen;
 class ChainController: public GenericController
 {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     ChainController(MatrixXd DH_input, uint8_t id , int num_joint);
 
     VectorXd getTargetJointCurrents();
@@ -33,13 +34,14 @@ public:
 
     void getEndEfftorTransformation(Affine3d & transformationReference);
 
-    Vector3d Matrix2XYZ(Matrix3d BaseRotation);
+
 
     // Update the the base
 //    void updateBaseTransformation(Matrix3d BaseT);
 
     // Returns the last calculated Jacobian matrix
-    MatrixXd getJacobian(uint8_t id);
+    MatrixXd getJacobian(uint8_t id = 0);
+    void getJacobian(MatrixXd & jac);
 
     // Return the last calculated end effector Transformation
     MatrixXd getTransformation(uint8_t JointID);
@@ -74,24 +76,18 @@ public:
 
     void T_MDH(MatrixXd &temp_trans, double alpha , double ad , double d , double offset , double theta);
 
-    MatrixXd Adjoint(MatrixXd & T);
+
+    // Saves Jacobian mastix with MDH
+    void Jacobeam();
+
+    void Adjoint(MatrixXd & adj);
 
     MatrixXd invAdjoint(MatrixXd & T);
 
     MatrixXd EFF2BaseForceAdjoint(MatrixXd & T);
 
 
-    void EulerXYZ(double x , double y , double z , Matrix3d &input) ;
 
-    void EulerZYX(double x , double y , double z , Matrix3d &input) ;
-
-    Matrix3d EulerXYZ(double x , double y , double z ) ;
-
-    Matrix3d EulerZYX(double x , double y , double z ) ;
-
-    MatrixXd pinv(MatrixXd input);
-
-    MatrixXd twist2trans(VectorXd twist);
 
     void clearResults();
 
@@ -131,8 +127,7 @@ private:
     // Saves Jacobian matrix as a the member variable
     void Jacobeans();
 
-    // Saves Jacobian mastix with MDH
-    void Jacobeam();
+
 
     // Saves individual transformation in the transformation collection
     void Transformation();
@@ -156,11 +151,14 @@ private:
 protected:
 
 
+    // Temp values
+
     // For Transforms
     double costheta;
     double sintheta;
     double sinalpha;
     double cosalpha;
+
 
     // Jacobeans
     Vector3d v;
@@ -174,12 +172,16 @@ protected:
     //Transformation
 
     MatrixXd Trans;
-
     MatrixXd Temp_Trans;
 
     Affine3d ArmPit;
     Affine3d TransferedGoal;
 
+    //Adjoint
+    Matrix3d temp_rot;
+    Vector3d temp_vec;
+    Matrix3d temp_hat;
+    Affine3d temp_afn;
 };
 
 #endif // CHAINCONTROLLER_H

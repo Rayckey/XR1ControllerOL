@@ -10,6 +10,7 @@ class OmniController : public GenericController
 {
 
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     OmniController(uint8_t id, uint8_t num_joint);
 
     void setVelocity(Vector3d input);

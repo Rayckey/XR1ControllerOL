@@ -13,6 +13,7 @@
 #include <list>
 #include "Eigen/Geometry"
 #include "xr1define.h"
+#include "xr1controllerutil.h"
 
 
 
@@ -22,6 +23,7 @@ class XR1ControllerPM
 {
 
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     XR1ControllerPM(string parameters_path);
 
 
@@ -246,7 +248,7 @@ public:
     void updateBaseTransformation();
 
 
-    double tinyBezier(double double_index , double pt_s , double pt_1 , double pt_2 , double pt_e);
+
 
     bool CollisionDetection(uint8_t control_group);
 
@@ -358,13 +360,7 @@ private:
 
     Vector3d TiltCalcualtion(Matrix3d BaseRotation, Vector3d BaseAcceleration);
 
-    Vector3d Matrix2XY(Matrix3d BaseRotation);
 
-    Matrix3d EulerZX(double z , double x);
-
-    Matrix3d XY2Matrix(Vector3d BaseRotation);
-
-    Vector3d Vector2XY(Vector3d BaseVector);
 
     int num_joint_in_chain;
 
