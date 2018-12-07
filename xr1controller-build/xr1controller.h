@@ -13,7 +13,8 @@ class XR1Controller
 public:
 
     XR1Controller(std::string path);
-    uint8_t isXR1Okay(); //Error Checks
+    bool isXR1Okay(); //Error Checks
+    uint8_t getErrorCode();
 
 
     //-----------------------------------------------------------------

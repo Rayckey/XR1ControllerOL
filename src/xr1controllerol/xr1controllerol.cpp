@@ -184,6 +184,8 @@ void XR1ControllerOL::setControlMode(uint8_t control_group , uint8_t option) {
 
 	std::vector<uint8_t> temp_vector = control_group_map[control_group];
 
+	XR1_ptr->setControlMode(control_group , option);
+
 
 	for (uint8_t id : temp_vector)
 		m_pController->activeActuatorMode(id, mode_map[option]);
@@ -362,6 +364,18 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType)
 			std_msgs::Bool stuff;
 			stuff.data = true;
 			ActuatorLaunchedPublisher.publish(stuff);
+
+			setControlMode(XR1::OmniWheels , XR1::PositionMode);
+
+			setControlMode(XR1::MainBody , XR1::PositionMode);
+
+			setControlMode(XR1::LeftArm , XR1::PositionMode);
+
+			setControlMode(XR1::RightArm , XR1::PositionMode);
+
+			setControlMode(XR1::LeftHand , XR1::PositionMode);
+
+			setControlMode(XR1::RightHand , XR1::PositionMode);
 		}
 
 		break;

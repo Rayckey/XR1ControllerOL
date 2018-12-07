@@ -9,7 +9,7 @@ using namespace Eigen;
 class DynamicMethod
 {
 public:
-
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     DynamicMethod(ChainController * LeftArm_ptr , ChainController * RightArm_ptr , ChainController * Body_ptr , std::vector<double> InertiaParameters , std::vector<double> GravityParameters);
 
     void NewtonEuler(bool lor);

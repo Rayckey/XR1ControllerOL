@@ -10,6 +10,7 @@
 #include "dynamicmethod.h"
 #include <map>
 #include <vector>
+#include <deque>
 #include <list>
 #include "Eigen/Geometry"
 #include "xr1define.h"
@@ -276,6 +277,7 @@ public:
     // Options for post collision detection
     void liftLockdown();
     bool isXR1Okay();
+    uint8_t getErrorCode();
 
 
 
@@ -295,7 +297,15 @@ private:
 
     void assignState();
 
+
+
+    // regarding collision detection
     void employLockdown();
+    void passiveLockdown();
+    double breakAcceleration(double velocity , double period);
+    double breakMotion(double x0 , double v0 , double a, double t);
+
+
 
     uint8_t XR1_State;
 
@@ -375,9 +385,9 @@ private:
 
     std::vector<double> start_state;
     std::vector<double> goal_state;
-    std::vector<std::vector<double> > tri_states;
-    std::vector<std::vector<double> > tri_vels;
-    std::vector<std::vector<double> > tri_accs;
+    std::deque<std::vector<double> > tri_states;
+    std::deque<std::vector<double> > tri_vels;
+    std::deque<std::vector<double> > tri_accs;
     std::vector<double> temp_state;
 
 

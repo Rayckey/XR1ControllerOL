@@ -59,9 +59,10 @@ enum ChainOperationMode{
 
 enum XR1State{
     EVERYTHING_IS_FINE = 0,
-    COLLISION_OCCURED = 201,
-    ERR_NOT_LAUNCH = 202,
-    ERR_CALULATION = 203,
+    ERR_NOT_LAUNCH = 201,
+    ERR_CALULATION = 202,
+    COLLISION_OCCURED = 203,
+    LOCKED = 204,
 };
 
 
@@ -100,6 +101,7 @@ enum InverseDynamicsOptions{
     None = 0,
     GravityCompensation = 101,
     FullDynamics = 102,
+    FullDynamics_PASSIVE = 103,
 };
 
 
