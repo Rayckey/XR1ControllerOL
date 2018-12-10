@@ -42,6 +42,9 @@ XR1ControllerOL::XR1ControllerOL() :
 	LeftHandModeChangeSubscriber 			= nh.subscribe("/XR1/LeftHandChainModeChange" , 10,  &XR1ControllerOL::subscribeLeftHandMode, this);
 	RightHandModeChangeSubscriber  			= nh.subscribe("/XR1/RightHandChainModeChange" , 10,  &XR1ControllerOL::subscribeRightHandMode, this);
 
+
+	
+
 	LeftElbowSubscriber                     = nh.subscribe("LeftArm/ElbowAngle" , 1, &XR1ControllerOL::subscribeLeftElbowAngle , this);
 	RightElbowSubscriber                    = nh.subscribe("RightArm/ElbowAngle" , 1, &XR1ControllerOL::subscribeRightElbowAngle , this);
 
@@ -394,13 +397,68 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 
 	// ROS_INFO(" the current time is [%f]" , (float)this_event.current_real);
 
-	for (uint8_t i = XR1::Left_Shoulder_X; i < XR1::LeftHand; ++i)
+	for (uint8_t i = XR1::Left_Shoulder_X; i < XR1::Left_Wrist_Z; ++i)
 	{
 		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
 		{
-			m_pController->getCVPValue(i);
+			// m_pController->getCVPValue(i);
+
+
+			m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
+			m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
+           	m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+
 		}
 	}
+
+
+		for (uint8_t i = XR1::Left_Wrist_Z; i < XR1::RightArm; ++i)
+	{
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		{
+			// m_pController->getCVPValue(i);
+
+
+			m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
+			// m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
+           // m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+
+		}
+	}
+
+
+
+
+	for (uint8_t i = XR1::Right_Shoulder_X; i < XR1::Right_Wrist_Z; ++i)
+	{
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		{
+			// m_pController->getCVPValue(i);
+
+
+			m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
+			m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
+           m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+
+		}
+	}
+
+
+		for (uint8_t i = XR1::Right_Wrist_Z; i < XR1::LeftHand; ++i)
+	{
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		{
+			// m_pController->getCVPValue(i);
+
+
+			m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
+			// m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
+           // m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+
+		}
+	}
+
+
 
 
 
