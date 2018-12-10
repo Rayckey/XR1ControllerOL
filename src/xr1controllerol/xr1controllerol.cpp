@@ -103,6 +103,7 @@ XR1ControllerOL::XR1ControllerOL() :
 	// ------------------------------------------------
 
 
+
 	attribute_map[Actuator::ACTUAL_POSITION] = XR1::ActualPosition;
 	attribute_map[Actuator::ACTUAL_VELOCITY] = XR1::ActualVelocity;
 	attribute_map[Actuator::ACTUAL_CURRENT] = XR1::ActualCurrent;
@@ -127,6 +128,11 @@ XR1ControllerOL::XR1ControllerOL() :
 	LeftElbowAngle   = 2.5;
 	RightElbowAngle  = -2.5;
 	ROS_INFO("OL finished");
+
+
+	XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
+
+
 
 }
 
@@ -606,7 +612,13 @@ void XR1ControllerOL::lookupRightEFFTarget(tf::StampedTransform & transform, 	Ei
 	transformTFToEigen(transform, itsafine);
 	XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine , RightElbowAngle);
 
-	RightArmPositionPublisher.publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm)));
+
+	if (XR1_ptr->getControlMode(XR1::RightArm) == XR1::IKMode)
+		setJointPosition(XR1::RightArm , XR1_ptr->getTargetPosition(XR1::RightArm));
+
+	// RightArmPositionPublisher.publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm)));
+
+
 }
 
 void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform & transform, 	Eigen::Affine3d & itsafine) {
@@ -621,7 +633,12 @@ void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform & transform, 	Eig
 	transformTFToEigen(transform, itsafine);
 	XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine , LeftElbowAngle);
 
-	LeftArmPositionPublisher.publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
+
+	if (XR1_ptr->getControlMode(XR1::LeftArm) == XR1::IKMode)
+		setJointPosition(XR1::LeftArm , XR1_ptr->getTargetPosition(XR1::LeftArm));
+
+
+	// LeftArmPositionPublisher.publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
 }
 
 void XR1ControllerOL::subscribeLeftElbowAngle(const std_msgs::Float64 & msg) {

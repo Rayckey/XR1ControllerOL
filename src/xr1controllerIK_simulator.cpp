@@ -190,6 +190,11 @@ int main(int argc, char **argv) {
   RightArmPositionPublisher   = &RAPP;
 
 
+
+  LeftElbowAngle   = 2.5;
+  RightElbowAngle  = -2.5;
+
+  
   // Draw some random stuff every three seconds or so
   ros::Timer timer = nh.createTimer(ros::Duration(0.1), broadcastTransform);
 
