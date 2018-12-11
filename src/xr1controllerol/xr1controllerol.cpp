@@ -43,7 +43,11 @@ XR1ControllerOL::XR1ControllerOL() :
 	RightHandModeChangeSubscriber  			= nh.subscribe("/XR1/RightHandChainModeChange" , 10,  &XR1ControllerOL::subscribeRightHandMode, this);
 
 
-	
+	LeftHandPositionSubscriber 				= nh.subscribe("/LeftHand/TargetPosition" , 10 , &XR1ControllerOL::subscribeLeftHandPosition,this);
+	RightHandPositionSubscriber 			= nh.subscribe("/RightHand/TargetPosition" , 10 , &XR1ControllerOL::subscribeRightHandPosition,this);
+	LeftHandCurrentSubscriber 				= nh.subscribe("/LeftHand/TargetCurrent" , 10 , &XR1ControllerOL::subscribeLeftHandCurrent,this);
+	RightHandCurrentSubscriber 				= nh.subscribe("/RightHand/TargetCurrent" , 10 , &XR1ControllerOL::subscribeRightHandCurrent,this);
+
 
 	LeftElbowSubscriber                     = nh.subscribe("LeftArm/ElbowAngle" , 1, &XR1ControllerOL::subscribeLeftElbowAngle , this);
 	RightElbowSubscriber                    = nh.subscribe("RightArm/ElbowAngle" , 1, &XR1ControllerOL::subscribeRightElbowAngle , this);
@@ -358,6 +362,16 @@ void XR1ControllerOL::subscribeRightHandPosition(const xr1controllerros::HandMsg
 	setJointPosition(XR1::RightHand , XR1_ptr->getTargetPosition(XR1::RightHand));
 }
 
+void XR1ControllerOL::subscribeLeftHandCurrent(const xr1controllerros::HandMsgs& msg){
+	XR1_ptr->setJointCurrent(XR1::LeftHand, HandsMsgs2VectorXd(msg));
+	setJointCurrent(XR1::LeftHand, XR1_ptr->getTargetCurrent(XR1::LeftHand));
+}
+
+void XR1ControllerOL::subscribeRightHandCurrent(const xr1controllerros::HandMsgs& msg){
+	XR1_ptr->setJointCurrent(XR1::RightHand, HandsMsgs2VectorXd(msg));
+	setJointCurrent(XR1::RightHand, XR1_ptr->getTargetCurrent(XR1::RightHand));
+}
+
 void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType)
 {
 	ROS_INFO("Getting launch finished");
@@ -650,6 +664,15 @@ void XR1ControllerOL::broadcastTransform() {
 	// std::cout << itsafine.matrix() << std::endl;
 	tf::transformEigenToTF(itsafine , transform);
 	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
+
+
+
+	// Publish the head
+  	XR1_ptr->getEndEfftorTransformation(XR1::MainBody , itsafine);
+  	tf::transformEigenToTF(itsafine , transform);
+  	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
+
+
 
 	lookupRightEFFTarget(transform, itsafine);
 	lookupLeftEFFTarget(transform, itsafine);

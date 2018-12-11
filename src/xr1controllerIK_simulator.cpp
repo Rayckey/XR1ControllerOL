@@ -11,6 +11,7 @@
 #include <tf_conversions/tf_eigen.h>
 #include "xr1controllerros/ArmMsgs.h"
 #include "xr1controllerros/ChainModeChange.h"
+#include "xr1controllerros/BodyMsgs.h"  
 #include <ros/package.h>
 
 // Global Varibles
@@ -54,11 +55,27 @@ xr1controllerros::ArmMsgs ConvertArmMsgs(Eigen::VectorXd input) {
   return msg;
 }
 
+
+Eigen::VectorXd BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs& msg) {
+
+  Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
+
+  res << msg.Knee  ,
+      msg.Back_Z,
+      msg.Back_X,
+      msg.Back_Y,
+      msg.Neck_Z,
+      msg.Neck_X,
+      msg.Head;
+
+  return res;
+}
+
 void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & itsafine) {
 
   try {
     EFF_Listener->lookupTransform( "/Back_Y", "/RightEndEffectorTarget",
-                                 ros::Time(0), transform);
+                                   ros::Time(0), transform);
   }
   catch (tf::TransformException &ex) {
     return;
@@ -73,7 +90,7 @@ void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & i
 void lookupLeftEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & itsafine) {
   try {
     EFF_Listener->lookupTransform( "/Back_Y", "/LeftEndEffectorTarget",
-                                 ros::Time(0), transform);
+                                   ros::Time(0), transform);
   }
   catch (tf::TransformException &ex) {
     return;
@@ -121,6 +138,13 @@ void broadcastTransform(const ros::TimerEvent& event) {
   tf::transformEigenToTF(itsafine , transform);
   EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
+
+
+  XR1_ptr->getEndEfftorTransformation(XR1::MainBody , itsafine);
+  tf::transformEigenToTF(itsafine , transform);
+  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
+
+
   lookupRightEFFTarget(transform, itsafine);
   lookupLeftEFFTarget(transform, itsafine);
 
@@ -143,8 +167,9 @@ void subscribeRightArmPosition(const xr1controllerros::ArmMsgs& msg) {
   XR1_ptr->updatingCallback(ArmMsgs2VectorXd(msg) , XR1::RightArm , XR1::ActualPosition);
 }
 
-
-
+void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs& msg) {
+  XR1_ptr->updatingCallback(BodyMsgs2VectorXd(msg) , XR1::MainBody , XR1::ActualPosition);
+}
 
 
 
@@ -167,6 +192,8 @@ int main(int argc, char **argv) {
 
   // Feed me more
   ros::Subscriber RightArmPositionSubscriber  = nh.subscribe("/RightArm/Position" ,  3 , subscribeRightArmPosition);
+
+  ros::Subscriber LeftHandPositionSubscriber = nh.subscribe("/MainBody/Position" , 3 , subscribeMainBodyPosition);
 
   // More!!
   ros::Subscriber LeftArmModeChangeSubscriber                 = nh.subscribe("/XR1/LeftArmChainModeChange" , 1, subscribeLeftArmMode);
@@ -194,7 +221,7 @@ int main(int argc, char **argv) {
   LeftElbowAngle   = 2.5;
   RightElbowAngle  = -2.5;
 
-  
+
   // Draw some random stuff every three seconds or so
   ros::Timer timer = nh.createTimer(ros::Duration(0.1), broadcastTransform);
 

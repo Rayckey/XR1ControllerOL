@@ -236,7 +236,7 @@ public:
 
 
 
-    //-----------------------------------------------------------------
+    //Tilt Control----------------------------------------------------------------
 
     Vector3d TiltCompensation(Matrix3d BaseRotation, Vector3d BaseAcceleration);
 
@@ -247,9 +247,6 @@ public:
     //Dynamics Controls-----------------------------------------------------------------
 
     void updateBaseTransformation();
-
-
-
 
     bool CollisionDetection(uint8_t control_group);
 
@@ -289,140 +286,99 @@ public:
 private:
 
 
-    void getState();
-
-
-
-    void calculateStates();
-
-    void assignState();
-
-
-
-    // regarding collision detection
-    void employLockdown();
-    void passiveLockdown();
-    double breakAcceleration(double velocity , double period);
-    double breakMotion(double x0 , double v0 , double a, double t);
-
-
-
-    uint8_t XR1_State;
-
-    std::vector<double> Qmin;
-
-    void solveTri(double & qmin , double & pt_s, double & pt_e, double &  period);
-
-    void tinyTriPos(double &value, double & qmin , double &pt_s, double &pt_e);
-    void tinyTriVel(double &value, double & qmin );
-    void tinyTriAcc(double &value, double & qmin );
-
-
+    // Pointers to all the controllers
     std::map<uint8_t ,GenericController *> ControllerMap;
-
     std::map<uint8_t , uint8_t> ControllerIDs;
-
     ChainController * LeftArm;
-
     ChainController * RightArm;
-
     ChainController * MainBody;
-
-
     HandController * LeftHand;
-
     HandController * RightHand;
-
     OmniController * OmniWheels;
-
     DynamicMethod * DungeonMaster;
 
 
+    // global configs
     std::map<uint8_t, uint8_t> ControlModes;
-
-
-
-    std::vector<std::vector<double> > GeneratedCommands;
-
-    Vector3d TiltOffset;
-
-    int PlaybackIndex;
-
-
-    void readParameters(string parameters_path);
-
-    std::vector<std::vector<double> > readParameter(std::string parameter_path);
-
     std::vector<uint8_t> ArrayIDHelper(uint8_t control_group);
-
-    void PlaybackCallback();
-
-    bool GripDetection(uint8_t joint_id);
-
-    bool CollisionThresholding(VectorXd ActualCurrent , VectorXd ExpectedCurrent, std::vector<double> Thresholds, std::vector<double> StaticThreshold);
-
-    bool ReleaseThresholding(VectorXd ActualPosition, VectorXd TargetPosition, VectorXd Thresholds);
-
-    bool CollisionThresholding(double ActualCurrent , double ExpectedCurrent, double Threshold);
-
-    bool ReleaseThresholding(double ActualPosition, double TargetPosition, double Threshold);
-
-
-    Vector3d TiltCalcualtion(Matrix3d BaseRotation, Vector3d BaseAcceleration);
-
-
-
     int num_joint_in_chain;
-
     int num_joint_in_hand;
-
     int num_joint_friction;
-
     int num_joint_parameters;
 
 
-    double grip_current;
 
+
+    //Private function called internally
+    void getState();
+    void calculateStates();
+    void assignState();
+    void readParameters(string parameters_path);
+    std::vector<std::vector<double> > readParameter(std::string parameter_path);
+
+
+    //private function all calculating states
+    void tinyTriPos(double &value, double & qmin , double &pt_s, double &pt_e);
+    void tinyTriVel(double &value, double & qmin );
+    void tinyTriAcc(double &value, double & qmin );
+    void solveTri(double & qmin , double & pt_s, double & pt_e, double &  period);
+
+    // private members for calcualting states
+    uint8_t XR1_State;
+    std::vector<double> Qmin;
+    std::vector<std::vector<double> > GeneratedCommands;
+    int PlaybackIndex;
     std::vector<double> start_state;
     std::vector<double> goal_state;
     std::deque<std::vector<double> > tri_states;
     std::deque<std::vector<double> > tri_vels;
     std::deque<std::vector<double> > tri_accs;
     std::vector<double> temp_state;
-
-
     int poly_period_ms;
     double poly_period_s;
     int poly_rate;
     int poly_index;
     int poly_num;
     double poly_double;
+    double grip_current;
 
+    // regarding collision detection
+    void employLockdown();
+    void passiveLockdown();
+    double breakAcceleration(double velocity , double period);
+    double breakMotion(double x0 , double v0 , double a, double t);
+    bool GripDetection(uint8_t joint_id);
+    bool CollisionThresholding(VectorXd ActualCurrent , VectorXd ExpectedCurrent, std::vector<double> Thresholds, std::vector<double> StaticThreshold);
+    bool ReleaseThresholding(VectorXd ActualPosition, VectorXd TargetPosition, VectorXd Thresholds);
+    bool CollisionThresholding(double ActualCurrent , double ExpectedCurrent, double Threshold);
+    bool ReleaseThresholding(double ActualPosition, double TargetPosition, double Threshold);
 
     std::vector<double> LeftArmCollisionThreshold;
-
     std::vector<double> RightArmCollisionThreshold;
-
     std::vector<double> LeftArmStaticThreshold ;
-
     std::vector<double> RightArmStaticThreshold;
-
     double LeftArmCollisionCounter;
-
     double RightArmCollisionCounter;
-
-
     double LeftArmCollisionCounterLimit;
-
     double RightArmCollisionCounterLimit;
-
     double HandCollisionThreshold;
 
 
+    // tilt control members
+    Vector3d TiltOffset;
+    Vector3d TiltCalcualtion(Matrix3d BaseRotation, Vector3d BaseAcceleration);
 
 
+
+
+
+    void PlaybackCallback();
+
+
+
+
+    // ik planning stuff
     Vector3d EFFgoalPosition;
-
     Matrix3d EFFgoalOrientation;
 
 

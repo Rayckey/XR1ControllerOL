@@ -166,10 +166,6 @@ protected:
 
 	void subscribeRightArmCurrent(const xr1controllerros::ArmMsgs& msg);
 
-	void subscribeLeftHandPosition(const xr1controllerros::HandMsgs& msg);
-
-	void subscribeRightHandPosition(const xr1controllerros::HandMsgs& msg);
-
 
 	void subscribeMainBodyMode(const xr1controllerros::ChainModeChange& msg);
 	void subscribeLeftArmMode(const xr1controllerros::ChainModeChange& msg);
@@ -177,7 +173,10 @@ protected:
 	void subscribeLeftHandMode(const xr1controllerros::ChainModeChange& msg);
 	void subscribeRightHandMode(const xr1controllerros::ChainModeChange& msg);
 
-
+	void subscribeLeftHandPosition(const xr1controllerros::HandMsgs& msg);
+	void subscribeRightHandPosition(const xr1controllerros::HandMsgs& msg);
+	void subscribeLeftHandCurrent(const xr1controllerros::HandMsgs& msg);
+	void subscribeRightHandCurrent(const xr1controllerros::HandMsgs& msg);
 
 	void broadcastTransform();
 
@@ -233,10 +232,6 @@ private:
 
 	ros::Subscriber RightHandModeChangeSubscriber  ;
 
-	ros::Subscriber LeftHandPositionSubscriber;
-
-	ros::Subscriber RightHandPositionSubscriber;
-
 	ros::Subscriber JointVisualizationSubscriber;
 
 	ros::Subscriber LeftArmPositionSubscriber;
@@ -252,6 +247,10 @@ private:
 	ros::Subscriber LeftArmCurrentSubscriber;
 
 	ros::Subscriber RightArmCurrentSubscriber;
+
+	ros::Subscriber LeftHandPositionSubscriber;
+
+	ros::Subscriber RightHandPositionSubscriber;
 
 	ros::Subscriber LeftHandCurrentSubscriber;
 
