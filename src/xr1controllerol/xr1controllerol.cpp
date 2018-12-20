@@ -222,7 +222,7 @@ void XR1ControllerOL::MoCapCallback(const ros::TimerEvent&){
 			m_pController->setPosition(i , XR1_ptr->getTargetJointPosition(i));
 
 
-			// IF you want to do simulation
+			// If you want to do simulation
 			// XR1_ptr->updatingCallback(i , XR1::ActualPosition , XR1_ptr->getTargetJointPosition(i));
 		}
 	}
