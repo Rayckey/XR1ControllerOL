@@ -14,6 +14,8 @@ XR1ControllerOL::XR1ControllerOL() :
 
 	XR1_ptr = new XR1Controller(path + "/fudge.xr1para");
 
+	IMU_ptr = new XR1IMUmethods();
+
 	m_pController = ActuatorController::getInstance();
 
 
@@ -41,7 +43,7 @@ XR1ControllerOL::XR1ControllerOL() :
 	RightArmModeChangeSubscriber 			= nh.subscribe("/XR1/RightArmChainModeChange" , 10,  &XR1ControllerOL::subscribeRightArmMode, this);
 	LeftHandModeChangeSubscriber 			= nh.subscribe("/XR1/LeftHandChainModeChange" , 10,  &XR1ControllerOL::subscribeLeftHandMode, this);
 	RightHandModeChangeSubscriber  			= nh.subscribe("/XR1/RightHandChainModeChange" , 10,  &XR1ControllerOL::subscribeRightHandMode, this);
-
+	MetaModeSubscriber 						= nh.subscribe("/XR1/MetaModeChange" , 1 , &XR1ControllerOL::setMetaMode,this);
 
 	LeftHandPositionSubscriber 				= nh.subscribe("/LeftHand/TargetPosition" , 10 , &XR1ControllerOL::subscribeLeftHandPosition,this);
 	RightHandPositionSubscriber 			= nh.subscribe("/RightHand/TargetPosition" , 10 , &XR1ControllerOL::subscribeRightHandPosition,this);
@@ -51,6 +53,13 @@ XR1ControllerOL::XR1ControllerOL() :
 
 	LeftElbowSubscriber                     = nh.subscribe("LeftArm/ElbowAngle" , 1, &XR1ControllerOL::subscribeLeftElbowAngle , this);
 	RightElbowSubscriber                    = nh.subscribe("RightArm/ElbowAngle" , 1, &XR1ControllerOL::subscribeRightElbowAngle , this);
+
+
+
+	tiltInitSubscriber 						= nh.subscribe("XR1/tiltInit" , 1, &XR1ControllerOL::subscribetiltInit , this);
+	MoCapInitSubscriber						= nh.subscribe("XR1/MoCapInit" , 1, &XR1ControllerOL::subscribetiltInit , this);
+
+
 
 	MainBodyPositionPublisher               = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Position" , 1);
 	MainBodyCurrentPublisher                = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Current" , 1);
@@ -65,6 +74,9 @@ XR1ControllerOL::XR1ControllerOL() :
 
 	LeftHandPositionPublisher    			= nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/Position", 1);
 	RightHandPositionPublisher   			= nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Position", 1);
+
+
+
 
 
 	ROS_INFO("Recognize_Finished");
@@ -126,7 +138,9 @@ XR1ControllerOL::XR1ControllerOL() :
 	//Update Callback
 	m_pController->m_sActuatorAttrChanged->connect_member(this, &XR1ControllerOL::updatingCallback);
 
+	m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
 
+	// m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
 
 
 	// Elbow lower anlges, measured from the top, by default:
@@ -149,6 +163,70 @@ XR1ControllerOL::~XR1ControllerOL()
 
 	JointAttributePublisher.shutdown();
 	ActuatorLaunchedPublisher.shutdown();
+}
+
+
+void XR1ControllerOL::QuaCallBack(uint64_t id , double w , double x , double y , double z){
+	
+	// ROS_INFO("[%f][%f][%f][%f]",w,x,y,z);
+   // if (precision > 1){
+
+	// If it is the base frame
+   if (id == ActuatorController::toLongId("192.168.1.4",0))
+       XR1_ptr->tiltCallback(w, x , y , z);
+
+   // If it is a MoCap module
+   else {
+   	IMU_ptr->quaternioncallback(ActuatorController::toByteId(id),w,x,y,z);
+   }
+
+   // }
+   
+}
+
+
+
+// void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
+// 	// ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
+// }
+
+void XR1ControllerOL::requestAcc(const ros::TimerEvent&){
+	m_pController->requestSingleQuaternion(ActuatorController::toLongId("192.168.1.4" , 0));
+	// m_pController->requestSingleQuaternion();
+}
+
+void XR1ControllerOL::requestQue(const ros::TimerEvent&){
+	m_pController->requestAllQuaternions();
+}
+
+
+void XR1ControllerOL::setMetaMode(const std_msgs::Int32 & msg){
+	XR1_ptr->tiltInit();
+	XR1_ptr->setMetaMode(msg.data);
+}
+
+void XR1ControllerOL::subscribetiltInit(const std_msgs::Bool&  msg){
+	XR1_ptr->tiltInit();
+}
+
+void XR1ControllerOL::subscribeMoCapInit(const std_msgs::Bool& msg){
+	IMU_ptr->Initialize();
+}
+
+void XR1ControllerOL::MoCapCallback(const ros::TimerEvent&){
+
+	if (XR1_ptr->getMetaMode() == XR1::MoCapMode){
+		XR1_ptr->setMoCapPosition( IMU_ptr->getJointAngles());
+
+		for (uint8_t i = XR1::MainBody ; i < XR1::Actuator_Total; i++){
+			m_pController->setPosition(i , XR1_ptr->getTargetJointPosition(i));
+
+
+			// IF you want to do simulation
+			// XR1_ptr->updatingCallback(i , XR1::ActualPosition , XR1_ptr->getTargetJointPosition(i));
+		}
+	}
+
 }
 
 
@@ -213,6 +291,14 @@ void XR1ControllerOL::setJointPosition(uint8_t control_group , VectorXd JA) {
 
 	for (uint8_t id : temp_vector)
 		m_pController->setPosition(id, JA(id - control_group));
+
+}
+
+
+
+double XR1ControllerOL::getTargetJointPosition(uint8_t joint_id , bool vanilla){
+
+	return XR1_ptr->getTargetJointPosition(joint_id , vanilla);
 
 }
 
@@ -330,6 +416,13 @@ void XR1ControllerOL::subscribeLeftArmPosition(const xr1controllerros::ArmMsgs& 
 	XR1_ptr->setJointPosition(XR1::LeftArm , ArmMsgs2VectorXd(msg));
 	setJointPosition(XR1::LeftArm , XR1_ptr->getTargetPosition(XR1::LeftArm));
 }
+
+
+
+VectorXd XR1ControllerOL::getTargetPosition(uint8_t control_group , bool vanilla){
+	return XR1_ptr->getTargetPosition(control_group , vanilla);
+}
+
 
 void XR1ControllerOL::subscribeRightArmPosition(const xr1controllerros::ArmMsgs& msg) {
 	XR1_ptr->setJointPosition(XR1::RightArm , ArmMsgs2VectorXd(msg));
@@ -727,4 +820,8 @@ void XR1ControllerOL::subscribeLeftElbowAngle(const std_msgs::Float64 & msg) {
 }
 void XR1ControllerOL::subscribeRightElbowAngle(const std_msgs::Float64 & msg) {
 	RightElbowAngle = msg.data;
+}
+
+void XR1ControllerOL::clearStates(){
+	XR1_ptr->clearStates();
 }

@@ -26,6 +26,8 @@ public:
 
     void setInverseDynamicsOption(uint8_t option);
 
+    uint8_t getInverseDynamicsOption();
+
     void ClearResults();
 
 
@@ -36,13 +38,18 @@ private:
 
 protected:
 
+    // pointers to controllers
+    ChainController * m_pLeftArm;
+    ChainController * m_pRightArm;
+    ChainController * m_pBody;
 
+    // temp values
     double Target_Angles[7];
     double Target_Velocities[7];
     double Target_Acceleration[7];
     double Target_Currents[7];
 
-    uint8_t DynamicsOption;
+
 
 
     int Begin_ID;
@@ -50,9 +57,6 @@ protected:
 
     int NUM_OF_JOINTS;
 
-    ChainController * m_pLeftArm;
-    ChainController * m_pRightArm;
-    ChainController * m_pBody;
 
 
 
@@ -90,9 +94,13 @@ protected:
     std::vector<double> Inertia_Parameters;
     std::vector<double> Gravity_Parameters;
 
+
+    // Config varibles
+    uint8_t DynamicsOption;
+    double Ks[7];
+    double Ds[7];
+
     //Intermediate for Newton Euler
-
-
     double Regressor[7][91];
 
     double G3 ;

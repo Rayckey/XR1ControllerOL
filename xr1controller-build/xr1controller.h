@@ -144,6 +144,11 @@ public:
     uint8_t getControlMode(uint8_t control_group);
 
 
+    //Set Control Mode for Entire XR1, which only has two mode: direct and drive
+    //When in drive mode, it will take over
+    void setMetaMode(uint8_t option);
+    uint8_t getMetaMode();
+
 
     //Get the last calculated Jacobian from XR1Controller
     //Used in XR1Controller
@@ -304,9 +309,19 @@ public:
 
     double tinyBezier(double double_index , double pt_s , double pt_1 , double pt_2 , double pt_e);
 
-    void SetOmniWheelsVelocity(Vector3d input, bool skate_mode);
+//    void enterDriveMode(int period_in_ms = 1000, int control_rate = 20 );
+
+    void SetOmniWheelsVelocity(Vector3d input);
 
     void setPeriod(uint8_t control_group , double period);
+
+    void tiltCallback(double x , double y , double z);
+
+    void tiltCallback(double w , double x , double y , double z);
+
+    void tiltInit();
+
+    Vector3d getBaseAcc();
 
     void liftLockdown();
 
@@ -346,6 +361,9 @@ private:
     std::map<uint8_t , bool> WristVelocitySwitch;
 
     std::map<uint8_t , bool> WristCurrentSwitch;
+
+//    std::vector<double> driveCmd;
+
 
     double PI;
 

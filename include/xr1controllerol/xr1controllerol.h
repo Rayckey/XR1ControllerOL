@@ -5,6 +5,7 @@
 #include "actuatorcontroller.h"
 #include "xr1controller.h"
 #include "xr1define.h"
+#include "XR1IMUmethods.h"
 
 
 // Messages for Communication
@@ -19,6 +20,7 @@
 #include <tf_conversions/tf_eigen.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Int32.h>
 
 #include "xr1controllerros/JointAttributeMsgs.h"
 // Messages for Communication
@@ -56,6 +58,11 @@ public:
 
 
 	void updatingCallback(uint8_t id, uint8_t attrId, double value);
+
+	void QuaCallBack(uint64_t id , double w , double x , double y , double z);
+
+	// void accCallBack(uint8_t id , double x , double y , double z , int pres);
+
 
 	//--------Joint Control----------------------------------
 
@@ -108,11 +115,26 @@ public:
 	void setJointCurrent(uint8_t joint_idx ,   double JC);
 
 
+
+
+	// Get the target joint position, set vanilla to true to get simulation value
+	double getTargetJointPosition(uint8_t joint_id , bool vanilla = false);
+
+	//Get Target Position for Arms or Body
+	VectorXd getTargetPosition(uint8_t control_group , bool vanilla = false);
+
+
+
 	//Set the Control Method for an entire Control Group , i.e. LeftARM , RightHand
 	//Used in the XR1Controller
 	//Argu: Control Group ID , Conrol Mode ID
 	//Reutrns : void , may add error message in the fulture
 	void setControlMode(uint8_t control_group , uint8_t option);
+
+
+	//Set Control Mode for Entire XR1, which only has two mode: direct and drive
+	//When in drive mode, it will take over
+	void setMetaMode(const std_msgs::Int32 & msg);
 
 
 
@@ -141,9 +163,47 @@ public:
 
 	void unleaseCallback(const ros::TimerEvent&);
 
+	void requestAcc(const ros::TimerEvent&);
+
+	void requestQue(const ros::TimerEvent&);
+
+	void MoCapCallback(const ros::TimerEvent&);
+
+
+
 	void actuatorOperation(uint8_t nId, uint8_t nType);
 
 	bool allActuatorHasLaunched();
+
+
+
+
+
+	xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition);
+
+	xr1controllerros::HandMsgs ConvertHandMsgs(std::vector<double> HandPosition);
+
+	xr1controllerros::ArmMsgs  ConvertArmMsgs(std::vector<double> input) ;
+
+	xr1controllerros::ArmMsgs  ConvertArmMsgs(Eigen::VectorXd input) ;
+
+	xr1controllerros::BodyMsgs ConvertBodyMsgs(std::vector<double> input);
+
+	xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input);
+
+
+
+
+
+
+	// Some mumble jumble that no one clear about
+	// Clear the path data
+	void clearStates();
+
+
+
+
+
 protected:
 
 	void subscribeLaunch(const std_msgs::Bool& msg);
@@ -180,17 +240,7 @@ protected:
 
 	void broadcastTransform();
 
-	xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition);
 
-	xr1controllerros::HandMsgs ConvertHandMsgs(std::vector<double> HandPosition);
-
-	xr1controllerros::ArmMsgs  ConvertArmMsgs(std::vector<double> input) ;
-
-	xr1controllerros::ArmMsgs  ConvertArmMsgs(Eigen::VectorXd input) ;
-
-	xr1controllerros::BodyMsgs ConvertBodyMsgs(std::vector<double> input);
-
-	xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input);
 
 	void lookupRightEFFTarget(tf::StampedTransform & transform, 	Affine3d & itsafine);
 
@@ -198,6 +248,10 @@ protected:
 
 	void subscribeLeftElbowAngle(const std_msgs::Float64 & msg);
 	void subscribeRightElbowAngle(const std_msgs::Float64 & msg);
+
+
+	void subscribetiltInit(const std_msgs::Bool& msg);
+	void subscribeMoCapInit(const std_msgs::Bool& msg);
 private:
 
 	// Pay no Attention Here Plz
@@ -205,6 +259,7 @@ private:
 	ActuatorController * m_pController;
 
 	XR1Controller * XR1_ptr;
+	XR1IMUmethods * IMU_ptr;
 
 	double LeftElbowAngle;
 	double RightElbowAngle;
@@ -258,6 +313,12 @@ private:
 
 	ros::Subscriber LeftElbowSubscriber;
 	ros::Subscriber RightElbowSubscriber;
+
+	ros::Subscriber MetaModeSubscriber;
+
+	ros::Subscriber tiltInitSubscriber;
+
+	ros::Subscriber MoCapInitSubscriber;
 
 	ros::Publisher JointAttributePublisher;
 

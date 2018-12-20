@@ -15,6 +15,12 @@ Matrix3d XY2Matrix(Vector3d BaseRotation);
 
 Vector3d Vector2XY(Vector3d BaseVector);
 
+Vector3d Vector2XZ(Vector3d input);
+
+Vector3d Vector2ZX(Vector3d input);
+
+void Vector2XZ2Matrix(Vector3d & input , Matrix3d & output);
+
 void EulerXYZ(double x , double y , double z , Matrix3d &input) ;
 
 void EulerZYX(double x , double y , double z , Matrix3d &input) ;

@@ -12,6 +12,12 @@ enum BodyGroups{
     OmniWheels = 1,
 };
 
+enum XR1Mode{
+    DirectMode = 1,
+    DriveMode = 5,
+    MoCapMode = 6,
+};
+
 enum ActuatorID{
     Left_Front_Wheel = 1 ,
     Right_Front_Wheel = 2,
@@ -99,6 +105,7 @@ enum HandGripActions{
 
 enum InverseDynamicsOptions{
     None = 0,
+    SpringDamper = 100,
     GravityCompensation = 101,
     FullDynamics = 102,
     FullDynamics_PASSIVE = 103,

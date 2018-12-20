@@ -157,6 +157,13 @@ public:
     uint8_t getControlMode(uint8_t control_group);
 
 
+
+    //Set Control Mode for Entire XR1, which only has two mode: direct and drive
+    //When in drive mode, it will take over
+    void setMetaMode(uint8_t option);
+    uint8_t getMetaMode();
+
+
     void errorHandle();
 
 
@@ -190,8 +197,6 @@ public:
     bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle);
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle);
-
-
 
     void getEndEfftorTransformation(uint8_t control_group, Affine3d &TransformationReference, bool IK = true);
 
@@ -238,11 +243,17 @@ public:
 
     //Tilt Control----------------------------------------------------------------
 
-    Vector3d TiltCompensation(Matrix3d BaseRotation, Vector3d BaseAcceleration);
+    void TiltCompensation();
 
-    Vector3d TiltCompensation(Quaterniond BaseRotation , Vector3d BaseAcceleration);
+//    Vector3d TiltCompensation(Quaterniond BaseRotation , Vector3d BaseAcceleration);
 
+    void tiltCallback(double x , double y , double z);
 
+    void tiltCallback(double w , double x , double y , double z);
+
+    void tiltInit();
+
+    Vector3d getBaseAcc();
 
     //Dynamics Controls-----------------------------------------------------------------
 
@@ -300,6 +311,7 @@ private:
 
     // global configs
     std::map<uint8_t, uint8_t> ControlModes;
+    uint8_t MetaMode;
     std::vector<uint8_t> ArrayIDHelper(uint8_t control_group);
     int num_joint_in_chain;
     int num_joint_in_hand;
@@ -344,6 +356,7 @@ private:
 
     // regarding collision detection
     void employLockdown();
+    void copyCurrent2Target();
     void passiveLockdown();
     double breakAcceleration(double velocity , double period);
     double breakMotion(double x0 , double v0 , double a, double t);
@@ -365,10 +378,30 @@ private:
 
 
     // tilt control members
-    Vector3d TiltOffset;
-    Vector3d TiltCalcualtion(Matrix3d BaseRotation, Vector3d BaseAcceleration);
-
-
+    std::vector<double> driveCmd;
+    std::vector<Vector3d> rawAccVec;
+    Quaterniond rawQua;
+    Quaterniond initQua;
+    Vector3d initAcc;
+    Vector3d tmpAcc;
+    Vector3d rawAcc;
+    Vector3d currAcc;
+    Matrix3d rawTilt;
+    Matrix3d initTilt;
+    Matrix3d currTilt;
+    Matrix3d tempTilt;
+    Vector3d actuAcc;
+    Vector3d actuEul;
+    Vector3d hatAcc;
+    Vector3d innAcc;
+    Vector3d noiAcc;
+    Vector3d no2Acc;
+    Vector3d kvcAcc;
+    Vector3d ganAcc;
+    Vector3d cvcAcc;
+    void accKalman(double x , double y , double z);
+    void TiltCalcualtion(Matrix3d & rotation_of_acc);
+    void assignAcc2Joint();
 
 
 
