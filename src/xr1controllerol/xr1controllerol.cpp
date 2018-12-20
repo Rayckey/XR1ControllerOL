@@ -218,13 +218,17 @@ void XR1ControllerOL::MoCapCallback(const ros::TimerEvent&){
 	if (XR1_ptr->getMetaMode() == XR1::MoCapMode){
 		XR1_ptr->setMoCapPosition( IMU_ptr->getJointAngles());
 
-		for (uint8_t i = XR1::MainBody ; i < XR1::Actuator_Total; i++){
+		for (uint8_t i = XR1::LeftArm ; i < XR1::RightArm; i++){
 			m_pController->setPosition(i , XR1_ptr->getTargetJointPosition(i));
+
 
 
 			// If you want to do simulation
 			// XR1_ptr->updatingCallback(i , XR1::ActualPosition , XR1_ptr->getTargetJointPosition(i));
 		}
+
+
+		ROS_INFO("BS angle is [%f]", XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_Z,true));
 	}
 
 }
