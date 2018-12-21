@@ -41,9 +41,9 @@ int main(int argc, char **argv) {
 
   ros::Timer timer3 = nh.createTimer(ros::Duration(0.01), &XR1ControllerOL::unleaseCallback , XR1_ptr);
 
-  ros::Timer timer4 = nh.createTimer(ros::Duration(0.3), &XR1ControllerOL::requestQue , XR1_ptr);
+  ros::Timer timer4 = nh.createTimer(ros::Duration(0.03), &XR1ControllerOL::requestQue , XR1_ptr);
 
-  ros::Timer timer5 = nh.createTimer(ros::Duration(0.3), &XR1ControllerOL::MoCapCallback , XR1_ptr);
+  ros::Timer timer5 = nh.createTimer(ros::Duration(0.03), &XR1ControllerOL::MoCapCallback , XR1_ptr);
 
 
   ros::spin();

@@ -228,7 +228,6 @@ void XR1ControllerOL::MoCapCallback(const ros::TimerEvent&){
 		}
 
 
-		ROS_INFO("BS angle is [%f]", XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_Z,true));
 	}
 
 }
@@ -692,8 +691,8 @@ xr1controllerros::ArmMsgs XR1ControllerOL::ConvertArmMsgs(std::vector<double> in
 	msg.Elbow_Z = input[2];
 	msg.Elbow_X = input[3];
 	msg.Wrist_Z = input[4];
-	msg.Wrist_Y = input[5];
-	msg.Wrist_X = input[6];
+	msg.Wrist_Y = input[6];
+	msg.Wrist_X = input[5];
 
 	return msg;
 }
@@ -706,8 +705,8 @@ xr1controllerros::ArmMsgs XR1ControllerOL::ConvertArmMsgs(Eigen::VectorXd input)
 	msg.Elbow_Z = input(2);
 	msg.Elbow_X = input(3);
 	msg.Wrist_Z = input(4);
-	msg.Wrist_Y = input(5);
-	msg.Wrist_X = input(6);
+	msg.Wrist_Y = input(6);
+	msg.Wrist_X = input(5);
 
 	return msg;
 }
