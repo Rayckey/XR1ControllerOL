@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include "xr1controllerpm.h"
 #include "xr1define.h"
-#include "std_msgs/Bool.h"
+#include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
 #include "Eigen/Dense"
 #include <fstream>
@@ -9,6 +9,7 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
+#include <geometry_msgs/Twist.h>
 #include "xr1controllerros/ArmMsgs.h"
 #include "xr1controllerros/ChainModeChange.h"
 #include "xr1controllerros/BodyMsgs.h"
@@ -151,25 +152,43 @@ void broadcastTransform(const ros::TimerEvent& event) {
   lookupLeftEFFTarget(transform, itsafine);
 
 
+  XR1_ptr->getBaseTransformation(itsafine);
+  tf::transformEigenToTF(itsafine, transform);
+  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Odom", "/Back_Y"));
 
 }
 
 
 
+void subscribeOmniCommand(const geometry_msgs::Twist & msg) {
+
+  Vector3d temp_cmd;
+
+  temp_cmd << msg.angular.z, msg.linear.y, msg.linear.x;
+
+  XR1_ptr->SetOmniWheelsVelocity(temp_cmd);
+
+  temp_cmd = XR1_ptr->getTargetVelocity(XR1::OmniWheels);
+
+  for (int i = XR1::OmniWheels ; i < XR1::MainBody ; i++) {
+    // simulation call -------------------------------------------------------------
+    XR1_ptr->updatingCallback(temp_cmd(i - XR1::OmniWheels) , i ,XR1::ActualVelocity);
+  }
+}
 // ----------------------------------------------------------------------------------
 // ==================================================================================
 
 
 
 // Look man you want the fk you gotta to feed me the angles
-void subscribeLeftArmPosition(const xr1controllerros::ArmMsgs& msg) {
+void subscribeLeftArmPosition(const xr1controllerros::ArmMsgs & msg) {
   XR1_ptr->updatingCallback(ArmMsgs2VectorXd(msg) , XR1::LeftArm , XR1::ActualPosition);
 }
-void subscribeRightArmPosition(const xr1controllerros::ArmMsgs& msg) {
+void subscribeRightArmPosition(const xr1controllerros::ArmMsgs & msg) {
   XR1_ptr->updatingCallback(ArmMsgs2VectorXd(msg) , XR1::RightArm , XR1::ActualPosition);
 }
 
-void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs& msg) {
+void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs & msg) {
   XR1_ptr->updatingCallback(BodyMsgs2VectorXd(msg) , XR1::MainBody , XR1::ActualPosition);
 }
 
@@ -210,6 +229,10 @@ int main(int argc, char **argv) {
   ros::Subscriber RightElbowSubscriber                        = nh.subscribe("RightArm/ElbowAngle" , 1, subscribeRightElbowAngle );
 
 
+  // Driving Commands
+  ros::Subscriber OmniSubscriber                              = nh.subscribe("cmd_vel" , 1 , subscribeOmniCommand);
+
+
   // cough out the target position as the result of IK;
   LeftArmPositionPublisher = new ros::Publisher();
   RightArmPositionPublisher = new ros::Publisher();
@@ -225,7 +248,7 @@ int main(int argc, char **argv) {
 
 
   // Draw some random stuff every three seconds or so
-  ros::Timer timer = nh.createTimer(ros::Duration(0.1), broadcastTransform);
+  ros::Timer timer = nh.createTimer(ros::Duration(0.01), broadcastTransform);
 
   ros::spin();
 

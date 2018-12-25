@@ -312,6 +312,10 @@ public:
 //    void enterDriveMode(int period_in_ms = 1000, int control_rate = 20 );
 
     void SetOmniWheelsVelocity(Vector3d input);
+    Vector3d getOmniWheelsVelocity();
+    Vector3d getOmniWheelsPosition();
+    void getBaseTransformation(Affine3d & output);
+    void resetOdometry();
 
     void setPeriod(uint8_t control_group , double period);
 

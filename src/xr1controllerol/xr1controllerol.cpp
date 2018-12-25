@@ -216,10 +216,15 @@ void XR1ControllerOL::subscribeMoCapInit(const std_msgs::Bool& msg){
 void XR1ControllerOL::MoCapCallback(const ros::TimerEvent&){
 
 	if (XR1_ptr->getMetaMode() == XR1::MoCapMode){
+
+		std::vector<double> temp_vec = IMU_ptr->getJointAngles();
+
 		XR1_ptr->setMoCapPosition( IMU_ptr->getJointAngles());
 
 		for (uint8_t i = XR1::LeftArm ; i < XR1::RightArm; i++){
-			m_pController->setPosition(i , XR1_ptr->getTargetJointPosition(i));
+			ROS_INFO("[%d][%f]",i,temp_vec[i]);
+			// ROS_INFO("[%d][%f]",i,XR1_ptr->getTargetJointPosition(i,true));
+			// m_pController->setPosition(i , XR1_ptr->getTargetJointPosition(i));
 
 
 
@@ -227,6 +232,7 @@ void XR1ControllerOL::MoCapCallback(const ros::TimerEvent&){
 			// XR1_ptr->updatingCallback(i , XR1::ActualPosition , XR1_ptr->getTargetJointPosition(i));
 		}
 
+		
 
 	}
 
@@ -374,8 +380,9 @@ Eigen::VectorXd XR1ControllerOL::ArmMsgs2VectorXd(const xr1controllerros::ArmMsg
 	    msg.Elbow_Z ,
 	    msg.Elbow_X ,
 	    msg.Wrist_Z ,
-	    msg.Wrist_Y ,
-	    msg.Wrist_X ;
+		msg.Wrist_X ,
+	    msg.Wrist_Y ;
+
 
 	return res;
 }
@@ -691,8 +698,9 @@ xr1controllerros::ArmMsgs XR1ControllerOL::ConvertArmMsgs(std::vector<double> in
 	msg.Elbow_Z = input[2];
 	msg.Elbow_X = input[3];
 	msg.Wrist_Z = input[4];
-	msg.Wrist_Y = input[6];
 	msg.Wrist_X = input[5];
+	msg.Wrist_Y = input[6];
+
 
 	return msg;
 }
@@ -705,8 +713,8 @@ xr1controllerros::ArmMsgs XR1ControllerOL::ConvertArmMsgs(Eigen::VectorXd input)
 	msg.Elbow_Z = input(2);
 	msg.Elbow_X = input(3);
 	msg.Wrist_Z = input(4);
-	msg.Wrist_Y = input(6);
 	msg.Wrist_X = input(5);
+	msg.Wrist_Y = input(6);
 
 	return msg;
 }

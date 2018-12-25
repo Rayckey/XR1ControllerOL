@@ -24,7 +24,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES xr1controllerol
-  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs
 )
 
 
@@ -72,3 +72,10 @@ add_dependencies(tilt_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_executable(xr1controllerIK_simulator src/xr1controllerIK_simulator.cpp) 
 target_link_libraries(xr1controllerIK_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(xr1controllerIK_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+
+add_executable(xr1controllerodom_simulator src/xr1controllerodom_simulator.cpp) 
+target_link_libraries(xr1controllerodom_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(xr1controllerodom_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+

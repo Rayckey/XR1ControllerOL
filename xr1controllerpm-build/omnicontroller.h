@@ -4,6 +4,7 @@
 #include "genericcontroller.h"
 #include "Eigen/Dense"
 #include "xr1define.h"
+#include "xr1controllerutil.h"
 
 using namespace Eigen;
 class OmniController : public GenericController
@@ -15,7 +16,17 @@ public:
 
     void setVelocity(Vector3d input);
 
+    Vector3d getVelocity();
+
+    Vector3d getPosition();
+
+    void getBaseTransformation(Affine3d & input);
+
     void calculateSpeed();
+
+    void triggerCalculation();
+
+    void resetOdometry();
 
 
 private:
@@ -34,6 +45,12 @@ private:
 
     Vector3d TargetOmniVelocity;
 
+    Vector3d OmniPosition;
+
+    MatrixXd OmniTransformation;
+
+    void statePropagation();
+
 
     double max_vel;
     double max_ang;
@@ -41,9 +58,10 @@ private:
     double PI;
 
     Matrix3d MappingMatrix;
+    Matrix3d invMappingMatrix;
 
 
-    void inverseSpeed(Vector3d Velocity);
+    void inverseSpeed();
 
 
 

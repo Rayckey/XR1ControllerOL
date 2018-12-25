@@ -28,6 +28,11 @@ public:
     XR1ControllerPM(string parameters_path);
 
 
+    // MoCapCommand
+    void setMoCapPosition(std::vector<double> cmds);
+
+
+
     //Simple Joint Controls--------------------------------------
 
     //Set the Target Joint Positions for an entire control group, i.e. LeftARM , RightHand
@@ -266,6 +271,10 @@ public:
 
     //OmniWheels Controls-----------------------------------------------------------------
     void SetOmniWheelsVelocity(Vector3d input);
+    Vector3d getOmniWheelsVelocity();
+    Vector3d getOmniWheelsPosition();
+    void getBaseTransformation(Affine3d & output);
+    void resetOdometry();
 
 
 
