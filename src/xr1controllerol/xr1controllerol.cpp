@@ -522,7 +522,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 
 	for (uint8_t i = XR1::Left_Shoulder_X; i < XR1::Left_Wrist_Z; ++i)
 	{
-		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
 		{
 			// m_pController->getCVPValue(i);
 
@@ -537,7 +537,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 
 		for (uint8_t i = XR1::Left_Wrist_Z; i < XR1::RightArm; ++i)
 	{
-		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
 		{
 			// m_pController->getCVPValue(i);
 
@@ -554,7 +554,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 
 	for (uint8_t i = XR1::Right_Shoulder_X; i < XR1::Right_Wrist_Z; ++i)
 	{
-		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
 		{
 			// m_pController->getCVPValue(i);
 
@@ -569,7 +569,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 
 		for (uint8_t i = XR1::Right_Wrist_Z; i < XR1::LeftHand; ++i)
 	{
-		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
 		{
 			// m_pController->getCVPValue(i);
 
@@ -587,7 +587,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 
 	for (uint8_t i = XR1::Back_Z; i <= XR1::Back_Y; ++i)
 	{
-		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
 		{
 			m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
 			m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
@@ -597,7 +597,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 
 	for (uint8_t i = XR1::Neck_Z; i < XR1::LeftArm; ++i)
 	{
-		if ((int)m_pController->getActuatorAttribute(i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+		if ((int)m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
 		{
 			m_pController->regainAttrbute( i, Actuator::ACTUAL_POSITION);
 		}
@@ -606,7 +606,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 	if (hand_command_switch) {
 		for (uint8_t i = XR1::LeftHand; i < XR1::Actuator_Total; ++i)
 		{
-			if ((int)m_pController->getActuatorAttribute( i, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+			if ((int)m_pController->getActuatorAttribute( i, Actuator::INIT_STATE) == Actuator::Initialized)
 			{
 				m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
 				m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
@@ -616,7 +616,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent& this_event) {
 
 
 
-	if ((int)m_pController->getActuatorAttribute((uint8_t)XR1::Knee_X, Actuator::ACTUATOR_SWITCH) == Actuator::ACTUATOR_SWITCH_ON)
+	if ((int)m_pController->getActuatorAttribute((uint8_t)XR1::Knee_X, Actuator::INIT_STATE) == Actuator::Initialized)
 	{
 		m_pController->regainAttrbute((uint8_t)XR1::Knee_X, Actuator::ACTUAL_POSITION);
 	}
