@@ -3,7 +3,9 @@
 
 
 #include<Eigen/Dense>
-
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 using namespace Eigen;
 
@@ -54,6 +56,9 @@ void EulerYZX(double y, double z, double x, Matrix3d &rots);
 std::vector<double> Evector2Svector(VectorXd & e );
 
 void Svector2Evector(std::vector<double> v , VectorXd & e);
+
+std::vector<std::vector<double> > CSVread(std::string file_path) ;
+
 
 #endif
 

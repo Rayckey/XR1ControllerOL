@@ -243,6 +243,7 @@ void XR1ControllerOL::launchAllMotors() {
 
 	m_pController->launchAllActuators();
 	if (allActuatorHasLaunched()) {
+		XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
 		std_msgs::Bool stuff;
 		stuff.data = true;
 		ActuatorLaunchedPublisher.publish(stuff);
@@ -255,7 +256,7 @@ bool XR1ControllerOL::allActuatorHasLaunched()
 	vector<uint8_t> idArray = m_pController->getActuatorIdArray();
 	for (int i = 0; i < idArray.size(); ++i)
 	{
-		if (m_pController->getActuatorAttribute((uint8_t) idArray.at(i), Actuator::ACTUATOR_SWITCH) != Actuator::ACTUATOR_SWITCH_ON)
+		if (m_pController->getActuatorAttribute((uint8_t) idArray.at(i), Actuator::INIT_STATE) != Actuator::Initialized)
 			return false;
 	}
 	return true;
@@ -288,7 +289,7 @@ void XR1ControllerOL::setControlMode(uint8_t control_group , uint8_t option) {
 
 
 	for (uint8_t id : temp_vector)
-		m_pController->activeActuatorMode(id, mode_map[option]);
+		m_pController->activateActuatorMode(id, mode_map[option]);
 
 
 }
@@ -328,6 +329,11 @@ void XR1ControllerOL::setJointCurrent(uint8_t control_group , VectorXd JC) {
 		m_pController->setCurrent(id, JC(id - control_group));
 
 }
+ 
+void XR1ControllerOL::setJointCurrent(uint8_t joint_idx ,   double JC){
+	m_pController->setCurrent(joint_idx , JC);
+}
+
 
 void XR1ControllerOL::updatingCallback(uint8_t id, uint8_t attrId, double value) {
 
@@ -656,6 +662,7 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent&) {
 	RightHandPositionPublisher.publish(ConvertHandMsgs(XR1_ptr->getJointCurrents(XR1::RightHand , true)));
 
 
+	gravityCallback();
 
 	broadcastTransform();
 	// ROS_INFO("Unleased");
@@ -835,4 +842,25 @@ void XR1ControllerOL::subscribeRightElbowAngle(const std_msgs::Float64 & msg) {
 
 void XR1ControllerOL::clearStates(){
 	XR1_ptr->clearStates();
+}
+
+void XR1ControllerOL::gravityCallback(){
+
+
+	if (XR1_ptr->getControlMode(XR1::LeftArm) == XR1::ForceMode){
+		for (uint8_t i = XR1::LeftArm ; i < XR1::Left_Wrist_Z ; i++){
+			ROS_INFO( "The Current for joint [%d] is [%f]", (int)i, XR1_ptr->getTargetJointCurrent(i));
+			m_pController->setCurrent(i , XR1_ptr->getTargetJointCurrent(i));
+		}
+	}
+
+	if (XR1_ptr->getControlMode(XR1::RightArm) == XR1::ForceMode){
+		for (uint8_t i = XR1::RightArm ; i < XR1::Right_Wrist_Z ; i++){
+			ROS_INFO( "The Current for joint [%d] is [%f]", (int)i, XR1_ptr->getTargetJointCurrent(i));
+			m_pController->setCurrent(i , XR1_ptr->getTargetJointCurrent(i));
+		}
+	}
+
+
+
 }

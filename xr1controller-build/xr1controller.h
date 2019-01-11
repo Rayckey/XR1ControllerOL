@@ -268,6 +268,10 @@ public:
     void setMoCapPosition(std::vector<double> IMU_output);
 
 
+    //Convert Mute data into action
+    void setMutePosition(std::vector<double> MuteData);
+
+
     //Convert output from Action files to Motor Joint Angles;
     void setActionPosition(std::vector<double> Action_output);
 
@@ -314,7 +318,7 @@ public:
     void SetOmniWheelsVelocity(Vector3d input);
     Vector3d getOmniWheelsVelocity();
     Vector3d getOmniWheelsPosition();
-    void getBaseTransformation(Affine3d & output);
+    void getBaseTransformation(uint8_t control_group , Affine3d & output);
     void resetOdometry();
 
     void setPeriod(uint8_t control_group , double period);

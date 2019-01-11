@@ -152,9 +152,17 @@ void broadcastTransform(const ros::TimerEvent& event) {
   lookupLeftEFFTarget(transform, itsafine);
 
 
-  XR1_ptr->getBaseTransformation(itsafine);
+
+  XR1_ptr->getBaseTransformation(XR1::OmniWheels , itsafine);
   tf::transformEigenToTF(itsafine, transform);
-  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Odom", "/Back_Y"));
+  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Odom", "/Base"));
+
+
+
+  XR1_ptr->getBaseTransformation(XR1::MainBody , itsafine);
+  tf::transformEigenToTF(itsafine, transform);
+  EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Base", "/Back_Y"));
+
 
 }
 

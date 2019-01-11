@@ -163,6 +163,8 @@ public:
 
 	void unleaseCallback(const ros::TimerEvent&);
 
+	void gravityCallback();
+
 	void requestAcc(const ros::TimerEvent&);
 
 	void requestQue(const ros::TimerEvent&);

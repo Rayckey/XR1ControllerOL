@@ -32,6 +32,10 @@ public:
     void setMoCapPosition(std::vector<double> cmds);
 
 
+    // Mute Commands
+    void setMutePosition(std::vector<double> MuteData);
+
+
 
     //Simple Joint Controls--------------------------------------
 
@@ -273,7 +277,7 @@ public:
     void SetOmniWheelsVelocity(Vector3d input);
     Vector3d getOmniWheelsVelocity();
     Vector3d getOmniWheelsPosition();
-    void getBaseTransformation(Affine3d & output);
+    void getBaseTransformation(uint8_t control_group ,  Affine3d & output);
     void resetOdometry();
 
 
@@ -355,6 +359,7 @@ private:
     std::deque<std::vector<double> > tri_vels;
     std::deque<std::vector<double> > tri_accs;
     std::vector<double> temp_state;
+    std::vector<double> ready_state;
     int poly_period_ms;
     double poly_period_s;
     int poly_rate;
@@ -417,6 +422,15 @@ private:
     void PlaybackCallback();
 
 
+
+    // Mute Mode temp varibles
+    Quaterniond mute_qua;
+    Matrix3d mute_rot;
+    Vector3d mute_vec;
+    Affine3d Odom2Base;
+    Affine3d Base2Back;
+    Affine3d Odom2Target;
+    Affine3d Back2Target;
 
 
     // ik planning stuff

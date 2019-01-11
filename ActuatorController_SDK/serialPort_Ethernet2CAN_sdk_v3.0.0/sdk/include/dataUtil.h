@@ -1,7 +1,7 @@
 ﻿#ifndef DATAUTIL_H
 #define DATAUTIL_H
 #include <map>
-#include "innfosproxy.h"
+//#include "innfosproxy.h"
 #include "actuatordata.h"
 #include "actuatordefine.h"
 

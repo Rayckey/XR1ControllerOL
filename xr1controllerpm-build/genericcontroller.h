@@ -93,6 +93,8 @@ public:
 
     virtual void getEndEfftorTransformation(Affine3d & transformationReference);
 
+//    virtual void getBaseTransformation(Affine3d & input);
+
     // Update the the base
 //    void updateBaseTransformation(Matrix3d BaseT);
 

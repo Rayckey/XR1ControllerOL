@@ -4,8 +4,10 @@
 #include "actuatorcontroller_global.h"
 #include <functional>
 #include <vector>
-#include "mediator.h"
-#include "innfosproxy.h"
+#include "actuatordefine.h"
+//#include "innfosproxy.h"
+#include "CSignal.hpp"
+#include "gingeraddition.h"
 
 #ifdef _MSC_VER
 #define DEPRECATE_FUNC(f) __declspec(deprecated("** this is a deprecated function **")) f
@@ -17,7 +19,7 @@
 #endif
 
 using namespace  std;
-
+using namespace Actuator;
 #define controllerInst ActuatorController::getInstance()
 
 class ACTUATORCONTROLLERSHARED_EXPORT ActuatorController
@@ -104,7 +106,7 @@ public:
  * @param idArray 执行器短id数组
  * @param nMode 要激活的模式
 **/
-    void activeActuatorMode(vector<uint8_t> idArray, const Actuator::ActuatorMode nMode);
+    void activateActuatorMode(vector<uint8_t> idArray, const Actuator::ActuatorMode nMode);
     /**
      * @brief 激活执行器的指定模式
      * @param idArray 执行器长id数组
@@ -583,11 +585,12 @@ public:
      */
     bool setMinOutputVelocity(uint64_t longId,double minOutputVelocity);
     /**
-     * @brief activeActuatorMode 激活单个执行器的指定模式
+     * @brief activateActuatorMode 激活单个执行器的指定模式
      * @param id 执行器短id
      * @param nMode 指定的激活模式
      */
-    void activeActuatorMode(uint8_t id, const Actuator::ActuatorMode nMode);
+    void activateActuatorMode(uint8_t id, const Actuator::ActuatorMode nMode);
+
     /**
      * @brief activateActuatorMode 激活单个执行器的指定模式
      * @param id 执行器长id
@@ -682,6 +685,10 @@ public:
     double batteryCellTemperature(uint8_t index);
     bool setCircuitState(uint64_t longId,uint8_t channelId,bool bSwitch);
     uint8_t readCircuitState(uint64_t longId,uint8_t channelId);
+    void setLastIpNumber(uint8_t last);
+    void setLastMacNumber(uint8_t last);
+    void requestGloveInfo(uint64_t gloveId);
+    void receiveGloveInfo(uint64_t gloveId,double charge,uint16_t version);
 private:
     void finishRecognizeCallback();
     void onRequestCallback(uint64_t longId, uint8_t nProxyId,double value);
@@ -740,6 +747,10 @@ public:
      * @brief m_sBatteryInfo 电池信息
      */
     CSignal<> *m_sBatteryInfo;
+
+    CSignal<uint64_t,double> * m_sGloveCharge;
+    CSignal<uint64_t,uint16_t> * m_sGloveVersion;
+
 #ifdef IMU_ENABLE
     CSignal<uint8_t,double,double,double,double> *m_sQuaternion;
     CSignal<uint64_t,double,double,double,double> *m_sQuaternionL;

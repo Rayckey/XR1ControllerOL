@@ -35,6 +35,7 @@ public:
     VectorXd getEFFPosition();
     MatrixXd getEFFPositionMatrix();
     void getEndEfftorTransformation(Affine3d & transformationReference);
+    void getBaseTransformation(Affine3d &transformationReference);
 
     // Use this for points that are VERY CLOSE! it sets the target position straight up;
     bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle);
@@ -107,8 +108,9 @@ private:
 
 
 
-    MatrixXd BaseTransformation;
-    MatrixXd NeckTransformation; // I hate DH
+    Affine3d BaseTransformation;
+    Affine3d NeckTransformation; // I hate DH
+
 
 
     //regular consts
@@ -146,6 +148,7 @@ protected:
 
     Affine3d ArmPit;
     Affine3d TransferedGoal;
+    Affine3d tempAffine;
 
     //Adjoint
     Matrix3d temp_rot;

@@ -10,7 +10,9 @@
 #include "actuatordefine.h"
 #include <thread>
 #include <mutex>
+#include <sstream>
 #include "versionnumber.h"
+#include "gingeraddition.h"
 //#define TEST_DEBUG
 #define LOG_DEBUG
 //#define NO_HEART_BEAT
@@ -25,55 +27,7 @@ const double curScale = 8.25;
 #define requestCallback  std::function<void (uint8_t,uint8_t,double)>
 #define errorInfoFunc std::function<void (uint8_t,uint16_t,std::string)>
 
-struct BatteryStatus{
-    BatteryStatus()
-    {
-        mainInfo = 0;
-        current = 0;
-        cellsBalance = 0;
-        tempCount = 0;
-        loopCount = 0;
-        dumpEnergy = 0;
-        totalEnergy = 0;
-        chargeSwitch = 0;
-    }
 
-    uint32_t mainInfo;
-    double current;
-    uint8_t cellsCount;
-    std::vector<uint16_t> cellsVoltage;//mV
-    uint32_t cellsBalance;
-    uint8_t tempCount;
-    std::vector<int8_t> cellsTemp;
-    uint16_t loopCount;
-    double dumpEnergy;
-    double totalEnergy;
-    uint8_t chargeSwitch;
-    enum BtInfo{
-        CHARGE_IN=0,
-        CHARGE_OVERFLOW,
-        DISCHARGE=4,
-        DISCHARGE_OVERFLOW,
-        DISCHARGE_SHORTCIRCUIT,
-        CELL_OPENCIRCUIT=8,
-        TEMP_SENSOR_OPENCIRCUIT,
-        CELL_OVERVOLTAGE=12,
-        CELL_UNDERVOLTAGE,
-        TOTAL_OVERVOLTAGE,
-        TOTAL_UNDERVOLTAGE,
-        CELL_CHARGE_OVERHEAT=18,
-        CELL_DISCHARGE_OVERHEAT,
-        CELL_CHARGE_UNDERHEAT,
-        CELL_DISCHARGE_UNDERHEAT,
-        CELL_CHARGE_DELTA_OVERHEAT,
-        CELL_CHARGE_DELTA_UNDERHEAT
-    };
-};
-
-struct Ultrasonic{
-    std::vector<int> sonicDistance;
-    std::vector<bool> sonicStatus;
-};
 
 class Mediator
 {
@@ -94,7 +48,7 @@ public:
     void reciveMotorInfo(uint32_t communicateUnitId,const uint32_t nDeviceMac, const uint8_t nDeviceId);
     void receiveNoDataProxy(const int nDeviceID);
     void checkServosStatus();//check servos are on or off
-    void recognizeFinished(std::multimap<uint32_t,std::pair<uint8_t,uint32_t>> motorsInfo);
+    void recognizeFinished(std::multimap<std::pair<uint8_t,uint32_t>,uint32_t> motorsInfo);
     void chartVauleChange(const int nChannelId,double values);//only use by chart
     asio::io_context * ioContext();
 #ifdef IMU_ENABLE
@@ -128,11 +82,17 @@ public:
     void receiveBatteryStatus(uint64_t longId, BatteryStatus& status);
     void requestUltrasonic(uint64_t longId);
     void receiveUltrasonicStatus(uint64_t longId, Ultrasonic& status);
+    void setPanelIp(uint8_t last);
+    void setPanelMac(uint8_t last);
+    void requestGloveInfo(uint64_t longId);
+    void receiveGloveInfo(uint64_t longId,double voltage,uint16_t version);
 protected:
     Mediator();
 public:
     void handleIO();
     void runOnce();
+private:
+    void writeLog(bool bForce = false);
 private:
     static Mediator *m_pInstance;
 private:
@@ -157,6 +117,7 @@ public:
     CSignal<uint8_t,double> m_sChartValueChange;
     CSignal<uint64_t,BatteryStatus&> m_sBatteryStatus;
     CSignal<uint64_t,Ultrasonic> m_sUltrasonicStatus;
+    CSignal<uint64_t,double,uint16_t> m_sGloveInfo;
 #ifdef IMU_ENABLE
     CSignal<uint64_t,double,double,double,double> m_sQuaternion;
     CSignal<uint64_t,double,double,double,int> m_sAcceleration;
@@ -169,6 +130,7 @@ private:
     std::thread * m_pIoThread;
     bool m_bStop;
     std::mutex m_ioMutex;
+    std::stringstream logStr;
 };
 
 #endif // MEDIATOR_H
