@@ -75,6 +75,7 @@ public:
 
     VectorXd Dynamic_Compensation;
     uint8_t Begin_ID;
+    double ElbowAngle;
 
 private:
     // Saves Jacobian matrix as a the member variable

@@ -23,7 +23,7 @@ void subscribeRecordCommand(const std_msgs::Bool& msg) {
 	std::vector<double> temp_data;
 
 	try {
-		EFF_Listener->lookupTransform( "/Back_Y", "/RightEndEffector",
+		EFF_Listener->lookupTransform( "/Back_Y", "/LeftEndEffector",
 		                              ros::Time(0), transform);
 	}
 	catch (tf::TransformException &ex) {
@@ -40,7 +40,7 @@ void subscribeRecordCommand(const std_msgs::Bool& msg) {
 	temp_data.push_back(transform.getOrigin().z());
 
 	try {
-		EFF_Listener->lookupTransform( "/Back_Y", "/LeftEndEffector",
+		EFF_Listener->lookupTransform( "/Back_Y", "/RightEndEffector",
 		                              ros::Time(0), transform);
 	}
 	catch (tf::TransformException &ex) {

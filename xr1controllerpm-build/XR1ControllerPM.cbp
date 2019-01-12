@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="XR1ControllerPM" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="edit_cache">
+         <Option working_dir="/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 edit_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="XR1ControllerPM">
+         <Option output="/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/libXR1ControllerPM.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/../Eigen3" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/IKplanner.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/IKsolver.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/chaincontroller.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/dynamicmethod.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/genericcontroller.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/handcontroller.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/omnicontroller.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/xr1controllerpm.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/xr1controllerutil.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/xr1define.h" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/5" />
+            <Add directory="/usr/include/c++/5/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/5" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 XR1ControllerPM" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="XR1ControllerPM/fast">
+         <Option output="/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/libXR1ControllerPM.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/../Eigen3" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/IKplanner.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/IKsolver.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/chaincontroller.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/dynamicmethod.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/genericcontroller.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/handcontroller.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/omnicontroller.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/xr1controllerpm.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/xr1controllerutil.h" />
+            <Add directory="/home/rocky/qtXR1/XR1ControllerPM/xr1define.h" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/5" />
+            <Add directory="/usr/include/c++/5/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/5" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 XR1ControllerPM/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/rocky/catkin_ws/src/xr1controllerol/xr1controllerpm-build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/IKplanner.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/IKplanner.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/IKsolver.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/IKsolver.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/chaincontroller.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/chaincontroller.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/dynamicmethod.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/dynamicmethod.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/genericcontroller.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/genericcontroller.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/handcontroller.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/handcontroller.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/omnicontroller.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/omnicontroller.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/xr1controldynamics.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/xr1controlgroup.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/xr1controllerpm.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/xr1controllerpm.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/xr1controllerutil.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/xr1controllerutil.h">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/xr1controlread.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/xr1controltilt.cpp">
+         <Option target="XR1ControllerPM"/>
+      </Unit>
+      <Unit filename="/home/rocky/qtXR1/XR1ControllerPM/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

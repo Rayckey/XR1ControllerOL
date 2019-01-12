@@ -8,6 +8,7 @@
 #include "handcontroller.h"
 #include "omnicontroller.h"
 #include "dynamicmethod.h"
+#include "IKplanner.h"
 #include <map>
 #include <vector>
 #include <deque>
@@ -34,6 +35,9 @@ public:
 
     // Mute Commands
     void setMutePosition(std::vector<double> MuteData);
+
+    // Teach Commands
+    void setTeachPosition(std::vector<double> TeachData);
 
 
 
@@ -167,6 +171,7 @@ public:
 
 
 
+
     //Set Control Mode for Entire XR1, which only has two mode: direct and drive
     //When in drive mode, it will take over
     void setMetaMode(uint8_t option);
@@ -206,6 +211,8 @@ public:
     bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle);
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle);
+
+    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
 
     void getEndEfftorTransformation(uint8_t control_group, Affine3d &TransformationReference, bool IK = true);
 
@@ -320,6 +327,8 @@ private:
     HandController * RightHand;
     OmniController * OmniWheels;
     DynamicMethod * DungeonMaster;
+    IKplanner * IKPlanner;
+
 
 
     // global configs
@@ -336,6 +345,7 @@ private:
 
     //Private function called internally
     void getState();
+    void swtichIKMode(); // switch to a state to IK Mode
     void calculateStates();
     void assignState();
     void readParameters(string parameters_path);
@@ -346,7 +356,6 @@ private:
     void tinyTriPos(double &value, double & qmin , double &pt_s, double &pt_e);
     void tinyTriVel(double &value, double & qmin );
     void tinyTriAcc(double &value, double & qmin );
-    void solveTri(double & qmin , double & pt_s, double & pt_e, double &  period);
 
     // private members for calcualting states
     uint8_t XR1_State;

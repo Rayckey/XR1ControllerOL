@@ -271,6 +271,9 @@ public:
     //Convert Mute data into action
     void setMutePosition(std::vector<double> MuteData);
 
+    //Convert teach data into action
+    void setTeachPosition(std::vector<double> TeachData);
+
 
     //Convert output from Action files to Motor Joint Angles;
     void setActionPosition(std::vector<double> Action_output);
