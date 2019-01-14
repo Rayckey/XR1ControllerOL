@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC   -shared -Wl,-soname,libXR1Controller.so -o libXR1Controller.so CMakeFiles/XR1Controller.dir/xr1controller.cpp.o /home/rocky/qtXR1/XR1Controller/../XR1ControllerPM-build/libXR1ControllerPM.so -Wl,-rpath,/home/rocky/qtXR1/XR1Controller/../XR1ControllerPM-build 

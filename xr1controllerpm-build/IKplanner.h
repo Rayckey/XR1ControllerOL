@@ -25,7 +25,7 @@ private:
     void plotAll(uint8_t control_group);
     void getTargetPosition(uint8_t control_group , const Affine3d & transformation);
     void plotNext(uint8_t control_group);
-    void tinyTriPos(double value , double qmin , double pt_s , double pt_e , int poly_index , double poly_double , int poly_num , double poly_period_s);
+    double tinyTriPos(double qmin , double pt_s , double pt_e , int poly_index , double poly_double , int poly_num , double poly_period_s);
 
 
 	// point to the two arms

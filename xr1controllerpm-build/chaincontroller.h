@@ -40,6 +40,7 @@ public:
     // Use this for points that are VERY CLOSE! it sets the target position straight up;
     bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle);
     bool setEFFPosition(const Affine3d &transformation, double elbow_lift_angle);
+    void correctIKJointAngles();
 
 
     // Update the the base

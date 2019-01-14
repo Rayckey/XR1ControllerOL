@@ -167,9 +167,11 @@ public:
     //-------------------End Effector (Wrist) Control ---------------------------
 
 
-    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle = 6);
+    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle = 8);
 
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle = 6);
+    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle = 8);
+
+    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
 
 
     void getEndEfftorTransformation(uint8_t control_group, Affine3d & TransformationReference, bool IK = true);

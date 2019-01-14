@@ -18,7 +18,7 @@
 
 // Global Varibles
 XR1ControllerPM * XR1_ptr;
-std::vector<std::vector<double> > mute_cmd;
+std::vector<std::vector<double> > teach_cmd;
 int cmd_idx;
 
 
@@ -100,22 +100,33 @@ void broadcastTransform(const ros::TimerEvent& event) {
   std::vector<double> temp_cmd = XR1_ptr->getNextState();
 
   if (temp_cmd[0] < 0.5) {
-    ROS_INFO("Moving into position");
+    // ROS_INFO("Moving into position");
   }
 
   else {
     ROS_INFO("Setting Teach mode");
-    XR1_ptr->setTeachPosition(mute_cmd[cmd_idx]);
+    XR1_ptr->setTeachPosition(teach_cmd[cmd_idx]);
     ROS_INFO("Set Teach mode");
     cmd_idx++;
 
-    if (cmd_idx >= mute_cmd.size())
+    if (cmd_idx >= teach_cmd.size())
       cmd_idx = 0;
+
+
+    temp_cmd = XR1_ptr->getNextState();
   }
 
   LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
 
   RightArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm)));
+
+    ROS_INFO("[%f][%f][%f][%f][%f][%f][%f]",XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_X)
+      ,XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_Y)
+    ,XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_Z)
+    ,XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_X)
+    ,XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Z)
+    ,XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_X)
+    ,XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Y));
 
   MainBodyPositionPublisher->publish(ConvertBodyMsgs(XR1_ptr->getTargetPosition(XR1::MainBody)));
 
@@ -192,7 +203,7 @@ int main(int argc, char **argv) {
   XR1_ptr = new XR1ControllerPM(path + "/fudge.xr1para");
 
 
-  mute_cmd = CSVread(path + "/teach_test.teach");
+  teach_cmd = CSVread(path + "/teach_test.teach");
   cmd_idx = 0;
 
 

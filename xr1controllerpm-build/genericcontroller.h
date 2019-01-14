@@ -41,6 +41,8 @@ public:
 
     virtual VectorXd getIKJointAngles();
 
+    virtual void    overwriteIKJointAngles();
+
     virtual std::vector<double> getTargetJointAnglesStd();
 
     virtual VectorXd getTargetJointVelocities();
@@ -67,6 +69,7 @@ public:
     virtual double getTargetJointAngle(uint8_t joint_id);
 
     virtual double getIKJointAngle(uint8_t joint_id);
+
 
     virtual double getTargetJointVelocity(uint8_t joint_id);
 

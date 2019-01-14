@@ -761,6 +761,9 @@ void XR1ControllerOL::broadcastTransform() {
 	Eigen::Affine3d itsafine;
 	tf::StampedTransform transform;
 
+	//just to be sure
+	XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
+
 	// This function triggers almost all the computation in the library
 	XR1_ptr->triggerCalculation();
 

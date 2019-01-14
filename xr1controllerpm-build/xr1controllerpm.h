@@ -140,7 +140,7 @@ public:
 
     //---------------------------------------------------------------------------------
     //Get Target Position for Arms or Body
-    VectorXd getTargetPosition(uint8_t control_group);
+    VectorXd getTargetPosition(uint8_t control_group, uint8_t mode_fixed = 0);
 
     //Get Target velocity for Arms or Body
     VectorXd getTargetVelocity(uint8_t control_group);
@@ -148,7 +148,7 @@ public:
     //Get Target Current for Arms or Body
     VectorXd getTargetCurrent(uint8_t control_group);
 
-    double getTargetJointPosition(uint8_t joint_id);
+    double getTargetJointPosition(uint8_t joint_id , uint8_t mode_fixed = 0);
 
     double getTargetJointVelocity(uint8_t joint_id);
 
