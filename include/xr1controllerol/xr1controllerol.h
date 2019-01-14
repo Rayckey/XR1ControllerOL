@@ -125,6 +125,9 @@ public:
 
 
 
+	void getEndEfftorTransformation(uint8_t control_group, Affine3d & TransformationReference);
+
+
 	//Set the Control Method for an entire Control Group , i.e. LeftARM , RightHand
 	//Used in the XR1Controller
 	//Argu: Control Group ID , Conrol Mode ID

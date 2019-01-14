@@ -843,6 +843,12 @@ void XR1ControllerOL::subscribeRightElbowAngle(const std_msgs::Float64 & msg) {
 	RightElbowAngle = msg.data;
 }
 
+void XR1ControllerOL::getEndEfftorTransformation(uint8_t control_group, Affine3d & TransformationReference){
+	XR1_ptr->getEndEfftorTransformation(control_group,TransformationReference);
+}
+
+
+
 void XR1ControllerOL::clearStates(){
 	XR1_ptr->clearStates();
 }
