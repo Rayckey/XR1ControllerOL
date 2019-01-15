@@ -4,8 +4,9 @@
 
 XR1ControllerOL * XR1_ptr;
 std::vector<std::vector<double> > recorded_positions;
-tf::TransformListener * EFF_Listener;
 Affine3d itsafine;
+Quaterniond itsqua;
+Vector3d itsvec;
 
 
 void actuator_event_callback(const ros::TimerEvent& event)
@@ -17,43 +18,38 @@ void actuator_event_callback(const ros::TimerEvent& event)
 
 void subscribeRecordCommand(const std_msgs::Bool& msg) {
 
-  tf::StampedTransform transform;
+
   std::vector<double> temp_data;
 
-  try {
-    EFF_Listener->lookupTransform( "/Back_Y", "/LeftEndEffector",
-                                   ros::Time(0), transform);
-  }
-  catch (tf::TransformException &ex) {
-    return;
-  }
+  XR1_ptr->getEndEfftorTransformation(XR1::LeftArm, itsafine);
 
-  temp_data.push_back(transform.getRotation().w());
-  temp_data.push_back(transform.getRotation().x());
-  temp_data.push_back(transform.getRotation().y());
-  temp_data.push_back(transform.getRotation().z());
+  itsqua = itsafine.rotation();
 
-  temp_data.push_back(transform.getOrigin().x());
-  temp_data.push_back(transform.getOrigin().y());
-  temp_data.push_back(transform.getOrigin().z());
+  temp_data.push_back(itsqua.w());
+  temp_data.push_back(itsqua.x());
+  temp_data.push_back(itsqua.y());
+  temp_data.push_back(itsqua.z());
 
-  try {
-    EFF_Listener->lookupTransform( "/Back_Y", "/RightEndEffector",
-                                   ros::Time(0), transform);
-  }
-  catch (tf::TransformException &ex) {
-    return;
-  }
+  itsvec = itsafine.translation();
+  temp_data.push_back(itsvec(0));
+  temp_data.push_back(itsvec(1));
+  temp_data.push_back(itsvec(2));
 
 
-  temp_data.push_back(transform.getRotation().w());
-  temp_data.push_back(transform.getRotation().x());
-  temp_data.push_back(transform.getRotation().y());
-  temp_data.push_back(transform.getRotation().z());
 
-  temp_data.push_back(transform.getOrigin().x());
-  temp_data.push_back(transform.getOrigin().y());
-  temp_data.push_back(transform.getOrigin().z());
+  XR1_ptr->getEndEfftorTransformation(XR1::RightArm, itsafine);
+
+  itsqua = itsafine.rotation();
+
+  temp_data.push_back(itsqua.w());
+  temp_data.push_back(itsqua.x());
+  temp_data.push_back(itsqua.y());
+  temp_data.push_back(itsqua.z());
+
+  itsvec = itsafine.translation();
+  temp_data.push_back(itsvec(0));
+  temp_data.push_back(itsvec(1));
+  temp_data.push_back(itsvec(2));
 
 
   recorded_positions.push_back(temp_data);
@@ -103,8 +99,6 @@ int main(int argc, char **argv) {
 
   ActuatorController::initController();
   ActuatorController::getInstance()->autoRecoginze();
-
-  EFF_Listener = new tf::TransformListener();
 
 
   XR1_ptr = new XR1ControllerOL();

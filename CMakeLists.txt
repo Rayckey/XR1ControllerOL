@@ -84,10 +84,6 @@ target_link_libraries(mute_test ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(mute_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
-add_executable(teach_mode src/teach_mode.cpp) 
-target_link_libraries(teach_mode ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(teach_mode ${PROJECT_NAME} ${catkin_LIBRARIES})
-
 add_executable(taught_test src/taught_test.cpp) 
 target_link_libraries(taught_test ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(taught_test ${PROJECT_NAME} ${catkin_LIBRARIES})

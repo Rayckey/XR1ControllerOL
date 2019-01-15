@@ -203,7 +203,7 @@ int main(int argc, char **argv) {
   XR1_ptr = new XR1ControllerPM(path + "/fudge.xr1para");
 
 
-  teach_cmd = CSVread(path + "/teach_test.teach");
+  teach_cmd = CSVread(path + "/teach_test_2.teach");
   cmd_idx = 0;
 
 
