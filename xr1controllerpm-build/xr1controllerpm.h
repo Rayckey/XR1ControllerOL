@@ -294,6 +294,7 @@ public:
     // Ports for animation library
     void setState(std::vector<double> goal_configuration , int period_in_ms, int control_rate = 200);
     std::vector<double> getNextState();
+    Vector3d trackBothHands();
     void clearState();
 
 
