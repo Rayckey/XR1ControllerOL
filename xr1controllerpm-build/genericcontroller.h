@@ -94,7 +94,9 @@ public:
 
     virtual MatrixXd getEFFPositionMatrix();
 
-    virtual void getEndEfftorTransformation(Affine3d & transformationReference);
+    virtual void getEndEffectorTransformation(Affine3d & transformationReference);
+
+    virtual double getElbowAngle();
 
 //    virtual void getBaseTransformation(Affine3d & input);
 
@@ -143,6 +145,7 @@ public:
     VectorXd IK_Joint_Acceleration;
 
     uint8_t DynamicsOption;
+    double ElbowAngle;
 
 protected:
 

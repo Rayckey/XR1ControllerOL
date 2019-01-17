@@ -154,20 +154,20 @@ void broadcastTransform(const ros::TimerEvent& event) {
   XR1_ptr->triggerCalculation();
 
   // Publish the left one
-  XR1_ptr->getEndEfftorTransformation(XR1::LeftArm , itsafine);
+  XR1_ptr->getEndEffectorTransformation(XR1::LeftArm , itsafine);
   tf::transformEigenToTF(itsafine , transform);
   EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/LeftEndEffector"));
 
 
   // Publish the right one
-  XR1_ptr->getEndEfftorTransformation(XR1::RightArm , itsafine);
+  XR1_ptr->getEndEffectorTransformation(XR1::RightArm , itsafine);
   // std::cout << itsafine.matrix() << std::endl;
   tf::transformEigenToTF(itsafine , transform);
   EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
 
 
-  XR1_ptr->getEndEfftorTransformation(XR1::MainBody , itsafine);
+  XR1_ptr->getEndEffectorTransformation(XR1::MainBody , itsafine);
   tf::transformEigenToTF(itsafine , transform);
   EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 

@@ -12,7 +12,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
 	std::string path = ros::package::getPath("xr1controllerol");
 
-	XR1_ptr = new XR1Controller(path + "/fudge.xr1para");
+	XR1_ptr = new XR1Controller(path + "/two.xr1para");
 
 	IMU_ptr = new XR1IMUmethods();
 
@@ -768,13 +768,13 @@ void XR1ControllerOL::broadcastTransform() {
 	XR1_ptr->triggerCalculation();
 
 	// Publish the left one
-	XR1_ptr->getEndEfftorTransformation(XR1::LeftArm , itsafine);
+	XR1_ptr->getEndEffectorTransformation(XR1::LeftArm , itsafine);
 	tf::transformEigenToTF(itsafine , transform);
 	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/LeftEndEffector"));
 
 
 	// Publish the right one
-	XR1_ptr->getEndEfftorTransformation(XR1::RightArm , itsafine);
+	XR1_ptr->getEndEffectorTransformation(XR1::RightArm , itsafine);
 	// std::cout << itsafine.matrix() << std::endl;
 	tf::transformEigenToTF(itsafine , transform);
 	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
@@ -782,7 +782,7 @@ void XR1ControllerOL::broadcastTransform() {
 
 
 	// Publish the head
-	XR1_ptr->getEndEfftorTransformation(XR1::MainBody , itsafine);
+	XR1_ptr->getEndEffectorTransformation(XR1::MainBody , itsafine);
 	tf::transformEigenToTF(itsafine , transform);
 	EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 
@@ -861,10 +861,13 @@ void XR1ControllerOL::subscribeRightElbowAngle(const std_msgs::Float64 & msg) {
 	RightElbowAngle = msg.data;
 }
 
-void XR1ControllerOL::getEndEfftorTransformation(uint8_t control_group, Affine3d & TransformationReference) {
-	XR1_ptr->getEndEfftorTransformation(control_group, TransformationReference);
+void XR1ControllerOL::getEndEffectorTransformation(uint8_t control_group, Affine3d & TransformationReference) {
+	XR1_ptr->getEndEffectorTransformation(control_group, TransformationReference);
 }
 
+double XR1ControllerOL::getElbowAngle(uint8_t control_gourp){
+	return XR1_ptr->getElbowAngle(control_gourp);
+}
 
 
 void XR1ControllerOL::clearStates() {

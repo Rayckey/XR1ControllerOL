@@ -56,16 +56,26 @@ private:
 	Matrix4d V;
 
 
+    // reverse calculation varibles and functions
+    Affine3d T_end;
+    Affine3d T_4;
+    Matrix2d A_squared;
+    MatrixXd A;
+    Vector2d elbow_sin_cos;
+    void assignPM(const VectorXd & from_above);
+    VectorXd theta;
+    VectorXd thetaPM;
+    VectorXd thetaTF;
+
+
 	//private function
 	Matrix3d rot_z(double);    //rotate about z-axis with specified angle
-	Matrix4d getTransMat(int, VectorXd);
-    Matrix4d getDransMat(int link_id, VectorXd t);
+    Matrix4d getTransMat(int, const VectorXd &);
+    Matrix4d getDransMat(int link_id, const VectorXd &t);
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-	VectorXd theta;
-    VectorXd thetaPM;
-    VectorXd thetaTF;
+
     Matrix3d rotTF;
 	Vector3d p_elbow, pv;
 	Matrix3d Rv;
@@ -75,6 +85,8 @@ public:
     IKsolver(double a1, double a2, double a3, double arm_angle);
 
     bool solve(const Vector3d& p, const Matrix3d& rot, const double &t);
+
+    double reverseSolve(const VectorXd & joint_angles);
 
 //    Matrix4d getEndEffectorTransform( VectorXd & PMAngles);
 

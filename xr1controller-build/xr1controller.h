@@ -174,7 +174,9 @@ public:
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
 
 
-    void getEndEfftorTransformation(uint8_t control_group, Affine3d & TransformationReference, bool IK = true);
+    void getEndEffectorTransformation(uint8_t control_group, Affine3d & TransformationReference, bool IK = true);
+
+    double getElbowAngle(uint8_t control_group);
 
     void setEndEffectorIncrement(uint8_t control_group ,const Vector3d& Linear , const Vector3d& Angular);
 

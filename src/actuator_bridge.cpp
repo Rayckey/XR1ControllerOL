@@ -21,7 +21,7 @@ void subscribeRecordCommand(const std_msgs::Bool& msg) {
 
   std::vector<double> temp_data;
 
-  XR1_ptr->getEndEfftorTransformation(XR1::LeftArm, itsafine);
+  XR1_ptr->getEndEffectorTransformation(XR1::LeftArm, itsafine);
 
   itsqua = itsafine.rotation();
 
@@ -35,9 +35,9 @@ void subscribeRecordCommand(const std_msgs::Bool& msg) {
   temp_data.push_back(itsvec(1));
   temp_data.push_back(itsvec(2));
 
+  temp_data.push_back(XR1_ptr->getElbowAngle(XR1::LeftArm));
 
-
-  XR1_ptr->getEndEfftorTransformation(XR1::RightArm, itsafine);
+  XR1_ptr->getEndEffectorTransformation(XR1::RightArm, itsafine);
 
   itsqua = itsafine.rotation();
 
@@ -50,6 +50,8 @@ void subscribeRecordCommand(const std_msgs::Bool& msg) {
   temp_data.push_back(itsvec(0));
   temp_data.push_back(itsvec(1));
   temp_data.push_back(itsvec(2));
+
+  temp_data.push_back(XR1_ptr->getElbowAngle(XR1::RightArm));
 
 
   recorded_positions.push_back(temp_data);

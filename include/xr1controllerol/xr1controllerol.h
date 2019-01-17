@@ -125,7 +125,9 @@ public:
 
 
 
-	void getEndEfftorTransformation(uint8_t control_group, Affine3d & TransformationReference);
+	void getEndEffectorTransformation(uint8_t control_group, Affine3d & TransformationReference);
+
+	double getElbowAngle(uint8_t control_gourp);
 
 
 	//Set the Control Method for an entire Control Group , i.e. LeftARM , RightHand

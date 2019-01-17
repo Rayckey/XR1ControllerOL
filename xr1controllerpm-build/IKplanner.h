@@ -54,6 +54,7 @@ private:
     std::map<uint8_t, double> targetelbMap; // target elbow angle
     std::map<uint8_t, double> disMap; // linear distance
     std::map<uint8_t, double> drgMap; // angular distance
+    std::map<uint8_t, double> edsMap; // elbow distance
     std::map<uint8_t, double> elbAccMap; // elbow accerlation map
     std::map<uint8_t, double> drgAccMap; // rotation accerlation map
     std::map<uint8_t, double> posAccMap; // position accelration map

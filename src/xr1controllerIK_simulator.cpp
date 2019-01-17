@@ -129,20 +129,20 @@ void broadcastTransform(const ros::TimerEvent& event) {
   XR1_ptr->triggerCalculation();
 
   // Publish the left one
-  XR1_ptr->getEndEfftorTransformation(XR1::LeftArm , itsafine);
+  XR1_ptr->getEndEffectorTransformation(XR1::LeftArm , itsafine);
   tf::transformEigenToTF(itsafine , transform);
   EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/LeftEndEffector"));
 
 
   // Publish the right one
-  XR1_ptr->getEndEfftorTransformation(XR1::RightArm , itsafine);
+  XR1_ptr->getEndEffectorTransformation(XR1::RightArm , itsafine);
   // std::cout << itsafine.matrix() << std::endl;
   tf::transformEigenToTF(itsafine , transform);
   EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
 
 
-  XR1_ptr->getEndEfftorTransformation(XR1::MainBody , itsafine);
+  XR1_ptr->getEndEffectorTransformation(XR1::MainBody , itsafine);
   tf::transformEigenToTF(itsafine , transform);
   EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 
@@ -184,7 +184,7 @@ int main(int argc, char **argv) {
 
   std::string path = ros::package::getPath("xr1controllerol");
 
-  XR1_ptr = new XR1ControllerPM(path + "/fudge.xr1para");
+  XR1_ptr = new XR1ControllerPM(path + "/two.xr1para");
 
   EFF_Broadcaster = new tf::TransformBroadcaster();
   EFF_Listener = new tf::TransformListener();
@@ -226,6 +226,63 @@ int main(int argc, char **argv) {
 
   // Draw some random stuff every three seconds or so
   ros::Timer timer = nh.createTimer(ros::Duration(0.1), broadcastTransform);
+
+
+
+
+
+
+
+
+    // Basic testing ---------------------------------------------------------------------
+
+
+
+    VectorXd testy = VectorXd::Zero(7);
+
+    testy << -0.7900615930557251, 0.08093851059675217, 0.5053018927574158, -0.6592690348625183, -0.5373542904853821, -0.3932282328605652, -0.10127334296703339;
+
+
+    XR1_ptr->updatingCallback(testy, XR1::LeftArm , XR1::ActualPosition);
+
+    XR1_ptr->triggerCalculation();
+
+    Affine3d transform;
+
+    XR1_ptr->getEndEffectorTransformation(XR1::LeftArm , transform);
+
+    Quaterniond testqua;
+    testqua = transform.rotation();
+
+    std::cout << testqua.w() <<" "<< testqua.x() <<" "<< testqua.y() <<" "<< testqua.z() << std::endl;
+
+    std::cout << transform.translation().x() <<" "<<transform.translation().y() <<" "<<transform.translation().z() << std::endl;
+
+
+
+    //    XR1_ptr->setControlMode(XR1::LeftArm , XR1::IKMode);
+    //    Affine3d transform;
+
+    //    transform.matrix() <<   0.172364,-0.0596322,  0.983226, 0.0195315,
+    //                            0.379472,  0.925144, -0.010413,   0.11014,
+    //                           -0.909005,  0.374902,   0.18209,    0.2695,
+    //                                   0,         0,         0,         1;
+
+    //    XR1_ptr->setEndEffectorPosition(XR1::LeftArm , transform , 3.0);
+
+    // -----------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
 
   ros::spin();
 

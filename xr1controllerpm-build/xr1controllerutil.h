@@ -69,7 +69,10 @@ void axisAngle2quaterion(Quaterniond & output, double& angle , Vector3d & unit_r
 void quaNpos2Affine(Affine3d & trans, Quaterniond & qua , Vector3d & vec);
 
 
-void solveTri(double qmin , double pt_s, double pt_e, double period);
+double solveTri(double pt_s, double pt_e, double period);
+
+
+double circleJudge(double input);
 
 
 #endif

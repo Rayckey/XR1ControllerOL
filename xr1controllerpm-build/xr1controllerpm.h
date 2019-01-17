@@ -214,7 +214,9 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
 
-    void getEndEfftorTransformation(uint8_t control_group, Affine3d &TransformationReference, bool IK = true);
+    void getEndEffectorTransformation(uint8_t control_group, Affine3d &TransformationReference, bool IK = true);
+
+    double getElbowAngle(uint8_t control_group);
 
 
     void setEndEffectorIncrement(uint8_t control_group ,const Vector3d& Linear , const Vector3d& Angular);
@@ -294,7 +296,7 @@ public:
     // Ports for animation library
     void setState(std::vector<double> goal_configuration , int period_in_ms, int control_rate = 200);
     std::vector<double> getNextState();
-    Vector3d trackBothHands();
+    VectorXd trackBothHands();
     void clearState();
 
 
