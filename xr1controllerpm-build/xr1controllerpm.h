@@ -168,7 +168,7 @@ public:
     //Reutrns : void , may add error message in the fulture
     void setControlMode(uint8_t control_group ,uint8_t option);
     uint8_t getControlMode(uint8_t control_group);
-
+    void switchIKMode(bool hand_tracking_switch = false); // switch to a state to IK Mode
 
 
 
@@ -348,7 +348,6 @@ private:
 
     //Private function called internally
     void getState();
-    void swtichIKMode(); // switch to a state to IK Mode
     void calculateStates();
     void assignState();
     void readParameters(string parameters_path);

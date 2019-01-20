@@ -314,6 +314,8 @@ public:
 
     void updatingCallback(uint8_t id , uint8_t attrId , double value);
 
+    void updatingCallback(uint8_t control_group, uint8_t attrId , VectorXd grouped_value);
+
     double getActuatorRatio(uint8_t id);
 
     bool CollisionDetection(uint8_t control_group);
@@ -341,6 +343,8 @@ public:
     void liftLockdown();
 
     void clearStates();
+
+    void switchIKMode(bool hand_tracking_switch = false);
 
 private:
 

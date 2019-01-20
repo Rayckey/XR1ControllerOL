@@ -7,6 +7,7 @@
 #include "xr1define.h"
 #include "Eigen/StdVector"
 #include <vector>
+#include <map>
 
 using namespace Eigen;
 
@@ -59,11 +60,14 @@ private:
     double tinyCurvefit(double double_index , double pt_s , double pt_1 , double pt_2 , double pt_e);
 
 
-    std::vector<Quaterniond,Eigen::aligned_allocator<Quaterniond> > Init_qs;
+    std::map<int , Quaterniond,std::less<int>,
+    Eigen::aligned_allocator<std::pair<const int, Eigen::Quaterniond> > > Init_qs;
 
-    std::vector<Quaterniond,Eigen::aligned_allocator<Quaterniond> > Raw_qs;
+    std::map<int , Quaterniond,std::less<int>,
+    Eigen::aligned_allocator<std::pair<const int, Eigen::Quaterniond> > > Raw_qs;
 
-    std::vector<Quaterniond,Eigen::aligned_allocator<Quaterniond> > Cooked_qs;
+    std::map<int , Quaterniond,std::less<int>,
+    Eigen::aligned_allocator<std::pair<const int, Eigen::Quaterniond> > > Cooked_qs;
 
 
 //    std::vector<Quaterniond> Init_qs;
@@ -82,7 +86,7 @@ private:
     Quaterniond temp_temp_q;
     Quaterniond new_q;
 
-    std::vector<Vector3d> Cooked_vs;
+    std::map<int , Vector3d> Cooked_vs;
 
     Matrix3d LH_m;
 
@@ -94,8 +98,6 @@ private:
 
     std::vector<double> JointAngles;
 
-    double PI;
-
     double Finger_Ratios;
 
     double Thumb_Ratios;
@@ -105,7 +107,7 @@ private:
     Vector3d unit_x;
     Vector3d unit_z;
 
-    std::vector<bool> Uncharted_Chart;
+    std::map<int , bool> Uncharted_Chart;
 
     std::vector<uint8_t> Lost_Ids;
 

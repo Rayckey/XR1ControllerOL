@@ -57,7 +57,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
 	tiltInitSubscriber 						= nh.subscribe("XR1/tiltInit" , 1, &XR1ControllerOL::subscribetiltInit , this);
-	MoCapInitSubscriber						= nh.subscribe("XR1/MoCapInit" , 1, &XR1ControllerOL::subscribetiltInit , this);
+	MoCapInitSubscriber						= nh.subscribe("XR1/MoCapInit" , 1, &XR1ControllerOL::subscribeMoCapInit , this);
 
 
 
@@ -210,7 +210,9 @@ void XR1ControllerOL::subscribetiltInit(const std_msgs::Bool&  msg) {
 }
 
 void XR1ControllerOL::subscribeMoCapInit(const std_msgs::Bool& msg) {
-	IMU_ptr->Initialize();
+    ROS_INFO("Here be initialized");
+//    XR1_ptr->setMetaMode(XR1::MoCapMode);
+    IMU_ptr->Initialize();
 }
 
 void XR1ControllerOL::MoCapCallback(const ros::TimerEvent&) {
@@ -222,9 +224,9 @@ void XR1ControllerOL::MoCapCallback(const ros::TimerEvent&) {
 		XR1_ptr->setMoCapPosition( IMU_ptr->getJointAngles());
 
 		for (uint8_t i = XR1::LeftArm ; i < XR1::RightArm; i++) {
-			ROS_INFO("[%d][%f]", i, temp_vec[i]);
-			// ROS_INFO("[%d][%f]",i,XR1_ptr->getTargetJointPosition(i,true));
-			// m_pController->setPosition(i , XR1_ptr->getTargetJointPosition(i));
+			// ROS_INFO("[%d][%f]", i, temp_vec[i]);
+			ROS_INFO("[%d][%f]",i,XR1_ptr->getTargetJointPosition(i,true));
+			m_pController->setPosition(i , XR1_ptr->getTargetJointPosition(i));
 
 
 

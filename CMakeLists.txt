@@ -16,16 +16,12 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   xr1controllerros
+		std_msgs
+		message_generation
   roslib
   tf_conversions
 )
 
-
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES xr1controllerol
-  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs
-)
 
 
 include_directories(
@@ -33,7 +29,8 @@ include_directories(
 	include/${PROJECT_NAME}
 	xr1controller-build
 	xr1controllerpm-build
-  xr1imu-build
+  	xr1imu-build
+		xr1controlleralp-build
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio/asio
@@ -41,6 +38,22 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/Eigen3
 )
 
+
+ add_message_files(
+   FILES
+		 AnimationMsgs.msg
+ )
+
+generate_messages(
+		DEPENDENCIES
+		std_msgs
+)
+
+catkin_package(
+		INCLUDE_DIRS include
+		LIBRARIES xr1controllerol
+		CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs
+)
 
 
 
@@ -58,6 +71,7 @@ target_link_libraries(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllerpm-build/libXR1ControllerPM.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controller-build/libXR1Controller.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1imu-build/libXR1IMU.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controlleralp-build/libXR1ControllerALP.so
 )
 
 
@@ -91,3 +105,8 @@ add_dependencies(taught_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_executable(xr1controllerIK_varify src/xr1controllerIK_varify.cpp) 
 target_link_libraries(xr1controllerIK_varify ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(xr1controllerIK_varify ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+
+add_executable(xr1controllerALP_simulator src/xr1controllerALP_simulator.cpp)
+target_link_libraries(xr1controllerALP_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(xr1controllerALP_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})

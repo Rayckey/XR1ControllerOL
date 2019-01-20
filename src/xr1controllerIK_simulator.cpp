@@ -239,9 +239,13 @@ int main(int argc, char **argv) {
 
 
     VectorXd testy = VectorXd::Zero(7);
+    VectorXd shity = VectorXd::Zero(7);
 
-    testy << -0.7900615930557251, 0.08093851059675217, 0.5053018927574158, -0.6592690348625183, -0.5373542904853821, -0.3932282328605652, -0.10127334296703339;
+    testy << 0.805673833997187  ,  1.86216218006166  ,  0.795732612652139 ,   -0.172666403436580  ,  -0.410773351865951 ,   -2.11365969021934  ,  0.293479279663677;
 
+    shity << M_PI / 2, M_PI / 2 -0.3491,M_PI / 2,0,0,-M_PI / 2,0;
+
+    testy = testy + shity;
 
     XR1_ptr->updatingCallback(testy, XR1::LeftArm , XR1::ActualPosition);
 

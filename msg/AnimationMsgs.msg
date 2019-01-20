@@ -1,0 +1,2 @@
+int32 AnimationType
+int32 AnimationID
