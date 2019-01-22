@@ -39,6 +39,8 @@ public:
     // Teach Commands
     void setTeachPosition(std::vector<double> TeachData);
 
+    // The E STOP command
+    void employLockdown();
 
 
     //Simple Joint Controls--------------------------------------
@@ -380,7 +382,6 @@ private:
     double grip_current;
 
     // regarding collision detection
-    void employLockdown();
     void copyCurrent2Target();
     void passiveLockdown();
     double breakAcceleration(double velocity , double period);

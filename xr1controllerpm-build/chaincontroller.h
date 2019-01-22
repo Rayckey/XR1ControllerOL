@@ -120,7 +120,6 @@ private:
     int NUM_PARA;
     Vector3d grav;
     double g;
-    double PI;
 
 
 

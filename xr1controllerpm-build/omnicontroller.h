@@ -55,7 +55,6 @@ private:
     double max_vel;
     double max_ang;
 
-    double PI;
 
     Matrix3d MappingMatrix;
     Matrix3d invMappingMatrix;

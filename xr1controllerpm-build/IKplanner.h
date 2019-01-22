@@ -1,4 +1,4 @@
-
+﻿
 //#pragma once
 
 #include<iostream>
@@ -32,7 +32,6 @@ private:
 	ChainController * LA_ptr;
 	ChainController * RA_ptr;
 
-
 	//private varibles
 
 
@@ -65,6 +64,8 @@ private:
 
     // private members for calcualting states
     uint8_t XR1_State;
+    bool hand_tracking_switch;
+    bool hand_griping_switch;
     std::vector<double> Qmin;
 
     std::map<uint8_t , std::deque<double > > disQue;
@@ -103,7 +104,7 @@ private:
 
 public:
 EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-	IKplanner(ChainController * point2leftarm , ChainController * point2rightarm);
+    IKplanner(ChainController * point2leftarm , ChainController * point2rightarm );
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
 
@@ -115,7 +116,13 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     bool isActive();
 
+    void setTrackingSwitch(bool tof);
 
+    bool getTrackingSwtich();
+
+    void setGrippingSwitch(bool tof);
+
+    bool getGrippingSwitch();
 
 	~IKplanner();
 };

@@ -12,7 +12,7 @@ class XR1Controller
 
 public:
 
-    XR1Controller(std::string path);
+    XR1Controller(std::string path , std::vector<double> sittingPosition);
     bool isXR1Okay(); //Error Checks
     uint8_t getErrorCode();
 
@@ -320,8 +320,6 @@ public:
 
     bool CollisionDetection(uint8_t control_group);
 
-    double tinyBezier(double double_index , double pt_s , double pt_1 , double pt_2 , double pt_e);
-
 //    void enterDriveMode(int period_in_ms = 1000, int control_rate = 20 );
 
     void SetOmniWheelsVelocity(Vector3d input);
@@ -341,6 +339,14 @@ public:
     Vector3d getBaseAcc();
 
     void liftLockdown();
+
+    void employLockdown();
+
+    void setSitingPosition();
+
+    void setZeroPosition();
+
+    void setReadyPosition();
 
     void clearStates();
 
@@ -387,6 +393,11 @@ private:
     double PI;
 
     int num_joint_in_chain;
+
+    int PositioningInterval;
+
+
+    std::vector<double> sitting_position;
 
 };
 

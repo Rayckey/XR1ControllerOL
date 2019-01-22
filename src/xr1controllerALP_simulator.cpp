@@ -14,6 +14,7 @@
 #include "xr1controllerros/ArmMsgs.h"
 #include "xr1controllerros/ChainModeChange.h"
 #include "xr1controllerros/BodyMsgs.h"
+#include "xr1controllerros/HandMsgs.h"
 #include "xr1controllerol/AnimationMsgs.h"
 #include <ros/package.h>
 
@@ -26,6 +27,8 @@ tf::TransformListener * EFF_Listener;
 ros::Publisher * LeftArmPositionPublisher;
 ros::Publisher * RightArmPositionPublisher;
 ros::Publisher * MainBodyPositionPublisher;
+ros::Publisher * LeftHandPositionPublisher;
+ros::Publisher * RightHandPositionPublisher;
 
 bool animation_switch;
 
@@ -96,6 +99,35 @@ xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input) {
 }
 
 
+xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition) {
+
+    xr1controllerros::HandMsgs msg;
+    msg.Thumb = HandPosition(0);
+    msg.Index = HandPosition(1);
+    msg.Middle = HandPosition(2);
+    msg.Ring = HandPosition(3);
+    msg.Pinky = HandPosition(4);
+
+    return msg;
+}
+
+
+Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs& msg) {
+
+    Eigen::VectorXd res = Eigen::VectorXd::Zero(5);
+
+    res << msg.Thumb  ,
+            msg.Index,
+            msg.Middle,
+            msg.Ring,
+            msg.Pinky;
+
+
+    return res;
+}
+
+
+
 
 void subscribeStartAnimation(const std_msgs::Bool& msg) {
   animation_switch = true;
@@ -161,7 +193,8 @@ void broadcastTransform(const ros::TimerEvent& event) {
     RightArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm, true)));
     MainBodyPositionPublisher->publish(ConvertBodyMsgs(XR1_ptr->getTargetPosition(XR1::MainBody, true)));
 
-
+    LeftHandPositionPublisher->publish(ConvertHandMsgs(XR1_ptr->getTargetPosition(XR1::LeftHand,true)));
+    RightHandPositionPublisher->publish(ConvertHandMsgs(XR1_ptr->getTargetPosition(XR1::RightHand,true)));
 
 
     // trick ourselves into thinking we have velocites
@@ -169,7 +202,7 @@ void broadcastTransform(const ros::TimerEvent& event) {
 
     XR1_ptr->updatingCallback(XR1::OmniWheels , XR1::ActualVelocity , omni_cmd );
 
-
+//    ROS_INFO("The state is wheels are [%d] " , XRA_ptr->isOmniWheelsMoving());
 
   }
 
@@ -190,6 +223,14 @@ void subscribeRightArmPosition(const xr1controllerros::ArmMsgs& msg) {
   XR1_ptr->updatingCallback( XR1::RightArm , XR1::ActualPosition ,ArmMsgs2VectorXd(msg));
 }
 
+
+void subscribeLeftHandPosition(const xr1controllerros::HandMsgs& msg) {
+    XR1_ptr->updatingCallback( XR1::LeftHand , XR1::ActualPosition , HandsMsgs2VectorXd(msg));
+}
+void subscribeRightHandPosition(const xr1controllerros::HandMsgs& msg) {
+    XR1_ptr->updatingCallback( XR1::RightHand , XR1::ActualPosition ,HandsMsgs2VectorXd(msg));
+}
+
 void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs& msg) {
   XR1_ptr->updatingCallback( XR1::MainBody , XR1::ActualPosition , BodyMsgs2VectorXd(msg));
 }
@@ -207,7 +248,13 @@ int main(int argc, char **argv) {
 
   std::string path = ros::package::getPath("xr1controllerol");
 
-  XR1_ptr = new XR1Controller(path + "/two.xr1para");
+
+    std::vector<double> sit_pos;
+
+    while (sit_pos.size() < XR1::Actuator_Total)
+        sit_pos.push_back(0);
+
+  XR1_ptr = new XR1Controller(path + "/two.xr1para" , sit_pos);
 
   XRA_ptr = new XR1ControllerALP(path + "/ALP" , XR1_ptr, 130 , 10 , 1 , 1 );
 
@@ -223,6 +270,11 @@ int main(int argc, char **argv) {
   ros::Subscriber MainBodyPositionSubscriber = nh.subscribe("/MainBody/Position" , 3 , subscribeMainBodyPosition);
 
 
+  ros::Subscriber LeftHandPositionSubscriber   = nh.subscribe("/LeftHand/Position" ,  3 , subscribeLeftHandPosition);
+
+  ros::Subscriber RightHandPositionSubscriber  = nh.subscribe("/RightHand/Position" ,  3 , subscribeRightHandPosition);
+
+
   ros::Subscriber StartAnimationSubscriber = nh.subscribe("/startAnimation" , 3 , subscribeStartAnimation);
   ros::Subscriber StopAnimationSubscriber = nh.subscribe("/stopAnimation" , 3 , subscribeStopAnimation);
 
@@ -234,10 +286,14 @@ int main(int argc, char **argv) {
   ros::Publisher LAPP  = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/TargetPosition", 1);
   ros::Publisher RAPP  = nh.advertise<xr1controllerros::ArmMsgs>("/RightArm/TargetPosition", 1);
   ros::Publisher MBPP  = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/TargetPosition", 1);
+  ros::Publisher LHPP  = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/TargetPosition",1 );
+  ros::Publisher RHPP  = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/TargetPosition",1 );
 
   LeftArmPositionPublisher    = &LAPP;
   RightArmPositionPublisher   = &RAPP;
   MainBodyPositionPublisher   = &MBPP;
+  LeftHandPositionPublisher   = &LHPP;
+  RightHandPositionPublisher  = &RHPP;
 
 
   // Draw some random stuff every three seconds or so
