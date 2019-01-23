@@ -48,7 +48,7 @@ public:
     void stopSimulation();//
 
     //Identical to stopSimulation() in simulation, stop the simulation
-    //Used in the XR1Controller 
+    //Used in the XR1Controller
     void stopAllMotors();//
 
 
