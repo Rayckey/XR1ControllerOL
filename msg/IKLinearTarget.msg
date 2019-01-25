@@ -1,0 +1,4 @@
+int32 ControlGroup
+float64 Period
+geometry_msgs/Transform TargetTransform
+float64 TargetElbowAngle

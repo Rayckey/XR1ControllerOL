@@ -13,11 +13,13 @@
 #include "xr1controllerros/BodyMsgs.h"
 #include "xr1controllerros/HandMsgs.h"
 #include "xr1controllerros/JointAttributeMsgs.h"
+#include "xr1controllerol/IKLinearTarget.h"
 
 #include "xr1controllerros/ChainModeChange.h"
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
+#include <eigen_conversions/eigen_msg.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/Int32.h>
@@ -170,6 +172,8 @@ public:
 
     bool allActuatorHasLaunched();
 
+    void stateTransition();
+
 
     xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition);
 
@@ -243,6 +247,7 @@ protected:
 
     void subscribeRightElbowAngle(const std_msgs::Float64 &msg);
 
+    void subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget & msg);
 
     void subscribetiltInit(const std_msgs::Bool &msg);
 
@@ -312,6 +317,9 @@ private:
     ros::Subscriber LeftElbowSubscriber;
     ros::Subscriber RightElbowSubscriber;
 
+
+    ros::Subscriber IKLinearPlannerSubscriber;
+
     ros::Subscriber MetaModeSubscriber;
 
     ros::Subscriber tiltInitSubscriber;
@@ -335,8 +343,11 @@ private:
     // Very useless temp varibles
     Matrix4d temp_trans;
     bool hand_command_switch;
+    int power_reading_counter;
 
 
+    Eigen::Affine3d itsafine;
+    tf::StampedTransform transform;
 }; //class
 
 #endif // my_namespace__my_plugin_H

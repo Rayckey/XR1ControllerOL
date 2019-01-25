@@ -4,7 +4,8 @@
 
 
 XR1ControllerOL::XR1ControllerOL() :
-        hand_command_switch(true) {
+    hand_command_switch(true)
+    ,power_reading_counter(30000) {
 
     std::vector<double> sit_pos;
 
@@ -29,45 +30,45 @@ XR1ControllerOL::XR1ControllerOL() :
     ShutdownSubscriber = nh.subscribe("/stopSimulation", 1, &XR1ControllerOL::subscribeShutdown, this);
 
     MainBodyPositionSubscriber = nh.subscribe("/MainBody/TargetPosition", 100,
-                                              &XR1ControllerOL::subscribeMainBodyPosition, this);
+                                 &XR1ControllerOL::subscribeMainBodyPosition, this);
     MainBodyCurrentSubscriber = nh.subscribe("/MainBody/TargetCurrent", 100, &XR1ControllerOL::subscribeMainBodyCurrent,
-                                             this);
+                                this);
 
     LeftArmPositionSubscriber = nh.subscribe("/LeftArm/TargetPosition", 100, &XR1ControllerOL::subscribeLeftArmPosition,
-                                             this);
+                                this);
     LeftArmVelocitySubscriber = nh.subscribe("/LeftArm/TargetVelocity", 100, &XR1ControllerOL::subscribeLeftArmVelocity,
-                                             this);
+                                this);
     LeftArmCurrentSubscriber = nh.subscribe("/LeftArm/TargetCurrent", 100, &XR1ControllerOL::subscribeLeftArmCurrent,
                                             this);
 
     RightArmPositionSubscriber = nh.subscribe("/RightArm/TargetPosition", 100,
-                                              &XR1ControllerOL::subscribeRightArmPosition, this);
+                                 &XR1ControllerOL::subscribeRightArmPosition, this);
     RightArmVelocitySubscriber = nh.subscribe("/RightArm/TargetVelocity", 100,
-                                              &XR1ControllerOL::subscribeRightArmVelocity, this);
+                                 &XR1ControllerOL::subscribeRightArmVelocity, this);
     RightArmCurrentSubscriber = nh.subscribe("/RightArm/TargetCurrent", 100, &XR1ControllerOL::subscribeRightArmCurrent,
-                                             this);
+                                this);
 
 
     MainBodyModeChangeSubscriber = nh.subscribe("/XR1/MainBodyChainModeChange", 10,
-                                                &XR1ControllerOL::subscribeMainBodyMode, this);
+                                   &XR1ControllerOL::subscribeMainBodyMode, this);
     LeftArmModeChangeSubscriber = nh.subscribe("/XR1/LeftArmChainModeChange", 10,
-                                               &XR1ControllerOL::subscribeLeftArmMode, this);
+                                  &XR1ControllerOL::subscribeLeftArmMode, this);
     RightArmModeChangeSubscriber = nh.subscribe("/XR1/RightArmChainModeChange", 10,
-                                                &XR1ControllerOL::subscribeRightArmMode, this);
+                                   &XR1ControllerOL::subscribeRightArmMode, this);
     LeftHandModeChangeSubscriber = nh.subscribe("/XR1/LeftHandChainModeChange", 10,
-                                                &XR1ControllerOL::subscribeLeftHandMode, this);
+                                   &XR1ControllerOL::subscribeLeftHandMode, this);
     RightHandModeChangeSubscriber = nh.subscribe("/XR1/RightHandChainModeChange", 10,
-                                                 &XR1ControllerOL::subscribeRightHandMode, this);
+                                    &XR1ControllerOL::subscribeRightHandMode, this);
     MetaModeSubscriber = nh.subscribe("/XR1/MetaModeChange", 1, &XR1ControllerOL::setMetaMode, this);
 
     LeftHandPositionSubscriber = nh.subscribe("/LeftHand/TargetPosition", 10,
-                                              &XR1ControllerOL::subscribeLeftHandPosition, this);
+                                 &XR1ControllerOL::subscribeLeftHandPosition, this);
     RightHandPositionSubscriber = nh.subscribe("/RightHand/TargetPosition", 10,
-                                               &XR1ControllerOL::subscribeRightHandPosition, this);
+                                  &XR1ControllerOL::subscribeRightHandPosition, this);
     LeftHandCurrentSubscriber = nh.subscribe("/LeftHand/TargetCurrent", 10, &XR1ControllerOL::subscribeLeftHandCurrent,
-                                             this);
+                                this);
     RightHandCurrentSubscriber = nh.subscribe("/RightHand/TargetCurrent", 10,
-                                              &XR1ControllerOL::subscribeRightHandCurrent, this);
+                                 &XR1ControllerOL::subscribeRightHandCurrent, this);
 
     EStopSubscriber = nh.subscribe("XR1/EStop", 1, &XR1ControllerOL::subscribeEStop, this);
 
@@ -75,6 +76,7 @@ XR1ControllerOL::XR1ControllerOL() :
     LeftElbowSubscriber = nh.subscribe("LeftArm/ElbowAngle", 1, &XR1ControllerOL::subscribeLeftElbowAngle, this);
     RightElbowSubscriber = nh.subscribe("RightArm/ElbowAngle", 1, &XR1ControllerOL::subscribeRightElbowAngle, this);
 
+    IKLinearPlannerSubscriber = nh.subscribe("XR1/IKLPT" , 10 , &XR1ControllerOL::subscribeIKLinearPlanner, this);
 
     tiltInitSubscriber = nh.subscribe("XR1/tiltInit", 1, &XR1ControllerOL::subscribetiltInit, this);
     MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
@@ -95,7 +97,7 @@ XR1ControllerOL::XR1ControllerOL() :
     RightHandPositionPublisher = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Position", 1);
 
 
-    ROS_INFO("Recognize_Finished");
+
 
     m_pController->m_sOperationFinished->connect_member(this, &XR1ControllerOL::actuatorOperation);
 
@@ -188,7 +190,7 @@ void XR1ControllerOL::QuaCallBack(uint64_t id, double w, double x, double y, dou
     if (id == ActuatorController::toLongId("192.168.1.4", 0))
         XR1_ptr->tiltCallback(w, x, y, z);
 
-        // If it is a MoCap module
+    // If it is a MoCap module
     else {
         IMU_ptr->quaternioncallback(ActuatorController::toByteId(id), w, x, y, z);
     }
@@ -200,7 +202,7 @@ void XR1ControllerOL::QuaCallBack(uint64_t id, double w, double x, double y, dou
 
 
 // void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
-// 	// ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
+//  // ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
 // }
 
 void XR1ControllerOL::requestAcc(const ros::TimerEvent &) {
@@ -410,12 +412,12 @@ Eigen::VectorXd XR1ControllerOL::BodyMsgs2VectorXd(const xr1controllerros::BodyM
     Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
 
     res << msg.Knee,
-            msg.Back_Z,
-            msg.Back_X,
-            msg.Back_Y,
-            msg.Neck_Z,
-            msg.Neck_X,
-            msg.Head;
+        msg.Back_Z,
+        msg.Back_X,
+        msg.Back_Y,
+        msg.Neck_Z,
+        msg.Neck_X,
+        msg.Head;
 
     return res;
 }
@@ -425,12 +427,12 @@ Eigen::VectorXd XR1ControllerOL::ArmMsgs2VectorXd(const xr1controllerros::ArmMsg
     Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
 
     res << msg.Shoulder_X,
-            msg.Shoulder_Y,
-            msg.Elbow_Z,
-            msg.Elbow_X,
-            msg.Wrist_Z,
-            msg.Wrist_X,
-            msg.Wrist_Y;
+        msg.Shoulder_Y,
+        msg.Elbow_Z,
+        msg.Elbow_X,
+        msg.Wrist_Z,
+        msg.Wrist_X,
+        msg.Wrist_Y;
 
 
     return res;
@@ -441,10 +443,10 @@ Eigen::VectorXd XR1ControllerOL::HandsMsgs2VectorXd(const xr1controllerros::Hand
     Eigen::VectorXd res = Eigen::VectorXd::Zero(5);
 
     res << msg.Thumb,
-            msg.Index,
-            msg.Middle,
-            msg.Ring,
-            msg.Pinky;
+        msg.Index,
+        msg.Middle,
+        msg.Ring,
+        msg.Pinky;
 
 
     return res;
@@ -523,35 +525,35 @@ void XR1ControllerOL::subscribeRightHandCurrent(const xr1controllerros::HandMsgs
 void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
 
     switch (nType) {
-        case Actuator::Recognize_Finished:
-            if (m_pController->hasAvailableActuator()) {
-                ROS_INFO("Recognized Actuators");
-            }
-            break;
-        case Actuator::Launch_Finished:
-            if (allActuatorHasLaunched()) {
-                std_msgs::Bool stuff;
-                stuff.data = true;
-                ActuatorLaunchedPublisher.publish(stuff);
+    case Actuator::Recognize_Finished:
+        if (m_pController->hasAvailableActuator()) {
+            ROS_INFO("Recognized Actuators");
+        }
+        break;
+    case Actuator::Launch_Finished:
+        if (allActuatorHasLaunched()) {
+            std_msgs::Bool stuff;
+            stuff.data = true;
+            ActuatorLaunchedPublisher.publish(stuff);
 
-                setControlMode(XR1::OmniWheels, XR1::PositionMode);
+            setControlMode(XR1::OmniWheels, XR1::PositionMode);
 
-                setControlMode(XR1::MainBody, XR1::PositionMode);
+            setControlMode(XR1::MainBody, XR1::PositionMode);
 
-                setControlMode(XR1::LeftArm, XR1::PositionMode);
+            setControlMode(XR1::LeftArm, XR1::PositionMode);
 
-                setControlMode(XR1::RightArm, XR1::PositionMode);
+            setControlMode(XR1::RightArm, XR1::PositionMode);
 
-                setControlMode(XR1::LeftHand, XR1::PositionMode);
+            setControlMode(XR1::LeftHand, XR1::PositionMode);
 
-                setControlMode(XR1::RightHand, XR1::PositionMode);
+            setControlMode(XR1::RightHand, XR1::PositionMode);
 
-                ROS_INFO("All Actuators Have Launched");
-            }
+            ROS_INFO("All Actuators Have Launched");
+        }
 
-            break;
-        default:
-            break;
+        break;
+    default:
+        break;
     }
 }
 
@@ -559,54 +561,17 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
 
     // ROS_INFO(" the current time is [%f]" , (float)this_event.current_real);
 
-    for (uint8_t i = XR1::Left_Shoulder_X; i < XR1::Left_Wrist_Z; ++i) {
+    for (uint8_t i = XR1::LeftArm; i < XR1::RightArm; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            // m_pController->getCVPValue(i);
-
-
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
-
+            m_pController->getCVPValue(i);
         }
     }
 
 
-    for (uint8_t i = XR1::Left_Wrist_Z; i < XR1::RightArm; ++i) {
+
+    for (uint8_t i = XR1::RightArm; i < XR1::LeftArm; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            // m_pController->getCVPValue(i);
-
-
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
-            // m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
-            // m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
-
-        }
-    }
-
-
-    for (uint8_t i = XR1::Right_Shoulder_X; i < XR1::Right_Wrist_Z; ++i) {
-        if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            // m_pController->getCVPValue(i);
-
-
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
-
-        }
-    }
-
-
-    for (uint8_t i = XR1::Right_Wrist_Z; i < XR1::LeftHand; ++i) {
-        if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            // m_pController->getCVPValue(i);
-
-
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
-            // m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
-            // m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
-
+            m_pController->getCVPValue(i);
         }
     }
 
@@ -614,8 +579,8 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
     for (uint8_t i = XR1::Back_Z; i <= XR1::Back_Y; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
             m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
-//            m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+            // m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
+            m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
         }
     }
 
@@ -632,13 +597,32 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
                 m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
             }
         }
+
+
+        for (uint8_t i = XR1::OmniWheels; i < XR1::MainBody; ++i)
+        {
+            if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
+            {
+                m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+            }
+        }
+
+
+        if ((int) m_pController->getActuatorAttribute((uint8_t) XR1::Knee_X, Actuator::INIT_STATE) ==
+                Actuator::Initialized) {
+            m_pController->regainAttrbute((uint8_t) XR1::Knee_X, Actuator::ACTUAL_POSITION);
+        }
     }
 
 
-    if ((int) m_pController->getActuatorAttribute((uint8_t) XR1::Knee_X, Actuator::INIT_STATE) ==
-        Actuator::Initialized) {
-        m_pController->regainAttrbute((uint8_t) XR1::Knee_X, Actuator::ACTUAL_POSITION);
+    if (power_reading_counter > (200*5)){
+
+        power_reading_counter = 0;
+
+        if ((int) m_pController->getActuatorAttribute((uint8_t)XR1::Back_Y, Actuator::INIT_STATE) == Actuator::Initialized)
+            m_pController->regainAttrbute((uint8_t)XR1::Back_Y , Actuator::VOLTAGE);
     }
+
 
     hand_command_switch = !hand_command_switch;
 
@@ -688,6 +672,26 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
     broadcastTransform();
     // ROS_INFO("Unleased");
+
+    stateTransition();
+}
+
+
+
+
+void XR1ControllerOL::stateTransition(){
+
+    std::vector<double> state_cmd = XR1_ptr->getNextState();
+
+    if (state_cmd[0] < 0.5){
+
+        setJointPosition(XR1::LeftArm , XR1_ptr->getTargetPosition(XR1::LeftArm));
+
+        setJointPosition(XR1::RightArm , XR1_ptr->getTargetPosition(XR1::RightArm));
+
+        setJointPosition(XR1::MainBody , XR1_ptr->getTargetPosition(XR1::MainBody));
+    }
+
 }
 
 
@@ -776,9 +780,6 @@ xr1controllerros::BodyMsgs XR1ControllerOL::ConvertBodyMsgs(Eigen::VectorXd inpu
 
 void XR1ControllerOL::broadcastTransform() {
 
-    Eigen::Affine3d itsafine;
-    tf::StampedTransform transform;
-
     //just to be sure
     XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
 
@@ -804,12 +805,24 @@ void XR1ControllerOL::broadcastTransform() {
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 
+    if (!(XR1_ptr->isIKPlannerActive(XR1::RightArm)))
+        lookupRightEFFTarget(transform, itsafine);
 
-    lookupRightEFFTarget(transform, itsafine);
-    lookupLeftEFFTarget(transform, itsafine);
+    if (!(XR1_ptr->isIKPlannerActive(XR1::LeftArm)))
+        lookupLeftEFFTarget(transform, itsafine);
 
 }
 
+
+void XR1ControllerOL::subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget &msg) {
+
+    geometry_msgs::Transform temp_shit = msg.TargetTransform;
+    tf::transformMsgToEigen(temp_shit, itsafine);
+    uint8_t control_group = msg.ControlGroup;
+    if (!(XR1_ptr->isIKPlannerActive(control_group)))
+        XR1_ptr->setEndEffectorPosition(msg.ControlGroup , itsafine , msg.TargetElbowAngle , msg.Period);
+
+}
 
 void XR1ControllerOL::lookupRightEFFTarget(tf::StampedTransform &transform, Eigen::Affine3d &itsafine) {
 

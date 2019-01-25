@@ -17,9 +17,11 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   xr1controllerros
 		std_msgs
+		geometry_msgs
 		message_generation
   roslib
   tf_conversions
+		eigen_conversions
 )
 
 
@@ -27,10 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
 include_directories(
 	include
 	include/${PROJECT_NAME}
-	xr1controller-build
-	xr1controllerpm-build
-  	xr1imu-build
-		xr1controlleralp-build
+	xr1controllers-build
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio/asio
@@ -42,11 +41,13 @@ include_directories(
  add_message_files(
    FILES
 		 AnimationMsgs.msg
+		 IKLinearTarget.msg
  )
 
 generate_messages(
 		DEPENDENCIES
 		std_msgs
+		geometry_msgs
 )
 
 catkin_package(
@@ -68,10 +69,10 @@ catkin_package(
 target_link_libraries(${PROJECT_NAME}
    ${catkin_LIBRARIES}
    ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/lib/linux_x86_64/libactuatorController.so
-   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllerpm-build/libXR1ControllerPM.so
-   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controller-build/libXR1Controller.so
-   ${CMAKE_CURRENT_SOURCE_DIR}/xr1imu-build/libXR1IMU.so
-   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controlleralp-build/libXR1ControllerALP.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/libXR1ControllerPM.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/libXR1Controller.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/libXR1IMU.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/libXR1ControllerALP.so
 )
 
 

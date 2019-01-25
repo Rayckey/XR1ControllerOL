@@ -216,6 +216,8 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
 
+    bool isIKPlannerActive(uint8_t control_group);
+
     void getEndEffectorTransformation(uint8_t control_group, Affine3d &TransformationReference, bool IK = true);
 
     double getElbowAngle(uint8_t control_group);

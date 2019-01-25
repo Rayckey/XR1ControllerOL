@@ -114,7 +114,7 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     bool getNextState(uint8_t control_group );
 
-    bool isActive();
+    bool isActive(uint8_t control_group = 0);
 
     void setTrackingSwitch(bool tof);
 
