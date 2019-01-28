@@ -124,5 +124,7 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     bool getGrippingSwitch();
 
+    void clearStates();
+
 	~IKplanner();
 };

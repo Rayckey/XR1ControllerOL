@@ -15,7 +15,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     std::string path = ros::package::getPath("xr1controllerol");
 
-    XR1_ptr = new XR1Controller(path + "/two.xr1para", sit_pos);
+    XR1_ptr = new XR1Controller(path + "/strawberry.xr1para", sit_pos);
 
     IMU_ptr = new XR1IMUmethods();
 
@@ -569,7 +569,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
 
 
 
-    for (uint8_t i = XR1::RightArm; i < XR1::LeftArm; ++i) {
+    for (uint8_t i = XR1::RightArm; i < XR1::LeftHand; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
             m_pController->getCVPValue(i);
         }
