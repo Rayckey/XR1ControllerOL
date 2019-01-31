@@ -13,7 +13,7 @@
 #include "xr1controllerros/ArmMsgs.h"
 #include "xr1controllerros/ChainModeChange.h"
 #include "xr1controllerros/BodyMsgs.h"
-#include "xr1controllerol/IKLinearTarget.h"
+#include "xr1controllerol/IKLinearService.h"
 #include <ros/package.h>
 
 // Global Varibles
@@ -22,8 +22,10 @@ double RightElbowAngle;
 double LeftElbowAngle;
 Eigen::Affine3d itsafine;
 tf::StampedTransform tform;
+geometry_msgs::Transform temp_geo_trans;
 tf::TransformBroadcaster * EFF_Broadcaster;
 tf::TransformListener * EFF_Listener;
+
 ros::Publisher * LeftArmPositionPublisher;
 ros::Publisher * RightArmPositionPublisher;
 ros::Publisher * MainBodyPositionPublisher;
@@ -154,17 +156,41 @@ void stateTransition(){
 
 }
 
-void subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget &msg) {
+
+bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest & req ,
+                                       xr1controllerol::IKLinearServiceResponse & res){
+
+    temp_geo_trans = req.TargetTransform;
+
+    tf::transformMsgToEigen(temp_geo_trans , itsafine);
+
+    uint8_t control_group = req.ControlGroup;
 
 
-    geometry_msgs::Transform temp_shit = msg.TargetTransform;
-    tf::transformMsgToEigen(temp_shit, itsafine);
-    uint8_t control_group = msg.ControlGroup;
-    if (!(XR1_ptr->isIKPlannerActive(control_group)))
-        XR1_ptr->setEndEffectorPosition(msg.ControlGroup , itsafine , msg.TargetElbowAngle , msg.Period);
+    // The default response
+    res.inProgress = true;
+    res.isReachable = false;
+    res.isAccepted = false;
+
+    if (XR1_ptr->isIKPlannerActive(control_group))
+    {
+        res.inProgress = true;
+    }
+
+    else {
+        if (req.NewTarget){
+            res.inProgress = false;
+            if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period)){
+                res.isReachable = true;
+                res.isAccepted = true;
+            }
+        }
+
+    }
+
+    return true;
 
 }
-
 
 //-----------------------------------------------------------------------------
 
@@ -261,7 +287,9 @@ int main(int argc, char **argv) {
   ros::Subscriber RightElbowSubscriber                        = nh.subscribe("RightArm/ElbowAngle" , 1, subscribeRightElbowAngle );
 
 
-  ros::Subscriber IKLinearPlannerSubscriber                 = nh.subscribe("XR1/IKLPT" , 10 , &subscribeIKLinearPlanner);
+//  ros::Subscriber IKLinearPlannerSubscriber                 = nh.subscribe("XR1/IKLPT" , 10 , &subscribeIKLinearPlanner);
+
+   ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKLPT" ,  serviceIKPlanner);
 
 
   // cough out the target position as the result of IK;

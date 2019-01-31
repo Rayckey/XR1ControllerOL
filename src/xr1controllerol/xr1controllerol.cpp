@@ -76,10 +76,12 @@ XR1ControllerOL::XR1ControllerOL() :
     LeftElbowSubscriber = nh.subscribe("LeftArm/ElbowAngle", 1, &XR1ControllerOL::subscribeLeftElbowAngle, this);
     RightElbowSubscriber = nh.subscribe("RightArm/ElbowAngle", 1, &XR1ControllerOL::subscribeRightElbowAngle, this);
 
-    IKLinearPlannerSubscriber = nh.subscribe("XR1/IKLPT" , 10 , &XR1ControllerOL::subscribeIKLinearPlanner, this);
 
     tiltInitSubscriber = nh.subscribe("XR1/tiltInit", 1, &XR1ControllerOL::subscribetiltInit, this);
     MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
+
+
+    IKPlannerService = nh.advertiseService("XR1/IKLPT" , &XR1ControllerOL::serviceIKPlanner, this);
 
 
     MainBodyPositionPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Position", 1);
@@ -814,15 +816,49 @@ void XR1ControllerOL::broadcastTransform() {
 }
 
 
-void XR1ControllerOL::subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget &msg) {
+bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest & req ,
+                       xr1controllerol::IKLinearServiceResponse & res){
 
-    geometry_msgs::Transform temp_shit = msg.TargetTransform;
-    tf::transformMsgToEigen(temp_shit, itsafine);
-    uint8_t control_group = msg.ControlGroup;
-    if (!(XR1_ptr->isIKPlannerActive(control_group)))
-        XR1_ptr->setEndEffectorPosition(msg.ControlGroup , itsafine , msg.TargetElbowAngle , msg.Period);
+    temp_geo_trans = req.TargetTransform;
+
+    tf::transformMsgToEigen(temp_geo_trans , itsafine);
+
+    uint8_t control_group = req.ControlGroup;
+
+
+    // The default response
+    res.inProgress = true;
+    res.isReachable = false;
+    res.isAccepted = false;
+
+    if (XR1_ptr->isIKPlannerActive(control_group))
+    {
+        res.inProgress = true;
+    }
+
+    else {
+        if (req.NewTarget){
+            res.inProgress = false;
+            if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period)){
+                res.isReachable = true;
+                res.isAccepted = true;
+            }
+        }
+
+    }
+
+    return true;
 
 }
+//void XR1ControllerOL::subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget &msg) {
+//
+//    geometry_msgs::Transform temp_shit = msg.TargetTransform;
+//    tf::transformMsgToEigen(temp_shit, itsafine);
+//    uint8_t control_group = msg.ControlGroup;
+//    if (!(XR1_ptr->isIKPlannerActive(control_group)))
+//        XR1_ptr->setEndEffectorPosition(msg.ControlGroup , itsafine , msg.TargetElbowAngle , msg.Period);
+//
+//}
 
 void XR1ControllerOL::lookupRightEFFTarget(tf::StampedTransform &transform, Eigen::Affine3d &itsafine) {
 

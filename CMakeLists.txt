@@ -19,8 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
 		std_msgs
 		geometry_msgs
 		message_generation
-  roslib
-  tf_conversions
+  		roslib
+  		tf_conversions
 		eigen_conversions
 )
 
@@ -33,8 +33,8 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio/asio
-  ${catkin_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR}/Eigen3
+  	${catkin_INCLUDE_DIRS}
+  	${CMAKE_CURRENT_SOURCE_DIR}/Eigen3
 )
 
 
@@ -43,6 +43,11 @@ include_directories(
 		 AnimationMsgs.msg
 		 IKLinearTarget.msg
  )
+
+add_service_files(
+		FILES
+		IKLinearService.srv
+)
 
 generate_messages(
 		DEPENDENCIES
@@ -75,6 +80,7 @@ target_link_libraries(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/libXR1ControllerALP.so
 )
 
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 
 add_executable(actuator_bridge src/actuator_bridge.cpp) 
 target_link_libraries(actuator_bridge ${catkin_LIBRARIES} ${PROJECT_NAME})
@@ -111,3 +117,19 @@ add_dependencies(xr1controllerIK_varify ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_executable(xr1controllerALP_simulator src/xr1controllerALP_simulator.cpp)
 target_link_libraries(xr1controllerALP_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(xr1controllerALP_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+
+
+
+add_executable(ik_example src/IK_Example.cpp)
+target_link_libraries(ik_example ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(ik_example ${catkin_LIBRARIES} ${PROJECT_NAME})
+
+
+add_executable(ik_bench src/IK_Bench.cpp)
+target_link_libraries(ik_bench ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(ik_bench ${catkin_LIBRARIES} ${PROJECT_NAME})
+
+add_executable(ik_odom src/IK_odom.cpp)
+target_link_libraries(ik_odom ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(ik_odom ${catkin_LIBRARIES} ${PROJECT_NAME})

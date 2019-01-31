@@ -13,7 +13,6 @@
 #include "xr1controllerros/BodyMsgs.h"
 #include "xr1controllerros/HandMsgs.h"
 #include "xr1controllerros/JointAttributeMsgs.h"
-#include "xr1controllerol/IKLinearTarget.h"
 
 #include "xr1controllerros/ChainModeChange.h"
 #include <tf/transform_broadcaster.h>
@@ -24,8 +23,9 @@
 #include <std_msgs/Float64.h>
 #include <std_msgs/Int32.h>
 
-#include "xr1controllerros/JointAttributeMsgs.h"
-// Messages for Communication
+// The IK planner message service
+//#include "xr1controllerol/IKLinearTarget.h"
+#include "xr1controllerol/IKLinearService.h"
 
 
 #include "Eigen/Dense"
@@ -236,6 +236,11 @@ protected:
 
     void subscribeRightHandCurrent(const xr1controllerros::HandMsgs &msg);
 
+
+    bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest & req ,
+             xr1controllerol::IKLinearServiceResponse & res);
+//    void subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget & msg);
+
     void broadcastTransform();
 
 
@@ -247,11 +252,15 @@ protected:
 
     void subscribeRightElbowAngle(const std_msgs::Float64 &msg);
 
-    void subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget & msg);
+
 
     void subscribetiltInit(const std_msgs::Bool &msg);
 
     void subscribeMoCapInit(const std_msgs::Bool &msg);
+
+
+
+
 
 private:
 
@@ -318,13 +327,13 @@ private:
     ros::Subscriber RightElbowSubscriber;
 
 
-    ros::Subscriber IKLinearPlannerSubscriber;
-
     ros::Subscriber MetaModeSubscriber;
 
     ros::Subscriber tiltInitSubscriber;
 
     ros::Subscriber MoCapInitSubscriber;
+
+    ros::ServiceServer IKPlannerService;
 
     ros::Publisher JointAttributePublisher;
 
@@ -348,6 +357,7 @@ private:
 
     Eigen::Affine3d itsafine;
     tf::StampedTransform transform;
+    geometry_msgs::Transform temp_geo_trans;
 }; //class
 
 #endif // my_namespace__my_plugin_H
