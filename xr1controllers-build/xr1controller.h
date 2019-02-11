@@ -169,9 +169,13 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle = 8);
 
+    void setGrippingSwitch(uint8_t control_group, bool tof);
+
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle = 8);
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
+
+    bool setGrippingSwitch();
 
     bool isIKPlannerActive(uint8_t control_group);
 
@@ -287,6 +291,7 @@ public:
     //Convert output from Data files to Motor Joint Angles;
     void setState(std::vector<double> goal_configuration , int period_in_ms, int control_rate = 200);
     std::vector<double> getNextState(bool vanilla = false);
+    bool isStateActive();
     void state2Actuator(std::vector<double> & some_state);
 
 

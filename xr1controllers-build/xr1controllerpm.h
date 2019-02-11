@@ -212,6 +212,8 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle);
 
+    void setGrippingSwitch(uint8_t control_group, bool tof);
+
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle);
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
@@ -299,6 +301,7 @@ public:
 
     // Ports for animation library
     void setState(std::vector<double> goal_configuration , int period_in_ms, int control_rate = 200);
+    bool isStateActive();
     std::vector<double> getNextState();
     VectorXd trackBothHands();
     void clearState();

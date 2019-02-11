@@ -151,6 +151,15 @@ XR1ControllerOL::XR1ControllerOL() :
     mode_map[XR1::PositionMode] = Actuator::Mode_Profile_Pos;
     mode_map[XR1::VelocityMode] = Actuator::Mode_Profile_Vel;
     mode_map[XR1::ForceMode] = Actuator::Mode_Cur;
+    mode_map[XR1OL::OverDrivePosition] = Actuator::Mode_Pos;
+    mode_map[XR1OL::OverDriveVelocity] = Actuator::Mode_Vel;
+
+    control_modes[XR1::OmniWheels] = XR1::PositionMode;
+    control_modes[XR1::MainBody] = XR1::PositionMode;
+    control_modes[XR1::LeftArm] = XR1::PositionMode;
+    control_modes[XR1::RightArm] = XR1::PositionMode;
+    control_modes[XR1::LeftHand] = XR1::PositionMode;
+    control_modes[XR1::RightHand] = XR1::PositionMode;
 
 
 
@@ -180,6 +189,7 @@ XR1ControllerOL::~XR1ControllerOL() {
 
     JointAttributePublisher.shutdown();
     ActuatorLaunchedPublisher.shutdown();
+
 }
 
 
@@ -222,15 +232,6 @@ void XR1ControllerOL::setMetaMode(const std_msgs::Int32 &msg) {
     XR1_ptr->setMetaMode(msg.data);
 }
 
-void XR1ControllerOL::subscribetiltInit(const std_msgs::Bool &msg) {
-    XR1_ptr->tiltInit();
-}
-
-void XR1ControllerOL::subscribeMoCapInit(const std_msgs::Bool &msg) {
-    ROS_INFO("Here be initialized");
-//    XR1_ptr->setMetaMode(XR1::MoCapMode);
-    IMU_ptr->Initialize();
-}
 
 void XR1ControllerOL::MoCapCallback(const ros::TimerEvent &) {
 
@@ -289,17 +290,38 @@ void XR1ControllerOL::stopSimulation() {
 
 void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
 
-    std::vector<uint8_t> temp_vector = control_group_map[control_group];
 
-    XR1_ptr->setControlMode(control_group, option);
-
-
-    for (uint8_t id : temp_vector) {
-        if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
-            m_pController->activateActuatorMode(id, mode_map[option]);
-        }
+    if (control_modes.find(control_group) == control_modes.end()){
+        ROS_INFO("Wrong input received for Control Mode");
+        return;
     }
 
+
+    if (control_modes[control_group] == option){
+    }
+
+    else {
+        ROS_INFO("Setting Control Group [%d] to Mode [%d]" , control_group, option);
+
+        control_modes[control_group] = option;
+
+        std::vector<uint8_t> temp_vector = control_group_map[control_group];
+
+        if (option == XR1OL::OverDrivePosition)
+            XR1_ptr->setControlMode(control_group, XR1::PositionMode);
+
+        else if (option == XR1OL::OverDriveVelocity)
+            XR1_ptr->setControlMode(control_group, XR1::VelocityMode);
+
+        else
+            XR1_ptr->setControlMode(control_group, option);
+
+        for (uint8_t id : temp_vector) {
+            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
+                m_pController->activateActuatorMode(id, mode_map[option]);
+            }
+        }
+    }
 
 }
 
@@ -308,13 +330,15 @@ void XR1ControllerOL::setJointPosition(uint8_t control_group, VectorXd JA) {
 
 
     if (XR1_ptr->isXR1Okay()) {
-        std::vector<uint8_t> temp_vector = control_group_map[control_group];
 
-        for (uint8_t id : temp_vector) {
-            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
-                m_pController->setPosition(id, JA(id - control_group));
+            std::vector<uint8_t> temp_vector = control_group_map[control_group];
+
+            for (uint8_t id : temp_vector) {
+                if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
+                    m_pController->setPosition(id, JA(id - control_group));
+                }
             }
-        }
+
     }
 
 
@@ -367,19 +391,6 @@ void XR1ControllerOL::setJointCurrent(uint8_t joint_idx, double JC) {
 
 
 void XR1ControllerOL::updatingCallback(uint8_t id, uint8_t attrId, double value) {
-
-    // ROS_INFO("updatingCallback");
-    // xr1controllerros::JointAttributeMsgs msg;
-
-    // msg.JointID = id;
-
-    // msg.AttributeID = attribute_map[attrId];
-
-    // msg.Value = value;
-
-
-    // JointAttributePublisher.publish(msg);
-
     if (attribute_map.find(attrId) != attribute_map.end())
         XR1_ptr->updatingCallback(id, attribute_map[attrId], value);
 }
@@ -409,120 +420,6 @@ void XR1ControllerOL::subscribeEStop(const std_msgs::Bool &msg) {
 
 }
 
-Eigen::VectorXd XR1ControllerOL::BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs &msg) {
-
-    Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
-
-    res << msg.Knee,
-        msg.Back_Z,
-        msg.Back_X,
-        msg.Back_Y,
-        msg.Neck_Z,
-        msg.Neck_X,
-        msg.Head;
-
-    return res;
-}
-
-Eigen::VectorXd XR1ControllerOL::ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg) {
-
-    Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
-
-    res << msg.Shoulder_X,
-        msg.Shoulder_Y,
-        msg.Elbow_Z,
-        msg.Elbow_X,
-        msg.Wrist_Z,
-        msg.Wrist_X,
-        msg.Wrist_Y;
-
-
-    return res;
-}
-
-Eigen::VectorXd XR1ControllerOL::HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg) {
-
-    Eigen::VectorXd res = Eigen::VectorXd::Zero(5);
-
-    res << msg.Thumb,
-        msg.Index,
-        msg.Middle,
-        msg.Ring,
-        msg.Pinky;
-
-
-    return res;
-}
-
-
-void XR1ControllerOL::subscribeLeftArmVelocity(const xr1controllerros::ArmMsgs &msg) {
-    XR1_ptr->setJointVelocity(XR1::LeftArm, ArmMsgs2VectorXd(msg));
-    setJointVelocity(XR1::LeftArm, XR1_ptr->getTargetVelocity(XR1::LeftArm));
-}
-
-void XR1ControllerOL::subscribeLeftArmCurrent(const xr1controllerros::ArmMsgs &msg) {
-    XR1_ptr->setJointCurrent(XR1::LeftArm, ArmMsgs2VectorXd(msg));
-    setJointCurrent(XR1::LeftArm, XR1_ptr->getTargetCurrent(XR1::LeftArm));
-}
-
-void XR1ControllerOL::subscribeRightArmVelocity(const xr1controllerros::ArmMsgs &msg) {
-    XR1_ptr->setJointVelocity(XR1::RightArm, ArmMsgs2VectorXd(msg));
-    setJointVelocity(XR1::RightArm, XR1_ptr->getTargetVelocity(XR1::RightArm));
-}
-
-void XR1ControllerOL::subscribeRightArmCurrent(const xr1controllerros::ArmMsgs &msg) {
-    XR1_ptr->setJointCurrent(XR1::RightArm, ArmMsgs2VectorXd(msg));
-    setJointCurrent(XR1::RightArm, XR1_ptr->getTargetCurrent(XR1::RightArm));
-}
-
-void XR1ControllerOL::subscribeLeftArmPosition(const xr1controllerros::ArmMsgs &msg) {
-    XR1_ptr->setJointPosition(XR1::LeftArm, ArmMsgs2VectorXd(msg));
-    setJointPosition(XR1::LeftArm, XR1_ptr->getTargetPosition(XR1::LeftArm));
-}
-
-
-VectorXd XR1ControllerOL::getTargetPosition(uint8_t control_group, bool vanilla) {
-    return XR1_ptr->getTargetPosition(control_group, vanilla);
-}
-
-
-void XR1ControllerOL::subscribeRightArmPosition(const xr1controllerros::ArmMsgs &msg) {
-    XR1_ptr->setJointPosition(XR1::RightArm, ArmMsgs2VectorXd(msg));
-    setJointPosition(XR1::RightArm, XR1_ptr->getTargetPosition(XR1::RightArm));
-}
-
-
-void XR1ControllerOL::subscribeMainBodyPosition(const xr1controllerros::BodyMsgs &msg) {
-    XR1_ptr->setJointPosition(XR1::MainBody, BodyMsgs2VectorXd(msg));
-    setJointPosition(XR1::MainBody, XR1_ptr->getTargetPosition(XR1::MainBody));
-}
-
-void XR1ControllerOL::subscribeMainBodyCurrent(const xr1controllerros::BodyMsgs &msg) {
-    XR1_ptr->setJointCurrent(XR1::MainBody, BodyMsgs2VectorXd(msg));
-    setJointCurrent(XR1::MainBody, XR1_ptr->getTargetCurrent(XR1::MainBody));
-}
-
-
-void XR1ControllerOL::subscribeLeftHandPosition(const xr1controllerros::HandMsgs &msg) {
-    XR1_ptr->setJointPosition(XR1::LeftHand, HandsMsgs2VectorXd(msg));
-    setJointPosition(XR1::LeftHand, XR1_ptr->getTargetPosition(XR1::LeftHand));
-}
-
-
-void XR1ControllerOL::subscribeRightHandPosition(const xr1controllerros::HandMsgs &msg) {
-    XR1_ptr->setJointPosition(XR1::RightHand, HandsMsgs2VectorXd(msg));
-    setJointPosition(XR1::RightHand, XR1_ptr->getTargetPosition(XR1::RightHand));
-}
-
-void XR1ControllerOL::subscribeLeftHandCurrent(const xr1controllerros::HandMsgs &msg) {
-    XR1_ptr->setJointCurrent(XR1::LeftHand, HandsMsgs2VectorXd(msg));
-    setJointCurrent(XR1::LeftHand, XR1_ptr->getTargetCurrent(XR1::LeftHand));
-}
-
-void XR1ControllerOL::subscribeRightHandCurrent(const xr1controllerros::HandMsgs &msg) {
-    XR1_ptr->setJointCurrent(XR1::RightHand, HandsMsgs2VectorXd(msg));
-    setJointCurrent(XR1::RightHand, XR1_ptr->getTargetCurrent(XR1::RightHand));
-}
 
 void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
 
@@ -631,25 +528,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
 }
 
 
-void XR1ControllerOL::subscribeMainBodyMode(const xr1controllerros::ChainModeChange &msg) {
-    setControlMode(XR1::MainBody, msg.Mode);
-}
 
-void XR1ControllerOL::subscribeLeftArmMode(const xr1controllerros::ChainModeChange &msg) {
-    setControlMode(XR1::LeftArm, msg.Mode);
-}
-
-void XR1ControllerOL::subscribeRightArmMode(const xr1controllerros::ChainModeChange &msg) {
-    setControlMode(XR1::RightArm, msg.Mode);
-}
-
-void XR1ControllerOL::subscribeLeftHandMode(const xr1controllerros::ChainModeChange &msg) {
-    setControlMode(XR1::LeftHand, msg.Mode);
-}
-
-void XR1ControllerOL::subscribeRightHandMode(const xr1controllerros::ChainModeChange &msg) {
-    setControlMode(XR1::RightHand, msg.Mode);
-}
 
 
 void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
@@ -687,98 +566,33 @@ void XR1ControllerOL::stateTransition(){
 
     if (state_cmd[0] < 0.5){
 
+        // set the modes , if they are the same it will not affect the actuators
+        setControlMode(XR1::LeftArm , XR1OL::OverDrivePosition);
+        setControlMode(XR1::MainBody, XR1OL::OverDrivePosition);
+        setControlMode(XR1::RightArm, XR1OL::OverDrivePosition);
+        setControlMode(XR1::LeftHand, XR1OL::OverDrivePosition);
+        setControlMode(XR1::RightHand, XR1OL::OverDrivePosition);
+
+
         setJointPosition(XR1::LeftArm , XR1_ptr->getTargetPosition(XR1::LeftArm));
 
         setJointPosition(XR1::RightArm , XR1_ptr->getTargetPosition(XR1::RightArm));
 
         setJointPosition(XR1::MainBody , XR1_ptr->getTargetPosition(XR1::MainBody));
+
+    }
+
+    else {
+        setControlMode(XR1::LeftArm , XR1::PositionMode);
+        setControlMode(XR1::MainBody, XR1::PositionMode);
+        setControlMode(XR1::RightArm, XR1::PositionMode);
+        setControlMode(XR1::LeftHand, XR1::PositionMode);
+        setControlMode(XR1::RightHand,XR1::PositionMode);
     }
 
 }
 
 
-xr1controllerros::HandMsgs XR1ControllerOL::ConvertHandMsgs(Eigen::VectorXd HandPosition) {
-
-    xr1controllerros::HandMsgs msg;
-    msg.Thumb = HandPosition(0);
-    msg.Index = HandPosition(1);
-    msg.Middle = HandPosition(2);
-    msg.Ring = HandPosition(3);
-    msg.Pinky = HandPosition(4);
-
-    return msg;
-}
-
-xr1controllerros::HandMsgs XR1ControllerOL::ConvertHandMsgs(std::vector<double> HandPosition) {
-    xr1controllerros::HandMsgs msg;
-    msg.Thumb = HandPosition[0];
-    msg.Index = HandPosition[1];
-    msg.Middle = HandPosition[2];
-    msg.Ring = HandPosition[3];
-    msg.Pinky = HandPosition[4];
-    return msg;
-}
-
-
-xr1controllerros::ArmMsgs XR1ControllerOL::ConvertArmMsgs(std::vector<double> input) {
-
-    xr1controllerros::ArmMsgs msg;
-
-    msg.Shoulder_X = input[0];
-    msg.Shoulder_Y = input[1];
-    msg.Elbow_Z = input[2];
-    msg.Elbow_X = input[3];
-    msg.Wrist_Z = input[4];
-    msg.Wrist_X = input[5];
-    msg.Wrist_Y = input[6];
-
-
-    return msg;
-}
-
-xr1controllerros::ArmMsgs XR1ControllerOL::ConvertArmMsgs(Eigen::VectorXd input) {
-    xr1controllerros::ArmMsgs msg;
-
-    msg.Shoulder_X = input(0);
-    msg.Shoulder_Y = input(1);
-    msg.Elbow_Z = input(2);
-    msg.Elbow_X = input(3);
-    msg.Wrist_Z = input(4);
-    msg.Wrist_X = input(5);
-    msg.Wrist_Y = input(6);
-
-    return msg;
-}
-
-xr1controllerros::BodyMsgs XR1ControllerOL::ConvertBodyMsgs(std::vector<double> input) {
-
-    xr1controllerros::BodyMsgs msg;
-
-    msg.Knee = input[0];
-    msg.Back_Z = input[1];
-    msg.Back_X = input[2];
-    msg.Back_Y = input[3];
-    msg.Neck_Z = input[4];
-    msg.Neck_X = input[5];
-    msg.Head = input[6];
-
-    return msg;
-}
-
-xr1controllerros::BodyMsgs XR1ControllerOL::ConvertBodyMsgs(Eigen::VectorXd input) {
-
-    xr1controllerros::BodyMsgs msg;
-
-    msg.Knee = input(0);
-    msg.Back_Z = input(1);
-    msg.Back_X = input(2);
-    msg.Back_Y = input(3);
-    msg.Neck_Z = input(4);
-    msg.Neck_X = input(5);
-    msg.Head = input(6);
-
-    return msg;
-}
 
 void XR1ControllerOL::broadcastTransform() {
 
@@ -842,6 +656,8 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
             if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period)){
                 res.isReachable = true;
                 res.isAccepted = true;
+
+                XR1_ptr->setGrippingSwitch( control_group , req.Grip);
             }
         }
 
@@ -850,76 +666,79 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
     return true;
 
 }
-//void XR1ControllerOL::subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget &msg) {
-//
-//    geometry_msgs::Transform temp_shit = msg.TargetTransform;
-//    tf::transformMsgToEigen(temp_shit, itsafine);
-//    uint8_t control_group = msg.ControlGroup;
-//    if (!(XR1_ptr->isIKPlannerActive(control_group)))
-//        XR1_ptr->setEndEffectorPosition(msg.ControlGroup , itsafine , msg.TargetElbowAngle , msg.Period);
-//
-//}
+
 
 void XR1ControllerOL::lookupRightEFFTarget(tf::StampedTransform &transform, Eigen::Affine3d &itsafine) {
 
-    try {
-        EFF_Listener.lookupTransform("/Back_Y", "/RightEndEffectorTarget",
-                                     ros::Time(0), transform);
-    }
-    catch (tf::TransformException &ex) {
-        return;
-    }
-
-    transformTFToEigen(transform, itsafine);
-    if (XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine, RightElbowAngle)) {
-        if (XR1_ptr->getControlMode(XR1::RightArm) == XR1::IKMode)
-            setJointPosition(XR1::RightArm, XR1_ptr->getTargetPosition(XR1::RightArm));
-    } else {
-        VectorXd temp_vec = VectorXd::Zero(7);
-
-        for (int i = 0; i < 7; i++) {
-            temp_vec(i) = asin(18); // AHAHAHAHHAHHAHAHAHHAHAHAHAHAHAHAHHAHAHAHAHAHAHA
+    if (XR1_ptr->getControlMode(XR1::RightArm) == XR1::IKMode){
+        try {
+            EFF_Listener.lookupTransform("/Back_Y", "/RightEndEffectorTarget",
+                                         ros::Time(0), transform);
+        }
+        catch (tf::TransformException &ex) {
+            return;
         }
 
-        RightArmPositionPublisher.publish(ConvertArmMsgs(temp_vec));
+        if (ros::Time::now().toSec() - transform.stamp_.toSec() > 2 ) {
+            ROS_INFO("Got overdue IK target, aborting movement");
+            return;
+        }
+
+        else {
+            transformTFToEigen(transform, itsafine);
+            if (XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine, RightElbowAngle)) {
+                setJointPosition(XR1::RightArm, XR1_ptr->getTargetPosition(XR1::RightArm));
+            } else {
+                VectorXd temp_vec = VectorXd::Zero(7);
+
+                for (int i = 0; i < 7; i++) {
+                    temp_vec(i) = asin(18); // AHAHAHAHHAHHAHAHAHHAHAHAHAHAHAHAHHAHAHAHAHAHAHA
+                }
+
+                RightArmPositionPublisher.publish(ConvertArmMsgs(temp_vec));
+            }
+        }
+
     }
-
-
 }
 
 void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform &transform, Eigen::Affine3d &itsafine) {
-    try {
-        EFF_Listener.lookupTransform("/Back_Y", "/LeftEndEffectorTarget",
-                                     ros::Time(0), transform);
-    }
-    catch (tf::TransformException &ex) {
-        return;
-    }
 
-    transformTFToEigen(transform, itsafine);
-    if (XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine, LeftElbowAngle)) {
-        if (XR1_ptr->getControlMode(XR1::LeftArm) == XR1::IKMode)
-            setJointPosition(XR1::LeftArm, XR1_ptr->getTargetPosition(XR1::LeftArm));
-    } else {
-        VectorXd temp_vec = VectorXd::Zero(7);
-
-        for (int i = 0; i < 7; i++) {
-            temp_vec(i) = asin(18); // AHAHAHAHHAHHAHAHAHHAHAHAHAHAHAHAHHAHAHAHAHAHAHA
+    if (XR1_ptr->getControlMode(XR1::LeftArm) == XR1::IKMode){
+        try {
+            EFF_Listener.lookupTransform("/Back_Y", "/LeftEndEffectorTarget",
+                                         ros::Time(0), transform);
+        }
+        catch (tf::TransformException &ex) {
+            return;
         }
 
-        LeftArmPositionPublisher.publish(ConvertArmMsgs(temp_vec));
+
+        if (ros::Time::now().toSec() - transform.stamp_.toSec() > 2 ) {
+            ROS_INFO("Got overdue IK target, aborting movement");
+            return;
+        }
+
+        else {
+            transformTFToEigen(transform, itsafine);
+            if (XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine, LeftElbowAngle)) {
+
+                setJointPosition(XR1::LeftArm, XR1_ptr->getTargetPosition(XR1::LeftArm));
+            } else {
+                VectorXd temp_vec = VectorXd::Zero(7);
+
+                for (int i = 0; i < 7; i++) {
+                    temp_vec(i) = asin(18); // AHAHAHAHHAHHAHAHAHHAHAHAHAHAHAHAHHAHAHAHAHAHAHA
+                }
+
+                LeftArmPositionPublisher.publish(ConvertArmMsgs(temp_vec));
+            }
+        }
     }
 
 
 }
 
-void XR1ControllerOL::subscribeLeftElbowAngle(const std_msgs::Float64 &msg) {
-    LeftElbowAngle = msg.data;
-}
-
-void XR1ControllerOL::subscribeRightElbowAngle(const std_msgs::Float64 &msg) {
-    RightElbowAngle = msg.data;
-}
 
 void XR1ControllerOL::getEndEffectorTransformation(uint8_t control_group, Affine3d &TransformationReference) {
     XR1_ptr->getEndEffectorTransformation(control_group, TransformationReference);

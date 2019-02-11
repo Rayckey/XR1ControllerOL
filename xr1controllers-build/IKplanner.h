@@ -65,7 +65,7 @@ private:
     // private members for calcualting states
     uint8_t XR1_State;
     bool hand_tracking_switch;
-    bool hand_griping_switch;
+    std::map<uint8_t , bool > hand_griping_switch;
     std::vector<double> Qmin;
 
     std::map<uint8_t , std::deque<double > > disQue;
@@ -120,9 +120,9 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     bool getTrackingSwtich();
 
-    void setGrippingSwitch(bool tof);
+    void setGrippingSwitch(uint8_t control_group, bool tof);
 
-    bool getGrippingSwitch();
+    bool getGrippingSwitch(uint8_t control_group);
 
     void clearStates();
 

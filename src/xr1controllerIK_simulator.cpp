@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
 
   std::string path = ros::package::getPath("xr1controllerol");
 
-  XR1_ptr = new XR1ControllerPM(path + "/two.xr1para");
+  XR1_ptr = new XR1ControllerPM(path + "/Turnips.xr1para");
 
   EFF_Broadcaster = new tf::TransformBroadcaster();
   EFF_Listener = new tf::TransformListener();
@@ -295,10 +295,10 @@ int main(int argc, char **argv) {
   // cough out the target position as the result of IK;
   ros::Publisher LAPP  = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/TargetPosition", 1);
   ros::Publisher RAPP  = nh.advertise<xr1controllerros::ArmMsgs>("/RightArm/TargetPosition", 1);
-    ros::Publisher MBPP  = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/TargetPosition", 1);
+  ros::Publisher MBPP  = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/TargetPosition", 1);
   LeftArmPositionPublisher    = &LAPP;
   RightArmPositionPublisher   = &RAPP;
-    MainBodyPositionPublisher = &MBPP;
+  MainBodyPositionPublisher = &MBPP;
 
 
 

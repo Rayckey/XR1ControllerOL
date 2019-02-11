@@ -66,6 +66,7 @@ catkin_package(
 # Declare a C++ library
  add_library(${PROJECT_NAME}
    src/${PROJECT_NAME}/xr1controllerol.cpp
+		 src/${PROJECT_NAME}/xr1controllerolulit.cpp
  )
 
 

@@ -34,6 +34,15 @@
 using namespace Eigen;
 
 
+namespace XR1OL{
+    enum OverDriveMode {
+        OverDrivePosition = 11,
+        OverDriveVelocity = 12,
+    };
+}
+
+
+
 class XR1ControllerOL {
 
 public:
@@ -141,6 +150,8 @@ public:
     std::map<uint8_t, uint8_t> attribute_map;
 
     std::map<uint8_t, Actuator::ActuatorMode> mode_map;
+
+    std::map<int , int> control_modes;
 
 
 
