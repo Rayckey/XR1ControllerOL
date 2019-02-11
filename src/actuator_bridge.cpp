@@ -109,14 +109,14 @@ int main(int argc, char **argv) {
 
 
 
-  XR1_ptr->launchAllMotors(); // startSimulation()
+//  XR1_ptr->launchAllMotors(); // startSimulation()
 
 
   ros::Timer timer1 = nh.createTimer(ros::Duration(0.005), actuator_event_callback);
 
-  ros::Timer timer2 = nh.createTimer(ros::Duration(0.01), &XR1ControllerOL::readingCallback , XR1_ptr);
+  ros::Timer timer2 = nh.createTimer(ros::Duration(0.005), &XR1ControllerOL::readingCallback , XR1_ptr);
 
-  ros::Timer timer3 = nh.createTimer(ros::Duration(0.01), &XR1ControllerOL::unleaseCallback , XR1_ptr);
+  ros::Timer timer3 = nh.createTimer(ros::Duration(0.005), &XR1ControllerOL::unleaseCallback , XR1_ptr);
 
   ros::Timer timer4 = nh.createTimer(ros::Duration(0.03), &XR1ControllerOL::requestQue , XR1_ptr);
 

@@ -154,12 +154,12 @@ XR1ControllerOL::XR1ControllerOL() :
     mode_map[XR1OL::OverDrivePosition] = Actuator::Mode_Pos;
     mode_map[XR1OL::OverDriveVelocity] = Actuator::Mode_Vel;
 
-    control_modes[XR1::OmniWheels] = XR1::PositionMode;
-    control_modes[XR1::MainBody] = XR1::PositionMode;
-    control_modes[XR1::LeftArm] = XR1::PositionMode;
-    control_modes[XR1::RightArm] = XR1::PositionMode;
-    control_modes[XR1::LeftHand] = XR1::PositionMode;
-    control_modes[XR1::RightHand] = XR1::PositionMode;
+    control_modes[XR1::OmniWheels] = 0;
+    control_modes[XR1::MainBody] = 0;
+    control_modes[XR1::LeftArm] = 0;
+    control_modes[XR1::RightArm] = 0;
+    control_modes[XR1::LeftHand] = 0;
+    control_modes[XR1::RightHand] = 0;
 
 
 
@@ -532,7 +532,7 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
 
 
 void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
-    // ROS_INFO("Unleasing");
+//     ROS_INFO("Unleasing");
     MainBodyPositionPublisher.publish(ConvertBodyMsgs(XR1_ptr->getJointPositions(XR1::MainBody, true)));
     MainBodyCurrentPublisher.publish(ConvertBodyMsgs(XR1_ptr->getJointCurrents(XR1::MainBody, true)));
 
@@ -583,11 +583,11 @@ void XR1ControllerOL::stateTransition(){
     }
 
     else {
-        setControlMode(XR1::LeftArm , XR1::PositionMode);
-        setControlMode(XR1::MainBody, XR1::PositionMode);
-        setControlMode(XR1::RightArm, XR1::PositionMode);
-        setControlMode(XR1::LeftHand, XR1::PositionMode);
-        setControlMode(XR1::RightHand,XR1::PositionMode);
+        if (control_modes[XR1::LeftArm] == XR1OL::OverDrivePosition) setControlMode(XR1::LeftArm , XR1::PositionMode);
+        if (control_modes[XR1::MainBody] == XR1OL::OverDrivePosition) setControlMode(XR1::MainBody, XR1::PositionMode);
+        if (control_modes[XR1::RightArm] == XR1OL::OverDrivePosition) setControlMode(XR1::RightArm, XR1::PositionMode);
+        if (control_modes[XR1::LeftHand] == XR1OL::OverDrivePosition) setControlMode(XR1::LeftHand, XR1::PositionMode);
+        if (control_modes[XR1::RightHand] == XR1OL::OverDrivePosition) setControlMode(XR1::RightHand,XR1::PositionMode);
     }
 
 }

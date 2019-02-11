@@ -97,7 +97,7 @@ void XR1ControllerOL::subscribeRightArmCurrent(const xr1controllerros::ArmMsgs &
 
 void XR1ControllerOL::subscribeLeftArmPosition(const xr1controllerros::ArmMsgs &msg) {
     if (XR1_ptr->isStateActive()){
-
+       ROS_INFO("It is active right now , can't move ");
     }
 
     else {
