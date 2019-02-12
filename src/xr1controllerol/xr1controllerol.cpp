@@ -580,6 +580,10 @@ void XR1ControllerOL::stateTransition(){
 
         setJointPosition(XR1::MainBody , XR1_ptr->getTargetPosition(XR1::MainBody));
 
+        setJointPosition(XR1::LeftHand , XR1_ptr->getTargetPosition(XR1::LeftHand));
+
+        setJointPosition(XR1::RightHand , XR1_ptr->getTargetPosition(XR1::RightHand));
+
     }
 
     else {

@@ -11,6 +11,7 @@
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
 #include "xr1controllerros/ArmMsgs.h"
+#include "xr1controllerros/HandMsgs.h"
 #include "xr1controllerros/ChainModeChange.h"
 #include "xr1controllerros/BodyMsgs.h"
 #include "xr1controllerol/IKLinearService.h"
@@ -28,6 +29,8 @@ tf::TransformListener * EFF_Listener;
 
 ros::Publisher * LeftArmPositionPublisher;
 ros::Publisher * RightArmPositionPublisher;
+ros::Publisher * LeftHandPositionPublisher;
+ros::Publisher * RightHandPositionPublisher;
 ros::Publisher * MainBodyPositionPublisher;
 
 // IGNORE THIS PART ==============================================================
@@ -94,6 +97,37 @@ xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input) {
 
     return msg;
 }
+
+
+Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg) {
+
+    Eigen::VectorXd res = Eigen::VectorXd::Zero(5);
+
+    res << msg.Thumb,
+            msg.Index,
+            msg.Middle,
+            msg.Ring,
+            msg.Pinky;
+
+
+    return res;
+}
+
+
+xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition) {
+
+    xr1controllerros::HandMsgs msg;
+    msg.Thumb = HandPosition(0);
+    msg.Index = HandPosition(1);
+    msg.Middle = HandPosition(2);
+    msg.Ring = HandPosition(3);
+    msg.Pinky = HandPosition(4);
+
+    return msg;
+}
+
+
+
 void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & itsafine) {
 
   try {
@@ -152,6 +186,10 @@ void stateTransition(){
         LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
 
         MainBodyPositionPublisher->publish(ConvertBodyMsgs(XR1_ptr->getTargetPosition(XR1::MainBody)));
+
+        LeftHandPositionPublisher->publish(ConvertHandMsgs(XR1_ptr->getTargetPosition(XR1::LeftHand)));
+
+        RightHandPositionPublisher->publish(ConvertHandMsgs(XR1_ptr->getTargetPosition(XR1::RightHand)));
     }
 
 }
@@ -183,6 +221,8 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest & req ,
             if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period)){
                 res.isReachable = true;
                 res.isAccepted = true;
+
+                XR1_ptr->setGrippingSwitch( control_group , req.Grip);
             }
         }
 
@@ -250,6 +290,13 @@ void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs& msg) {
   XR1_ptr->updatingCallback(BodyMsgs2VectorXd(msg) , XR1::MainBody , XR1::ActualPosition);
 }
 
+void subscribeLeftHandPosition(const xr1controllerros::HandMsgs& msg) {
+    XR1_ptr->updatingCallback(HandsMsgs2VectorXd (msg) , XR1::LeftHand , XR1::ActualPosition);
+}
+void subscribeRightHandPosition(const xr1controllerros::HandMsgs& msg) {
+    XR1_ptr->updatingCallback(HandsMsgs2VectorXd(msg) , XR1::RightHand , XR1::ActualPosition);
+}
+
 
 
 
@@ -272,6 +319,14 @@ int main(int argc, char **argv) {
   // Feed me more
   ros::Subscriber RightArmPositionSubscriber  = nh.subscribe("/RightArm/Position" ,  3 , subscribeRightArmPosition);
 
+
+    // Feed me infos
+    ros::Subscriber LeftHandPositionSubscriber   = nh.subscribe("/LeftHand/Position" ,  3 , subscribeLeftHandPosition);
+
+    // Feed me more
+    ros::Subscriber RightHandPositionSubscriber  = nh.subscribe("/RightHand/Position" ,  3 , subscribeRightHandPosition);
+
+
   ros::Subscriber MainBodyPositionSubscriber = nh.subscribe("/MainBody/Position" , 3 , subscribeMainBodyPosition);
 
   // More!!
@@ -287,18 +342,20 @@ int main(int argc, char **argv) {
   ros::Subscriber RightElbowSubscriber                        = nh.subscribe("RightArm/ElbowAngle" , 1, subscribeRightElbowAngle );
 
 
-//  ros::Subscriber IKLinearPlannerSubscriber                 = nh.subscribe("XR1/IKLPT" , 10 , &subscribeIKLinearPlanner);
-
    ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKLPT" ,  serviceIKPlanner);
 
 
   // cough out the target position as the result of IK;
   ros::Publisher LAPP  = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/TargetPosition", 1);
   ros::Publisher RAPP  = nh.advertise<xr1controllerros::ArmMsgs>("/RightArm/TargetPosition", 1);
+    ros::Publisher LHPP  = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/TargetPosition", 1);
+    ros::Publisher RHPP  = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/TargetPosition", 1);
   ros::Publisher MBPP  = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/TargetPosition", 1);
   LeftArmPositionPublisher    = &LAPP;
   RightArmPositionPublisher   = &RAPP;
   MainBodyPositionPublisher = &MBPP;
+    LeftHandPositionPublisher = &LHPP;
+    RightHandPositionPublisher = &RHPP;
 
 
 
@@ -357,16 +414,6 @@ int main(int argc, char **argv) {
     //    XR1_ptr->setEndEffectorPosition(XR1::LeftArm , transform , 3.0);
 
     // -----------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
 
 
 
