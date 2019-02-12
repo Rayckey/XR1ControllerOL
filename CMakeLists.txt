@@ -10,6 +10,7 @@ add_compile_options(-pthread)
 add_compile_options(-DASIO_STANDALONE)
 add_compile_options(-DASIO_HAS_STD_CHRONO)
 add_compile_options(-DIMU_ENABLE)
+add_compile_options(-O3)
 
 
 find_package(catkin REQUIRED COMPONENTS

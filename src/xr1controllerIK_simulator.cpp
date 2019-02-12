@@ -204,7 +204,7 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest & req ,
 
     uint8_t control_group = req.ControlGroup;
 
-
+    XR1_ptr->setControlMode(control_group , XR1::IKMode);
     // The default response
     res.inProgress = true;
     res.isReachable = false;
@@ -367,7 +367,7 @@ int main(int argc, char **argv) {
   ros::Timer timer = nh.createTimer(ros::Duration(0.005), broadcastTransform);
 
 
-
+    XR1_ptr->setJointPosition(XR1::Neck_X , 0.5);
 
 
 

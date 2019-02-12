@@ -307,8 +307,15 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
 
         std::vector<uint8_t> temp_vector = control_group_map[control_group];
 
-        if (option == XR1OL::OverDrivePosition)
-            XR1_ptr->setControlMode(control_group, XR1::PositionMode);
+        if (option == XR1OL::OverDrivePosition){
+            if (XR1_ptr->getControlMode(control_group) ==  XR1::PositionMode || XR1_ptr->getControlMode(control_group) ==  XR1::IKMode){
+                // If the robot is in the right mode for calculation , ignore it
+                return;
+            }
+            else
+                XR1_ptr->setControlMode(control_group, XR1::PositionMode);
+        }
+
 
         else if (option == XR1OL::OverDriveVelocity)
             XR1_ptr->setControlMode(control_group, XR1::VelocityMode);
@@ -533,6 +540,8 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
 
 void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 //     ROS_INFO("Unleasing");
+
+//    ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
     MainBodyPositionPublisher.publish(ConvertBodyMsgs(XR1_ptr->getJointPositions(XR1::MainBody, true)));
     MainBodyCurrentPublisher.publish(ConvertBodyMsgs(XR1_ptr->getJointCurrents(XR1::MainBody, true)));
 
@@ -643,6 +652,7 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
 
     uint8_t control_group = req.ControlGroup;
 
+    setControlMode(control_group , XR1::IKMode);
 
     // The default response
     res.inProgress = true;
