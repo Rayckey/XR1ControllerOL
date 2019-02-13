@@ -359,14 +359,14 @@ int main(int argc, char **argv) {
 
 
 
-  LeftElbowAngle   = 2.5;
-  RightElbowAngle  = -2.5;
+  LeftElbowAngle   = 2.0;
+  RightElbowAngle  = -2.0;
 
 
   // Draw some random stuff every three seconds or so
   ros::Timer timer = nh.createTimer(ros::Duration(0.005), broadcastTransform);
 
-
+//    XR1_ptr->setJointPosition(XR1::Neck_Z , 0.2);
     XR1_ptr->setJointPosition(XR1::Neck_X , 0.5);
 
 
