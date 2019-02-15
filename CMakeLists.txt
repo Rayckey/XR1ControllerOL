@@ -42,7 +42,6 @@ include_directories(
  add_message_files(
    FILES
 		 AnimationMsgs.msg
-		 IKLinearTarget.msg
  )
 
 add_service_files(

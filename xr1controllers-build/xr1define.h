@@ -5,6 +5,8 @@ namespace XR1 {
 
 enum BodyGroups{
     MainBody = 4,
+    BackBody = 5, // included in MainBody
+    HeadBody = 8, // included in HeadBody
     LeftArm = 11,
     RightArm = 18,
     LeftHand = 25,
@@ -89,12 +91,12 @@ enum AttributeIDs{
     Derivative = 52,
 };
 
-enum PathPlaningMethods{
-    RRT = 100,
-    EST = 101,
-    KPIECE = 102,
-    PDST = 103,
-};
+// enum PathPlaningMethods{
+//     RRT = 100,
+//     EST = 101,
+//     KPIECE = 102,
+//     PDST = 103,
+// };
 
 
 enum HandGripActions{

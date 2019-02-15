@@ -167,19 +167,21 @@ public:
     //-------------------End Effector (Wrist) Control ---------------------------
 
 
-    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle = 8);
+    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle = 8 , uint8_t base_group = XR1::Back_Y);
+
+    void setTrackingPosition(uint8_t control_group , Affine3d & TargetTransformation);
 
     void setGrippingSwitch(uint8_t control_group, bool tof);
 
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle = 8);
+    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle = 8 , uint8_t base_group = XR1::Back_Y);
 
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
+    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period , uint8_t base_group = XR1::Back_Y);
 
     bool setGrippingSwitch();
 
     bool isIKPlannerActive(uint8_t control_group);
 
-    void getEndEffectorTransformation(uint8_t control_group, Affine3d & TransformationReference, bool IK = true);
+    void getEndEffectorTransformation(uint8_t control_group, Affine3d & TransformationReference);
 
     double getElbowAngle(uint8_t control_group);
 

@@ -24,7 +24,6 @@
 #include <std_msgs/Int32.h>
 
 // The IK planner message service
-//#include "xr1controllerol/IKLinearTarget.h"
 #include "xr1controllerol/IKLinearService.h"
 
 

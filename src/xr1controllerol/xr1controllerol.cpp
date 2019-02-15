@@ -634,6 +634,14 @@ void XR1ControllerOL::broadcastTransform() {
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 
+
+
+    // Publish the Base
+    XR1_ptr->getBaseTransformation(XR1::MainBody, itsafine);
+    tf::transformEigenToTF(itsafine, transform);
+    EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Base", "/Back_Y"));
+
+
     if (!(XR1_ptr->isIKPlannerActive(XR1::RightArm)))
         lookupRightEFFTarget(transform, itsafine);
 
@@ -652,6 +660,11 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
 
     uint8_t control_group = req.ControlGroup;
 
+    uint8_t base_group = XR1::Back_Y;
+
+    if (req.BaseGroup == XR1::Knee_X)
+        base_group = req.BaseGroup;
+
     setControlMode(control_group , XR1::IKMode);
 
     // The default response
@@ -667,7 +680,7 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
     else {
         if (req.NewTarget){
             res.inProgress = false;
-            if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period)){
+            if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
                 res.isReachable = true;
                 res.isAccepted = true;
 

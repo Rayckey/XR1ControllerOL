@@ -210,17 +210,23 @@ public:
     // Brutal Straight Forward Controls----------------------------------------------
 
 
-    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle);
+    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
+
+    bool setTrackingPosition(uint8_t control_group , Affine3d & TargetTransformation);
+
+    void solveBackApproach(const Vector3d & goal_position, Vector3d & back_angles);
+
+    void solveHeadTracking(const Vector3d & goal_position , Vector3d & head_angles);
 
     void setGrippingSwitch(uint8_t control_group, bool tof);
 
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle);
+    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
 
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
+    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period, uint8_t base_group = XR1::Back_Y);
 
     bool isIKPlannerActive(uint8_t control_group);
 
-    void getEndEffectorTransformation(uint8_t control_group, Affine3d &TransformationReference, bool IK = true);
+    void getEndEffectorTransformation(uint8_t control_group, Affine3d &TransformationReference);
 
     double getElbowAngle(uint8_t control_group);
 
@@ -318,11 +324,6 @@ public:
     uint8_t getErrorCode();
 
 
-
-
-    // Options for EFF position planning
-    void setEFFgoal(uint8_t control_group, Vector3d eff_position , Matrix3d eff_orientation , int period_in_ms , int control_rate = 200);
-    void getNextArmState();
 
 private:
 
@@ -450,9 +451,16 @@ private:
     Affine3d Back2Target;
 
 
-    // ik planning stuff
-    Vector3d EFFgoalPosition;
-    Matrix3d EFFgoalOrientation;
+    // Body and Head Tracking Stuff
+    std::map<uint8_t , Vector3d > TrackingPositionMap;
+    std::map<uint8_t , Matrix3d > TrackingOrientationMap;
+
+
+    // IK extra stuff
+    Affine3d temp_aff3d;
+    Affine3d temp_aff3d2;
+    Matrix3d temp_mat3d;
+    Vector3d temp_vec3d;
 
 
 };

@@ -159,6 +159,24 @@ void lookupLeftEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & i
   LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
 }
 
+void lookupBackEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & itsafine) {
+    try {
+        EFF_Listener->lookupTransform( "/Back_Y", "/TrackingTarget",
+                                       ros::Time(0), transform);
+    }
+    catch (tf::TransformException &ex) {
+        return;
+    }
+
+    transformTFToEigen(transform, itsafine);
+//    XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine , LeftElbowAngle);
+
+    XR1_ptr->setTrackingPosition(XR1::HeadBody, itsafine);
+    XR1_ptr->setTrackingPosition(XR1::BackBody, itsafine);
+
+    LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
+}
+
 void subscribeLeftElbowAngle(const std_msgs::Float64 & msg) {
   LeftElbowAngle = msg.data;
 }
@@ -172,6 +190,14 @@ void subscribeLeftArmMode(const xr1controllerros::ChainModeChange& msg) {
 }
 void subscribeRightArmMode(const xr1controllerros::ChainModeChange& msg) {
   XR1_ptr->setControlMode(XR1::RightArm , msg.Mode);
+}
+
+void subscribeHeadBodyMode(const xr1controllerros::ChainModeChange& msg) {
+    XR1_ptr->setControlMode(XR1::HeadBody , msg.Mode);
+}
+
+void subscribeBackBodyMode(const xr1controllerros::ChainModeChange& msg) {
+    XR1_ptr->setControlMode(XR1::BackBody , msg.Mode);
 }
 
 
@@ -260,12 +286,21 @@ void broadcastTransform(const ros::TimerEvent& event) {
   EFF_Broadcaster->sendTransform(tf::StampedTransform(tform, ros::Time::now(), "/Back_Y", "/Head"));
 
 
-  if (!(XR1_ptr->isIKPlannerActive(XR1::RightArm)))
+
+    // Publish the Base
+    XR1_ptr->getBaseTransformation(XR1::MainBody, itsafine);
+    tf::transformEigenToTF(itsafine, tform);
+    EFF_Broadcaster->sendTransform(tf::StampedTransform(tform, ros::Time::now(), "/Base", "/Back_Y"));
+
+
+
+    if (!(XR1_ptr->isIKPlannerActive(XR1::RightArm)))
       lookupRightEFFTarget(tform, itsafine);
 
   if (!(XR1_ptr->isIKPlannerActive(XR1::LeftArm)))
       lookupLeftEFFTarget(tform, itsafine);
 
+    lookupBackEFFTarget(tform , itsafine);
 
   stateTransition();
 
@@ -334,6 +369,13 @@ int main(int argc, char **argv) {
 
   //MOREEEEEEEE!
   ros::Subscriber RightArmModeChangeSubscriber                = nh.subscribe("/XR1/RightArmChainModeChange" , 1, subscribeRightArmMode);
+
+
+    // More!!subscribeHeadBodyMode
+    ros::Subscriber HeadBodyModeChangeSubscriber                 = nh.subscribe("/XR1/HeadBodyChainModeChange" , 1, subscribeHeadBodyMode);
+
+    //MOREEEEEEEE!
+    ros::Subscriber BackBodyModeChangeSubscriber                = nh.subscribe("/XR1/BackBodyChainModeChange" , 1, subscribeBackBodyMode);
 
   // MMMMMMOOOOORRRRRREEEEEEEE!
   ros::Subscriber LeftElbowSubscriber                         = nh.subscribe("LeftArm/ElbowAngle" , 1, subscribeLeftElbowAngle);
