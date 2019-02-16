@@ -33,14 +33,6 @@
 using namespace Eigen;
 
 
-namespace XR1OL{
-    enum OverDriveMode {
-        OverDrivePosition = 11,
-        OverDriveVelocity = 12,
-    };
-}
-
-
 
 class XR1ControllerOL {
 
@@ -144,13 +136,7 @@ public:
     void setMetaMode(const std_msgs::Int32 &msg);
 
 
-    std::map<uint8_t, std::vector<uint8_t> > control_group_map;
 
-    std::map<uint8_t, uint8_t> attribute_map;
-
-    std::map<uint8_t, Actuator::ActuatorMode> mode_map;
-
-    std::map<int , int> control_modes;
 
 
 
@@ -183,6 +169,10 @@ public:
     bool allActuatorHasLaunched();
 
     void stateTransition();
+
+    void switch2HighFrequency(bool option);
+    void judgeControlGroupModes();
+    void judgeActuatorModes(uint8_t control_group);
 
 
     xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition);
@@ -238,6 +228,13 @@ protected:
 
     void subscribeRightHandMode(const xr1controllerros::ChainModeChange &msg);
 
+    void subscribeHeadBodyMode(const xr1controllerros::ChainModeChange &msg);
+
+    void subscribeBackBodyMode(const xr1controllerros::ChainModeChange &msg);
+
+
+
+
     void subscribeLeftHandPosition(const xr1controllerros::HandMsgs &msg);
 
     void subscribeRightHandPosition(const xr1controllerros::HandMsgs &msg);
@@ -281,6 +278,18 @@ private:
     XR1Controller *XR1_ptr;
     XR1IMUmethods *IMU_ptr;
 
+
+
+    // Very important mode variables
+    std::map<uint8_t, std::vector<uint8_t> > control_group_map;
+    std::map<uint8_t, uint8_t> attribute_map;
+    std::map<uint8_t, Actuator::ActuatorMode> mode_map;
+    std::map<int , int> control_modes;
+    bool high_frequency_switch;
+
+
+
+
     double LeftElbowAngle;
     double RightElbowAngle;
     Matrix4d temp_4d;
@@ -309,6 +318,10 @@ private:
 
     ros::Subscriber RightHandModeChangeSubscriber;
 
+    ros::Subscriber HeadBodyModeChangeSubscriber;
+
+    ros::Subscriber BackBodyModeChangeSubscriber;
+
     ros::Subscriber JointVisualizationSubscriber;
 
     ros::Subscriber LeftArmPositionSubscriber;
@@ -335,6 +348,10 @@ private:
 
     ros::Subscriber LeftElbowSubscriber;
     ros::Subscriber RightElbowSubscriber;
+
+
+
+
 
 
     ros::Subscriber MetaModeSubscriber;

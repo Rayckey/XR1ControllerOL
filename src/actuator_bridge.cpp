@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "actuator_bridge");
 
   ros::NodeHandle nh;
-  ROS_INFO("Started Actuator Bridge Ver. 3.0.0");
+  ROS_INFO("Started Actuator Bridge Ver. 3.1.0");
 
   ActuatorController::initController();
   ActuatorController::getInstance()->autoRecoginze();

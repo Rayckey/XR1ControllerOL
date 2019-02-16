@@ -215,6 +215,14 @@ void XR1ControllerOL::subscribeRightHandMode(const xr1controllerros::ChainModeCh
 }
 
 
+void XR1ControllerOL::subscribeHeadBodyMode(const xr1controllerros::ChainModeChange &msg){
+    setControlMode(XR1::HeadBody , msg.Mode);
+}
+
+void XR1ControllerOL::subscribeBackBodyMode(const xr1controllerros::ChainModeChange &msg){
+    setControlMode(XR1::BackBody , msg.Mode);
+}
+
 
 xr1controllerros::HandMsgs XR1ControllerOL::ConvertHandMsgs(Eigen::VectorXd HandPosition) {
 

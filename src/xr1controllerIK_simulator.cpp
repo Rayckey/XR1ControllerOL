@@ -172,9 +172,22 @@ void lookupBackEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & i
 //    XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine , LeftElbowAngle);
 
     XR1_ptr->setTrackingPosition(XR1::HeadBody, itsafine);
+
+
+
+
+    try {
+        EFF_Listener->lookupTransform( "/Base", "/TrackingTarget",
+                                       ros::Time(0), transform);
+    }
+    catch (tf::TransformException &ex) {
+        return;
+    }
+
+    transformTFToEigen(transform, itsafine);
+
     XR1_ptr->setTrackingPosition(XR1::BackBody, itsafine);
 
-    LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
 }
 
 void subscribeLeftElbowAngle(const std_msgs::Float64 & msg) {
@@ -243,14 +256,16 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest & req ,
 
     else {
         if (req.NewTarget){
+
             res.inProgress = false;
-            if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period)){
+            if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period )){
                 res.isReachable = true;
                 res.isAccepted = true;
 
                 XR1_ptr->setGrippingSwitch( control_group , req.Grip);
             }
         }
+        res.inProgress = false;
 
     }
 

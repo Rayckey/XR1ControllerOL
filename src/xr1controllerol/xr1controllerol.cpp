@@ -5,6 +5,7 @@
 
 XR1ControllerOL::XR1ControllerOL() :
     hand_command_switch(true)
+    ,high_frequency_switch(false)
     ,power_reading_counter(30000) {
 
     std::vector<double> sit_pos;
@@ -59,6 +60,14 @@ XR1ControllerOL::XR1ControllerOL() :
                                    &XR1ControllerOL::subscribeLeftHandMode, this);
     RightHandModeChangeSubscriber = nh.subscribe("/XR1/RightHandChainModeChange", 10,
                                     &XR1ControllerOL::subscribeRightHandMode, this);
+
+
+    HeadBodyModeChangeSubscriber = nh.subscribe("/XR1/HeadBodyChainModeChange", 10,
+                                                &XR1ControllerOL::subscribeHeadBodyMode, this);
+    BackBodyModeChangeSubscriber = nh.subscribe("/XR1/BackBodyChainModeChange", 10,
+                                                &XR1ControllerOL::subscribeBackBodyMode, this);
+
+
     MetaModeSubscriber = nh.subscribe("/XR1/MetaModeChange", 1, &XR1ControllerOL::setMetaMode, this);
 
     LeftHandPositionSubscriber = nh.subscribe("/LeftHand/TargetPosition", 10,
@@ -151,8 +160,7 @@ XR1ControllerOL::XR1ControllerOL() :
     mode_map[XR1::PositionMode] = Actuator::Mode_Profile_Pos;
     mode_map[XR1::VelocityMode] = Actuator::Mode_Profile_Vel;
     mode_map[XR1::ForceMode] = Actuator::Mode_Cur;
-    mode_map[XR1OL::OverDrivePosition] = Actuator::Mode_Pos;
-    mode_map[XR1OL::OverDriveVelocity] = Actuator::Mode_Vel;
+    mode_map[XR1::IKMode] = Actuator::Mode_Profile_Pos;
 
     control_modes[XR1::OmniWheels] = 0;
     control_modes[XR1::MainBody] = 0;
@@ -160,6 +168,8 @@ XR1ControllerOL::XR1ControllerOL() :
     control_modes[XR1::RightArm] = 0;
     control_modes[XR1::LeftHand] = 0;
     control_modes[XR1::RightHand] = 0;
+    control_modes[XR1::HeadBody] = 0;
+    control_modes[XR1::BackBody] = 0;
 
 
 
@@ -301,33 +311,31 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
     }
 
     else {
-        ROS_INFO("Setting Control Group [%d] to Mode [%d]" , control_group, option);
 
-        control_modes[control_group] = option;
 
-        std::vector<uint8_t> temp_vector = control_group_map[control_group];
+        if (high_frequency_switch){
 
-        if (option == XR1OL::OverDrivePosition){
-            if (XR1_ptr->getControlMode(control_group) ==  XR1::PositionMode || XR1_ptr->getControlMode(control_group) ==  XR1::IKMode){
-                // If the robot is in the right mode for calculation , ignore it
-                return;
-            }
-            else
-                XR1_ptr->setControlMode(control_group, XR1::PositionMode);
         }
 
+        else {
 
-        else if (option == XR1OL::OverDriveVelocity)
-            XR1_ptr->setControlMode(control_group, XR1::VelocityMode);
+            ROS_INFO("Setting Control Group [%d] to Mode [%d]" , control_group , option);
 
-        else
-            XR1_ptr->setControlMode(control_group, option);
+            control_modes[control_group] = option;
 
-        for (uint8_t id : temp_vector) {
-            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
-                m_pController->activateActuatorMode(id, mode_map[option]);
+            XR1_ptr->setControlMode(control_group , option);
+
+            if (control_group_map.find(control_group) != control_group_map.end()){
+                std::vector<uint8_t> temp_vector = control_group_map[control_group];
+
+                for (uint8_t id : temp_vector) {
+                    if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
+                        m_pController->activateActuatorMode(id, mode_map[option]);
+                    }
+                }
             }
         }
+
     }
 
 }
@@ -576,14 +584,19 @@ void XR1ControllerOL::stateTransition(){
     if (state_cmd[0] < 0.5){
 
         // set the modes , if they are the same it will not affect the actuators
-        setControlMode(XR1::LeftArm , XR1OL::OverDrivePosition);
-        setControlMode(XR1::MainBody, XR1OL::OverDrivePosition);
-        setControlMode(XR1::RightArm, XR1OL::OverDrivePosition);
-        setControlMode(XR1::LeftHand, XR1OL::OverDrivePosition);
-        setControlMode(XR1::RightHand, XR1OL::OverDrivePosition);
+        switch2HighFrequency(true);
 
 
         setJointPosition(XR1::LeftArm , XR1_ptr->getTargetPosition(XR1::LeftArm));
+
+//        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
+//        ROS_INFO("[%f][%f][%f][%f][%f][%f][%f]" , XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_Y , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_Z , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Z , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Y , true)) ;
 
         setJointPosition(XR1::RightArm , XR1_ptr->getTargetPosition(XR1::RightArm));
 
@@ -596,16 +609,89 @@ void XR1ControllerOL::stateTransition(){
     }
 
     else {
-        if (control_modes[XR1::LeftArm] == XR1OL::OverDrivePosition) setControlMode(XR1::LeftArm , XR1::PositionMode);
-        if (control_modes[XR1::MainBody] == XR1OL::OverDrivePosition) setControlMode(XR1::MainBody, XR1::PositionMode);
-        if (control_modes[XR1::RightArm] == XR1OL::OverDrivePosition) setControlMode(XR1::RightArm, XR1::PositionMode);
-        if (control_modes[XR1::LeftHand] == XR1OL::OverDrivePosition) setControlMode(XR1::LeftHand, XR1::PositionMode);
-        if (control_modes[XR1::RightHand] == XR1OL::OverDrivePosition) setControlMode(XR1::RightHand,XR1::PositionMode);
+        switch2HighFrequency(false);
     }
 
 }
 
 
+void XR1ControllerOL::switch2HighFrequency(bool option) {
+
+    if (high_frequency_switch == option){
+        // do nothing
+    }
+
+    else {
+        high_frequency_switch = option;
+
+        ROS_INFO("High Frequency mode set to [%d]" , high_frequency_switch);
+        judgeControlGroupModes();
+    }
+
+}
+
+
+void XR1ControllerOL::judgeControlGroupModes(){
+
+
+        judgeActuatorModes(XR1::MainBody);
+        judgeActuatorModes(XR1::LeftArm);
+        judgeActuatorModes(XR1::RightArm);
+        judgeActuatorModes(XR1::LeftHand);
+        judgeActuatorModes(XR1::RightHand);
+
+}
+
+void XR1ControllerOL::judgeActuatorModes(uint8_t control_group){
+
+
+
+    std::vector<uint8_t> temp_vector = control_group_map[control_group];
+
+
+    if (XR1_ptr->getControlMode(control_group) == XR1::PositionMode || XR1_ptr->getControlMode(control_group) == XR1::IKMode){
+
+        for (uint8_t id : temp_vector) {
+            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
+
+                if (high_frequency_switch)
+                    m_pController->activateActuatorMode(id, ActuatorMode::Mode_Pos);
+                else
+                    m_pController->activateActuatorMode(id, mode_map[XR1::PositionMode]);
+            }
+        }
+    }
+
+    else if (XR1_ptr->getControlMode(control_group) == XR1::VelocityMode){
+
+        for (uint8_t id : temp_vector) {
+            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
+
+                if (high_frequency_switch)
+                    m_pController->activateActuatorMode(id, ActuatorMode::Mode_Vel);
+                else
+                    m_pController->activateActuatorMode(id, mode_map[XR1::VelocityMode]);
+            }
+        }
+
+    }
+
+    else if (XR1_ptr->getControlMode(control_group) == XR1::ForceMode){
+
+        for (uint8_t id : temp_vector) {
+            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
+
+                if (high_frequency_switch)
+                    m_pController->activateActuatorMode(id, ActuatorMode::Mode_Cur);
+                else
+                    m_pController->activateActuatorMode(id, mode_map[XR1::ForceMode]);
+            }
+        }
+
+    }
+
+
+}
 
 void XR1ControllerOL::broadcastTransform() {
 
@@ -665,7 +751,7 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
     if (req.BaseGroup == XR1::Knee_X)
         base_group = req.BaseGroup;
 
-    setControlMode(control_group , XR1::IKMode);
+
 
     // The default response
     res.inProgress = true;
@@ -679,6 +765,8 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
 
     else {
         if (req.NewTarget){
+
+            setControlMode(control_group , XR1::IKMode);
             res.inProgress = false;
             if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
                 res.isReachable = true;
@@ -687,6 +775,7 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
                 XR1_ptr->setGrippingSwitch( control_group , req.Grip);
             }
         }
+        res.inProgress = false;
 
     }
 
