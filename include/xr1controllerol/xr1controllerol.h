@@ -255,6 +255,10 @@ protected:
 
     void lookupLeftEFFTarget(tf::StampedTransform &transform, Affine3d &itsafine);
 
+    void lookupBackEFFTarget(tf::StampedTransform & transform,   Affine3d & itsafine);
+
+
+
     void subscribeLeftElbowAngle(const std_msgs::Float64 &msg);
 
     void subscribeRightElbowAngle(const std_msgs::Float64 &msg);

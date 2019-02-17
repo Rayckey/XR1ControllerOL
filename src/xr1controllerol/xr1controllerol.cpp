@@ -315,6 +315,15 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
 
         if (high_frequency_switch){
 
+
+            if (control_group == XR1::HeadBody || control_group == XR1::BackBody){
+                XR1_ptr->setControlMode(control_group , option);
+                control_modes[control_group] = option;
+            }
+
+
+
+
         }
 
         else {
@@ -602,6 +611,17 @@ void XR1ControllerOL::stateTransition(){
 
         setJointPosition(XR1::MainBody , XR1_ptr->getTargetPosition(XR1::MainBody));
 
+
+//        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
+//        ROS_INFO("[%f][%f][%f][%f][%f][%f][%f]" , XR1_ptr->getTargetJointPosition(XR1::Knee_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Back_Z , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Back_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Back_Y , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Neck_Z , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Neck_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Head , true)) ;
+
+
         setJointPosition(XR1::LeftHand , XR1_ptr->getTargetPosition(XR1::LeftHand));
 
         setJointPosition(XR1::RightHand , XR1_ptr->getTargetPosition(XR1::RightHand));
@@ -734,6 +754,8 @@ void XR1ControllerOL::broadcastTransform() {
     if (!(XR1_ptr->isIKPlannerActive(XR1::LeftArm)))
         lookupLeftEFFTarget(transform, itsafine);
 
+
+    lookupBackEFFTarget(transform, itsafine);
 }
 
 
@@ -852,6 +874,45 @@ void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform &transform, Eigen
         }
     }
 
+
+}
+
+
+void XR1ControllerOL::lookupBackEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & itsafine) {
+    try {
+        EFF_Listener.lookupTransform( "/Back_Y", "/TrackingTarget",
+                                       ros::Time(0), transform);
+    }
+    catch (tf::TransformException &ex) {
+        return;
+    }
+
+
+
+//    if (ros::Time::now().toSec() - transform.stamp_.toSec() > 0.1 ) {
+////        ROS_INFO("Got overdue IK target, aborting movement");
+//        return;
+//    }
+
+    transformTFToEigen(transform, itsafine);
+//    XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine , LeftElbowAngle);
+
+    XR1_ptr->setTrackingPosition(XR1::HeadBody, itsafine);
+
+
+
+
+    try {
+        EFF_Listener.lookupTransform( "/Base", "/TrackingTarget",
+                                       ros::Time(0), transform);
+    }
+    catch (tf::TransformException &ex) {
+        return;
+    }
+
+    transformTFToEigen(transform, itsafine);
+
+    XR1_ptr->setTrackingPosition(XR1::BackBody, itsafine);
 
 }
 
