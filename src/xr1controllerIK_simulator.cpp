@@ -220,6 +220,8 @@ void stateTransition(){
 
     if (state_cmd[0] < 0.5){
 
+
+//        ROS_INFO("In Active State");
         RightArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm)));
 
         LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
