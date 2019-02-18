@@ -318,7 +318,7 @@ public:
     //Subjected to change
     //Argu: N/A
     //Reutrns : void , may add error message in the fulture
-    void triggerCalculation();
+    void triggerCalculation(bool dynamic_grav_switch = true);
 
     void updatingCallback(uint8_t id , uint8_t attrId , double value);
 
