@@ -294,6 +294,16 @@ void XR1ControllerOL::stopAllMotors() {
 }
 
 void XR1ControllerOL::stopSimulation() {
+
+
+    control_modes[XR1::MainBody] = 0;
+    control_modes[XR1::LeftArm] = 0;
+    control_modes[XR1::RightArm] = 0;
+    control_modes[XR1::LeftHand] = 0;
+    control_modes[XR1::RightHand] = 0;
+    control_modes[XR1::HeadBody] = 0;
+    control_modes[XR1::BackBody] = 0;
+
     stopAllMotors();
 }
 
