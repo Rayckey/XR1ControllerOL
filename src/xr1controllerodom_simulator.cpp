@@ -10,9 +10,10 @@
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
 #include <geometry_msgs/Twist.h>
-#include "xr1controllerros/ArmMsgs.h"
+
 #include "xr1controllerros/ChainModeChange.h"
-#include "xr1controllerros/BodyMsgs.h"
+
+#include "xr1controllerolmsgulit.h"
 #include <ros/package.h>
 
 // Global Varibles
@@ -25,54 +26,11 @@ tf::TransformListener * EFF_Listener;
 ros::Publisher * LeftArmPositionPublisher;
 ros::Publisher * RightArmPositionPublisher;
 
-// IGNORE THIS PART ==============================================================
-// You know what this is --------------------------------------------------------
-Eigen::VectorXd ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs& msg) {
+VectorXd temp_vec5d;
+VectorXd temp_vec7d;
+xr1controllerros::ArmMsgs temp_armmsgs;
+xr1controllerros::BodyMsgs temp_bodymsgs;
 
-  Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
-
-  res << msg.Shoulder_X ,
-      msg.Shoulder_Y,
-      msg.Elbow_Z ,
-      msg.Elbow_X ,
-      msg.Wrist_Z ,
-      msg.Wrist_X ,
-      msg.Wrist_Y ;
-
-
-  return res;
-}
-
-xr1controllerros::ArmMsgs ConvertArmMsgs(Eigen::VectorXd input) {
-  xr1controllerros::ArmMsgs msg;
-
-  msg.Shoulder_X = input(0);
-  msg.Shoulder_Y = input(1);
-  msg.Elbow_Z = input(2);
-  msg.Elbow_X = input(3);
-  msg.Wrist_Z = input(4);
-
-  msg.Wrist_X = input(5);
-  msg.Wrist_Y = input(6);
-
-  return msg;
-}
-
-
-Eigen::VectorXd BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs& msg) {
-
-  Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
-
-  res << msg.Knee  ,
-      msg.Back_Z,
-      msg.Back_X,
-      msg.Back_Y,
-      msg.Neck_Z,
-      msg.Neck_X,
-      msg.Head;
-
-  return res;
-}
 
 void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & itsafine) {
 
@@ -87,7 +45,10 @@ void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & i
   transformTFToEigen(transform, itsafine);
   XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine , RightElbowAngle);
 
-  RightArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm)));
+  XR1_ptr->getTargetPosition(XR1::RightArm , temp_vec7d);
+  ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+
+  RightArmPositionPublisher->publish(temp_armmsgs);
 }
 
 void lookupLeftEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & itsafine) {
@@ -102,7 +63,9 @@ void lookupLeftEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & i
   transformTFToEigen(transform, itsafine);
   XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine , LeftElbowAngle);
 
-  LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
+  XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
+  ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+  LeftArmPositionPublisher->publish(temp_vec7d);
 }
 
 void subscribeLeftElbowAngle(const std_msgs::Float64 & msg) {
@@ -190,14 +153,23 @@ void subscribeOmniCommand(const geometry_msgs::Twist & msg) {
 
 // Look man you want the fk you gotta to feed me the angles
 void subscribeLeftArmPosition(const xr1controllerros::ArmMsgs & msg) {
-  XR1_ptr->updatingCallback(ArmMsgs2VectorXd(msg) , XR1::LeftArm , XR1::ActualPosition);
+
+  ArmMsgs2VectorXd(msg , temp_vec7d);
+  XR1_ptr->updatingCallback(temp_vec7d , XR1::LeftArm , XR1::ActualPosition);
+
 }
 void subscribeRightArmPosition(const xr1controllerros::ArmMsgs & msg) {
-  XR1_ptr->updatingCallback(ArmMsgs2VectorXd(msg) , XR1::RightArm , XR1::ActualPosition);
+
+  ArmMsgs2VectorXd(msg , temp_vec7d);
+  XR1_ptr->updatingCallback(temp_vec7d , XR1::RightArm , XR1::ActualPosition);
+
 }
 
 void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs & msg) {
-  XR1_ptr->updatingCallback(BodyMsgs2VectorXd(msg) , XR1::MainBody , XR1::ActualPosition);
+
+  BodyMsgs2VectorXd(msg , temp_vec7d);
+  XR1_ptr->updatingCallback(temp_vec7d , XR1::MainBody , XR1::ActualPosition);
+
 }
 
 
@@ -208,6 +180,8 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle nh;
 
+  temp_vec5d = VectorXd::Zero(5);
+  temp_vec7d = VectorXd::Zero(7);
 
   std::string path = ros::package::getPath("xr1controllerol");
 

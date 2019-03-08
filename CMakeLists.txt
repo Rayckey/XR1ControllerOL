@@ -67,6 +67,7 @@ catkin_package(
  add_library(${PROJECT_NAME}
    src/${PROJECT_NAME}/xr1controllerol.cpp
 		 src/${PROJECT_NAME}/xr1controllerolulit.cpp
+		 src/${PROJECT_NAME}/xr1controllerolmsgulit.cpp
  )
 
 
@@ -87,32 +88,32 @@ add_executable(actuator_bridge src/actuator_bridge.cpp)
 target_link_libraries(actuator_bridge ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(actuator_bridge ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(tilt_test src/tilt_test.cpp) 
+add_executable(tilt_test src/tilt_test.cpp)
 target_link_libraries(tilt_test ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(tilt_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(xr1controllerIK_simulator src/xr1controllerIK_simulator.cpp) 
+add_executable(xr1controllerIK_simulator src/xr1controllerIK_simulator.cpp)
 target_link_libraries(xr1controllerIK_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(xr1controllerIK_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
-add_executable(xr1controllerodom_simulator src/xr1controllerodom_simulator.cpp) 
-target_link_libraries(xr1controllerodom_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(xr1controllerodom_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
+#add_executable(xr1controllerodom_simulator src/xr1controllerodom_simulator.cpp)
+#target_link_libraries(xr1controllerodom_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(xr1controllerodom_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
-add_executable(mute_test src/mute_test.cpp) 
-target_link_libraries(mute_test ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(mute_test ${PROJECT_NAME} ${catkin_LIBRARIES})
+#add_executable(mute_test src/mute_test.cpp)
+#target_link_libraries(mute_test ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(mute_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
-add_executable(taught_test src/taught_test.cpp) 
-target_link_libraries(taught_test ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(taught_test ${PROJECT_NAME} ${catkin_LIBRARIES})
+#add_executable(taught_test src/taught_test.cpp)
+#target_link_libraries(taught_test ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(taught_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(xr1controllerIK_varify src/xr1controllerIK_varify.cpp) 
-target_link_libraries(xr1controllerIK_varify ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(xr1controllerIK_varify ${PROJECT_NAME} ${catkin_LIBRARIES})
+#add_executable(xr1controllerIK_varify src/xr1controllerIK_varify.cpp)
+#target_link_libraries(xr1controllerIK_varify ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(xr1controllerIK_varify ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
 add_executable(xr1controllerALP_simulator src/xr1controllerALP_simulator.cpp)
@@ -127,10 +128,10 @@ target_link_libraries(ik_example ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(ik_example ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 
-add_executable(ik_bench src/IK_Bench.cpp)
-target_link_libraries(ik_bench ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(ik_bench ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_executable(ik_bench src/IK_Bench.cpp)
+#target_link_libraries(ik_bench ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(ik_bench ${catkin_LIBRARIES} ${PROJECT_NAME})
 
-add_executable(ik_odom src/IK_odom.cpp)
-target_link_libraries(ik_odom ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(ik_odom ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_executable(ik_odom src/IK_odom.cpp)
+#target_link_libraries(ik_odom ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(ik_odom ${catkin_LIBRARIES} ${PROJECT_NAME})

@@ -1,4 +1,5 @@
 #include "xr1controllerol.h"
+#include "xr1controllerolmsgulit.h"
 #include "actuatorcontroller.h"
 #include "xr1controllerros/ArmMsgs.h"
 #include "xr1controllerros/BodyMsgs.h"
@@ -9,6 +10,13 @@ XR1ControllerOL * XR1_ptr;
 ros::Publisher *  MainBodyPositionPublisher;
 ros::Publisher *  LeftArmPositionPublisher ;
 ros::Publisher *  RightArmPositionPublisher;
+
+VectorXd temp_vec5d;
+VectorXd temp_vec7d;
+VectorXd temp_vec3d;
+xr1controllerros::HandMsgs temp_handmsgs;
+xr1controllerros::ArmMsgs temp_armmsgs;
+xr1controllerros::BodyMsgs temp_bodymsgs;
 
 // Hey Gongbo you don't need this
 
@@ -24,11 +32,22 @@ void tiltBroadcast_callback(const ros::TimerEvent& event) {
 
   XR1_ptr->clearStates();
 
-  MainBodyPositionPublisher->publish(XR1_ptr->ConvertBodyMsgs(XR1_ptr->getTargetPosition(XR1::MainBody , true)));
+  XR1_ptr->getTargetPosition(XR1::MainBody , true);
 
-  LeftArmPositionPublisher->publish(XR1_ptr->ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm, true)));
 
-  RightArmPositionPublisher->publish(XR1_ptr->ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm, true)));
+
+  XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d ,true);
+  ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
+  MainBodyPositionPublisher->publish(temp_bodymsgs);
+
+  XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d , true);
+  ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+  LeftArmPositionPublisher->publish(temp_armmsgs);
+
+  XR1_ptr->getTargetPosition(XR1::RightArm, temp_vec7d, true);
+  ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+  RightArmPositionPublisher->publish(temp_armmsgs);
+
 
 }
 
@@ -44,6 +63,9 @@ int main(int argc, char **argv) {
   ActuatorController::initController();
   ActuatorController::getInstance()->autoRecoginze();
 
+  temp_vec5d = VectorXd::Zero(5);
+  temp_vec7d = VectorXd::Zero(7);
+  temp_vec3d = VectorXd::Zero(3);
 
   XR1_ptr = new XR1ControllerOL();
 

@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include "xr1controller.h"
 #include "xr1controlleralp.h"
+#include "xr1controllerolmsgulit.h"
 #include "xr1define.h"
 #include "std_msgs/Bool.h"
 #include <std_msgs/Float64.h>
@@ -29,103 +30,15 @@ ros::Publisher * RightArmPositionPublisher;
 ros::Publisher * MainBodyPositionPublisher;
 ros::Publisher * LeftHandPositionPublisher;
 ros::Publisher * RightHandPositionPublisher;
+VectorXd temp_vec5d;
+VectorXd temp_vec7d;
+VectorXd temp_vec3d;
+xr1controllerros::HandMsgs temp_handmsgs;
+xr1controllerros::ArmMsgs temp_armmsgs;
+xr1controllerros::BodyMsgs temp_bodymsgs;
+
 
 bool animation_switch;
-
-
-
-// IGNORE THIS PART ==============================================================
-// You know what this is --------------------------------------------------------
-Eigen::VectorXd ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs& msg) {
-
-  Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
-
-  res << msg.Shoulder_X ,
-      msg.Shoulder_Y,
-      msg.Elbow_Z ,
-      msg.Elbow_X ,
-      msg.Wrist_Z ,
-      msg.Wrist_X ,
-      msg.Wrist_Y ;
-
-
-  return res;
-}
-
-xr1controllerros::ArmMsgs ConvertArmMsgs(Eigen::VectorXd input) {
-  xr1controllerros::ArmMsgs msg;
-
-  msg.Shoulder_X = input(0);
-  msg.Shoulder_Y = input(1);
-  msg.Elbow_Z = input(2);
-  msg.Elbow_X = input(3);
-  msg.Wrist_Z = input(4);
-  msg.Wrist_X = input(5);
-  msg.Wrist_Y = input(6);
-
-  return msg;
-}
-
-
-Eigen::VectorXd BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs& msg) {
-
-  Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
-
-  res << msg.Knee  ,
-      msg.Back_Z,
-      msg.Back_X,
-      msg.Back_Y,
-      msg.Neck_Z,
-      msg.Neck_X,
-      msg.Head;
-
-  return res;
-}
-
-
-xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input) {
-
-  xr1controllerros::BodyMsgs msg;
-
-  msg.Knee   = input(0);
-  msg.Back_Z = input(1);
-  msg.Back_X = input(2);
-  msg.Back_Y = input(3);
-  msg.Neck_Z = input(4);
-  msg.Neck_X = input(5);
-  msg.Head = input(6);
-
-  return msg;
-}
-
-
-xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition) {
-
-    xr1controllerros::HandMsgs msg;
-    msg.Thumb = HandPosition(0);
-    msg.Index = HandPosition(1);
-    msg.Middle = HandPosition(2);
-    msg.Ring = HandPosition(3);
-    msg.Pinky = HandPosition(4);
-
-    return msg;
-}
-
-
-Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs& msg) {
-
-    Eigen::VectorXd res = Eigen::VectorXd::Zero(5);
-
-    res << msg.Thumb  ,
-            msg.Index,
-            msg.Middle,
-            msg.Ring,
-            msg.Pinky;
-
-
-    return res;
-}
-
 
 
 
@@ -189,12 +102,26 @@ void broadcastTransform(const ros::TimerEvent& event) {
   if (animation_switch) {
     std::vector<double> temp_cmd = XRA_ptr->getNextState();
 
-    LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm, true)));
-    RightArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm, true)));
-    MainBodyPositionPublisher->publish(ConvertBodyMsgs(XR1_ptr->getTargetPosition(XR1::MainBody, true)));
 
-    LeftHandPositionPublisher->publish(ConvertHandMsgs(XR1_ptr->getTargetPosition(XR1::LeftHand,true)));
-    RightHandPositionPublisher->publish(ConvertHandMsgs(XR1_ptr->getTargetPosition(XR1::RightHand,true)));
+      XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d ,true);
+      ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
+      MainBodyPositionPublisher->publish(temp_bodymsgs);
+
+      XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d , true);
+      ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+      LeftArmPositionPublisher->publish(temp_armmsgs);
+
+      XR1_ptr->getTargetPosition(XR1::RightArm, temp_vec7d, true);
+      ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+      RightArmPositionPublisher->publish(temp_armmsgs);
+
+      XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec5d, true);
+      ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+      LeftHandPositionPublisher->publish(temp_handmsgs);
+
+      XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec5d , true);
+      ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+      RightHandPositionPublisher->publish(temp_handmsgs);
 
 
     // trick ourselves into thinking we have velocites
@@ -216,23 +143,32 @@ void broadcastTransform(const ros::TimerEvent& event) {
 
 
 // Look man you want the fk you gotta to feed me the angles
-void subscribeLeftArmPosition(const xr1controllerros::ArmMsgs& msg) {
-  XR1_ptr->updatingCallback( XR1::LeftArm , XR1::ActualPosition , ArmMsgs2VectorXd(msg));
+void subscribeLeftArmPosition(const xr1controllerros::ArmMsgs & msg) {
+
+    ArmMsgs2VectorXd(msg , temp_vec7d);
+    XR1_ptr->updatingCallback( XR1::LeftArm , XR1::ActualPosition , temp_vec7d);
+
 }
-void subscribeRightArmPosition(const xr1controllerros::ArmMsgs& msg) {
-  XR1_ptr->updatingCallback( XR1::RightArm , XR1::ActualPosition ,ArmMsgs2VectorXd(msg));
+void subscribeRightArmPosition(const xr1controllerros::ArmMsgs & msg) {
+
+    ArmMsgs2VectorXd(msg , temp_vec7d);
+    XR1_ptr->updatingCallback( XR1::RightArm , XR1::ActualPosition , temp_vec7d);
+
 }
 
+void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs & msg) {
 
+    BodyMsgs2VectorXd(msg , temp_vec7d);
+    XR1_ptr->updatingCallback(XR1::MainBody , XR1::ActualPosition , temp_vec7d);
+
+}
 void subscribeLeftHandPosition(const xr1controllerros::HandMsgs& msg) {
-    XR1_ptr->updatingCallback( XR1::LeftHand , XR1::ActualPosition , HandsMsgs2VectorXd(msg));
+    HandsMsgs2VectorXd(msg , temp_vec5d);
+    XR1_ptr->updatingCallback( XR1::LeftHand , XR1::ActualPosition , temp_vec5d);
 }
 void subscribeRightHandPosition(const xr1controllerros::HandMsgs& msg) {
-    XR1_ptr->updatingCallback( XR1::RightHand , XR1::ActualPosition ,HandsMsgs2VectorXd(msg));
-}
-
-void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs& msg) {
-  XR1_ptr->updatingCallback( XR1::MainBody , XR1::ActualPosition , BodyMsgs2VectorXd(msg));
+    HandsMsgs2VectorXd(msg , temp_vec5d);
+    XR1_ptr->updatingCallback( XR1::RightHand , XR1::ActualPosition ,temp_vec5d);
 }
 
 
@@ -245,6 +181,10 @@ int main(int argc, char **argv) {
 
   animation_switch = false;
 
+
+   temp_vec5d = VectorXd::Zero(5);
+   temp_vec7d = VectorXd::Zero(7);
+   temp_vec3d = VectorXd::Zero(3);
 
   std::string path = ros::package::getPath("xr1controllerol");
 

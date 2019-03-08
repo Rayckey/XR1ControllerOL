@@ -10,10 +10,11 @@
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
-#include "xr1controllerros/ArmMsgs.h"
-#include "xr1controllerros/HandMsgs.h"
+
+
+#include "xr1controllerolmsgulit.h"
 #include "xr1controllerros/ChainModeChange.h"
-#include "xr1controllerros/BodyMsgs.h"
+
 #include "xr1controllerol/IKLinearService.h"
 #include <ros/package.h>
 
@@ -33,99 +34,13 @@ ros::Publisher * LeftHandPositionPublisher;
 ros::Publisher * RightHandPositionPublisher;
 ros::Publisher * MainBodyPositionPublisher;
 
-// IGNORE THIS PART ==============================================================
-// You know what this is --------------------------------------------------------
-Eigen::VectorXd ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs& msg) {
 
-  Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
-
-  res << msg.Shoulder_X ,
-      msg.Shoulder_Y,
-      msg.Elbow_Z ,
-      msg.Elbow_X ,
-      msg.Wrist_Z ,
-      msg.Wrist_X ,
-      msg.Wrist_Y ;
-
-
-  return res;
-}
-
-xr1controllerros::ArmMsgs ConvertArmMsgs(Eigen::VectorXd input) {
-  xr1controllerros::ArmMsgs msg;
-
-  msg.Shoulder_X = input(0);
-  msg.Shoulder_Y = input(1);
-  msg.Elbow_Z = input(2);
-  msg.Elbow_X = input(3);
-  msg.Wrist_Z = input(4);
-
-  msg.Wrist_X = input(5);
-  msg.Wrist_Y = input(6);
-
-  return msg;
-}
-
-
-Eigen::VectorXd BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs& msg) {
-
-  Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
-
-  res << msg.Knee  ,
-      msg.Back_Z,
-      msg.Back_X,
-      msg.Back_Y,
-      msg.Neck_Z,
-      msg.Neck_X,
-      msg.Head;
-
-  return res;
-}
-
-
-xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input) {
-
-    xr1controllerros::BodyMsgs msg;
-
-    msg.Knee = input(0);
-    msg.Back_Z = input(1);
-    msg.Back_X = input(2);
-    msg.Back_Y = input(3);
-    msg.Neck_Z = input(4);
-    msg.Neck_X = input(5);
-    msg.Head = input(6);
-
-    return msg;
-}
-
-
-Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg) {
-
-    Eigen::VectorXd res = Eigen::VectorXd::Zero(5);
-
-    res << msg.Thumb,
-            msg.Index,
-            msg.Middle,
-            msg.Ring,
-            msg.Pinky;
-
-
-    return res;
-}
-
-
-xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition) {
-
-    xr1controllerros::HandMsgs msg;
-    msg.Thumb = HandPosition(0);
-    msg.Index = HandPosition(1);
-    msg.Middle = HandPosition(2);
-    msg.Ring = HandPosition(3);
-    msg.Pinky = HandPosition(4);
-
-    return msg;
-}
-
+VectorXd temp_vec5d;
+VectorXd temp_vec7d;
+VectorXd temp_vec3d;
+xr1controllerros::HandMsgs temp_handmsgs;
+xr1controllerros::ArmMsgs temp_armmsgs;
+xr1controllerros::BodyMsgs temp_bodymsgs;
 
 
 void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & itsafine) {
@@ -138,10 +53,14 @@ void lookupRightEFFTarget(tf::StampedTransform & transform,  Eigen::Affine3d & i
     return;
   }
 
-  transformTFToEigen(transform, itsafine);
-  XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine , RightElbowAngle);
 
-  RightArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm)));
+    transformTFToEigen(transform, itsafine);
+    XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine , RightElbowAngle);
+
+    XR1_ptr->getTargetPosition(XR1::RightArm , temp_vec7d);
+    ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+
+    RightArmPositionPublisher->publish(temp_armmsgs);
 }
 
 void lookupLeftEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & itsafine) {
@@ -156,7 +75,9 @@ void lookupLeftEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & i
   transformTFToEigen(transform, itsafine);
   XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine , LeftElbowAngle);
 
-  LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
+    XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
+    ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+    LeftArmPositionPublisher->publish(temp_armmsgs);
 }
 
 void lookupBackEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & itsafine) {
@@ -222,15 +143,25 @@ void stateTransition(){
 
 
 //        ROS_INFO("In Active State");
-        RightArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::RightArm)));
+        XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d ,true);
+        ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
+        MainBodyPositionPublisher->publish(temp_bodymsgs);
 
-        LeftArmPositionPublisher->publish(ConvertArmMsgs(XR1_ptr->getTargetPosition(XR1::LeftArm)));
+        XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d , true);
+        ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+        LeftArmPositionPublisher->publish(temp_armmsgs);
 
-        MainBodyPositionPublisher->publish(ConvertBodyMsgs(XR1_ptr->getTargetPosition(XR1::MainBody)));
+        XR1_ptr->getTargetPosition(XR1::RightArm, temp_vec7d, true);
+        ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+        RightArmPositionPublisher->publish(temp_armmsgs);
 
-        LeftHandPositionPublisher->publish(ConvertHandMsgs(XR1_ptr->getTargetPosition(XR1::LeftHand)));
+        XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec5d, true);
+        ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+        LeftHandPositionPublisher->publish(temp_handmsgs);
 
-        RightHandPositionPublisher->publish(ConvertHandMsgs(XR1_ptr->getTargetPosition(XR1::RightHand)));
+        XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec5d , true);
+        ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+        RightHandPositionPublisher->publish(temp_handmsgs);
     }
 
 }
@@ -332,21 +263,26 @@ void broadcastTransform(const ros::TimerEvent& event) {
 
 // Look man you want the fk you gotta to feed me the angles
 void subscribeLeftArmPosition(const xr1controllerros::ArmMsgs& msg) {
-  XR1_ptr->updatingCallback(ArmMsgs2VectorXd(msg) , XR1::LeftArm , XR1::ActualPosition);
+    ArmMsgs2VectorXd(msg,temp_vec7d);
+  XR1_ptr->updatingCallback( temp_vec7d, XR1::LeftArm , XR1::ActualPosition);
 }
 void subscribeRightArmPosition(const xr1controllerros::ArmMsgs& msg) {
-  XR1_ptr->updatingCallback(ArmMsgs2VectorXd(msg) , XR1::RightArm , XR1::ActualPosition);
+    ArmMsgs2VectorXd(msg,temp_vec7d);
+  XR1_ptr->updatingCallback(temp_vec7d , XR1::RightArm , XR1::ActualPosition);
 }
 
 void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs& msg) {
-  XR1_ptr->updatingCallback(BodyMsgs2VectorXd(msg) , XR1::MainBody , XR1::ActualPosition);
+    BodyMsgs2VectorXd(msg , temp_vec7d);
+  XR1_ptr->updatingCallback(temp_vec7d , XR1::MainBody , XR1::ActualPosition);
 }
 
 void subscribeLeftHandPosition(const xr1controllerros::HandMsgs& msg) {
-    XR1_ptr->updatingCallback(HandsMsgs2VectorXd (msg) , XR1::LeftHand , XR1::ActualPosition);
+    HandsMsgs2VectorXd (msg , temp_vec5d);
+    XR1_ptr->updatingCallback(temp_vec5d , XR1::LeftHand , XR1::ActualPosition);
 }
 void subscribeRightHandPosition(const xr1controllerros::HandMsgs& msg) {
-    XR1_ptr->updatingCallback(HandsMsgs2VectorXd(msg) , XR1::RightHand , XR1::ActualPosition);
+    HandsMsgs2VectorXd(msg , temp_vec5d);
+    XR1_ptr->updatingCallback(temp_vec5d, XR1::RightHand , XR1::ActualPosition);
 }
 
 

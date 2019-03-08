@@ -27,7 +27,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Angles contained in Eigen::VectorXd
     //Reutrns : void , may add error message in the fulture
-    void setJointPosition(uint8_t control_group , VectorXd JA);
+    void setJointPosition(uint8_t control_group , VectorXd & JA);
 
 
     //Set the Target Joint Positions for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -41,7 +41,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Angular Velocity contained in Eigen::VectorXd
     //Reutrns : void , may add error message in the fulture
-    void setJointVelocity(uint8_t control_group , VectorXd JV);
+    void setJointVelocity(uint8_t control_group , VectorXd & JV);
 
 
     //Set the Target Joint Velocity for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -56,7 +56,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Target Current
     //Reutrns : void , may add error message in the fulture
-    void setJointAcceleration(uint8_t control_group , VectorXd JA);
+    void setJointAcceleration(uint8_t control_group , VectorXd &JA);
 
 
     //Set the Target Joint Accelration for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -71,7 +71,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Target Current
     //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t control_group , VectorXd JC);
+    void setJointCurrent(uint8_t control_group , VectorXd & JC);
 
 
     //Set the Target Joint Currents for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -86,6 +86,7 @@ public:
     //Argu: Control Group ID
     //Reutrns : JointAngles contained in Eigen::VectorXd
     VectorXd getJointPositions(uint8_t control_group , bool vanilla = false);
+    void getJointPositions(uint8_t control_group , VectorXd &output_ref , bool vanilla = false);
 
 
     //Get the Current Joint Angles for an entire control group, i.e. LeftARM , RightHand
@@ -100,6 +101,7 @@ public:
     //Argu: Control Group ID
     //Reutrns : Joint Velocities contained in Eigen::VectorXd
     VectorXd getJointVelocities(uint8_t control_group , bool vanilla = false);
+    void getJointVelocities(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);
 
 
     //Get the Current Joint Velocites for an entire control group, i.e. LeftARM , RightHand
@@ -114,6 +116,7 @@ public:
     //Argu: Control Group ID
     //Reutrns : Joint Currents contained in Eigen::VectorXd
     VectorXd getJointCurrents(uint8_t control_group , bool vanilla = false);
+    void getJointCurrents(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);
 
 
     //Get the Current Joint Currents for an entire control group, i.e. LeftARM , RightHand
@@ -306,12 +309,15 @@ public:
 
     //Get Target Position for Arms or Body
     VectorXd getTargetPosition(uint8_t control_group , bool vanilla = false);
+    void getTargetPosition(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);
 
     //Get Target velocity for Arms or Body
     VectorXd getTargetVelocity(uint8_t control_group , bool vanilla = false);
+    void getTargetVelocity(uint8_t control_group , VectorXd & output_ref, bool vanilla = false);
 
     //Get Target Current for Arms or Body
     VectorXd getTargetCurrent(uint8_t control_group , bool vanilla = false);
+    void getTargetCurrent(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);
 
 
     // Trigger the Calcualtions
@@ -398,7 +404,6 @@ private:
 //    std::vector<double> driveCmd;
 
 
-    double PI;
 
     int num_joint_in_chain;
 
@@ -406,6 +411,13 @@ private:
 
 
     std::vector<double> sitting_position;
+
+
+
+    // temp values
+    VectorXd temp_vec3d;
+    VectorXd temp_vec7d;
+    VectorXd temp_vec5d;
 
 };
 

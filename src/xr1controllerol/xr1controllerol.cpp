@@ -189,6 +189,10 @@ XR1ControllerOL::XR1ControllerOL() :
     ROS_INFO("OL finished");
 
 
+    temp_vec5d = VectorXd::Zero(5);
+    temp_vec7d = VectorXd::Zero(7);
+    temp_vec3d = VectorXd::Zero(3);
+
     XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
 
 
@@ -251,7 +255,9 @@ void XR1ControllerOL::MoCapCallback(const ros::TimerEvent &) {
 
         XR1_ptr->setMoCapPosition(IMU_ptr->getJointAngles());
 
-        setJointPosition(XR1::LeftArm, XR1_ptr->getTargetPosition(XR1::LeftArm));
+        XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
+
+        setJointPosition(XR1::LeftArm, temp_vec7d);
 
     }
 
@@ -360,7 +366,7 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
 }
 
 
-void XR1ControllerOL::setJointPosition(uint8_t control_group, VectorXd JA) {
+void XR1ControllerOL::setJointPosition(uint8_t control_group, VectorXd & JA) {
 
 
     if (XR1_ptr->isXR1Okay()) {
@@ -385,7 +391,7 @@ double XR1ControllerOL::getTargetJointPosition(uint8_t joint_id, bool vanilla) {
 
 }
 
-void XR1ControllerOL::setJointVelocity(uint8_t control_group, VectorXd JV) {
+void XR1ControllerOL::setJointVelocity(uint8_t control_group, VectorXd & JV) {
 
     if (XR1_ptr->isXR1Okay()) {
         std::vector<uint8_t> temp_vector = control_group_map[control_group];
@@ -399,7 +405,7 @@ void XR1ControllerOL::setJointVelocity(uint8_t control_group, VectorXd JV) {
 
 }
 
-void XR1ControllerOL::setJointCurrent(uint8_t control_group, VectorXd JC) {
+void XR1ControllerOL::setJointCurrent(uint8_t control_group, VectorXd & JC) {
 
     if (XR1_ptr->isXR1Okay()) {
         std::vector<uint8_t> temp_vector = control_group_map[control_group];
@@ -569,20 +575,46 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 //     ROS_INFO("Unleasing");
 
 //    ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
-    MainBodyPositionPublisher.publish(ConvertBodyMsgs(XR1_ptr->getJointPositions(XR1::MainBody, true)));
-    MainBodyCurrentPublisher.publish(ConvertBodyMsgs(XR1_ptr->getJointCurrents(XR1::MainBody, true)));
 
-    LeftArmPositionPublisher.publish(ConvertArmMsgs(XR1_ptr->getJointPositions(XR1::LeftArm, true)));
-    LeftArmVelocityPublisher.publish(ConvertArmMsgs(XR1_ptr->getJointVelocities(XR1::LeftArm, true)));
-    LeftArmCurrentPublisher.publish(ConvertArmMsgs(XR1_ptr->getJointCurrents(XR1::LeftArm, true)));
+    XR1_ptr->getJointPositions(XR1::MainBody, temp_vec7d ,true);
+    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
+    MainBodyPositionPublisher.publish(temp_bodymsgs);
 
+    XR1_ptr->getJointCurrents(XR1::MainBody, temp_vec7d , true);
+    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
+    MainBodyCurrentPublisher.publish(temp_bodymsgs);
 
-    RightArmPositionPublisher.publish(ConvertArmMsgs(XR1_ptr->getJointPositions(XR1::RightArm, true)));
-    RightArmVelocityPublisher.publish(ConvertArmMsgs(XR1_ptr->getJointVelocities(XR1::RightArm, true)));
-    RightArmCurrentPublisher.publish(ConvertArmMsgs(XR1_ptr->getJointCurrents(XR1::RightArm, true)));
+    XR1_ptr->getJointPositions(XR1::LeftArm, temp_vec7d , true);
+    ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+    LeftArmPositionPublisher.publish(temp_armmsgs);
 
-    LeftHandPositionPublisher.publish(ConvertHandMsgs(XR1_ptr->getJointCurrents(XR1::LeftHand, true)));
-    RightHandPositionPublisher.publish(ConvertHandMsgs(XR1_ptr->getJointCurrents(XR1::RightHand, true)));
+    XR1_ptr->getJointVelocities(XR1::LeftArm, temp_vec7d , true);
+    ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+    LeftArmVelocityPublisher.publish(temp_armmsgs);
+
+    XR1_ptr->getJointCurrents(XR1::LeftArm, temp_vec7d , true);
+    ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+    LeftArmCurrentPublisher.publish(temp_armmsgs);
+
+    XR1_ptr->getJointPositions(XR1::RightArm, temp_vec7d, true);
+    ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+    RightArmPositionPublisher.publish(temp_armmsgs);
+
+    XR1_ptr->getJointVelocities(XR1::RightArm, temp_vec7d , true);
+    ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+    RightArmVelocityPublisher.publish(temp_armmsgs);
+
+    XR1_ptr->getJointCurrents(XR1::RightArm, temp_vec7d , true);
+    ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+    RightArmCurrentPublisher.publish(temp_armmsgs);
+
+    XR1_ptr->getJointCurrents(XR1::LeftHand, temp_vec5d, true);
+    ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+    LeftHandPositionPublisher.publish(temp_handmsgs);
+
+    XR1_ptr->getJointCurrents(XR1::RightHand, temp_vec5d , true);
+    ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+    RightHandPositionPublisher.publish(temp_handmsgs);
 
 
     gravityCallback();
@@ -606,7 +638,8 @@ void XR1ControllerOL::stateTransition(){
         switch2HighFrequency(true);
 
 
-        setJointPosition(XR1::LeftArm , XR1_ptr->getTargetPosition(XR1::LeftArm));
+        XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
+        setJointPosition(XR1::LeftArm , temp_vec7d);
 
 //        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
 //        ROS_INFO("[%f][%f][%f][%f][%f][%f][%f]" , XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_X , true),
@@ -617,9 +650,11 @@ void XR1ControllerOL::stateTransition(){
 //                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_X , true),
 //                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Y , true)) ;
 
-        setJointPosition(XR1::RightArm , XR1_ptr->getTargetPosition(XR1::RightArm));
+        XR1_ptr->getTargetPosition(XR1::RightArm , temp_vec7d);
+        setJointPosition(XR1::RightArm , temp_vec7d);
 
-        setJointPosition(XR1::MainBody , XR1_ptr->getTargetPosition(XR1::MainBody));
+        XR1_ptr->getTargetPosition(XR1::MainBody , temp_vec7d);
+        setJointPosition(XR1::MainBody , temp_vec7d);
 
 
 //        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
@@ -631,10 +666,11 @@ void XR1ControllerOL::stateTransition(){
 //                 XR1_ptr->getTargetJointPosition(XR1::Neck_X , true),
 //                 XR1_ptr->getTargetJointPosition(XR1::Head , true)) ;
 
+        XR1_ptr->getTargetPosition(XR1::LeftHand , temp_vec5d);
+        setJointPosition(XR1::LeftHand , temp_vec5d);
 
-        setJointPosition(XR1::LeftHand , XR1_ptr->getTargetPosition(XR1::LeftHand));
-
-        setJointPosition(XR1::RightHand , XR1_ptr->getTargetPosition(XR1::RightHand));
+        XR1_ptr->getTargetPosition(XR1::RightHand , temp_vec5d);
+        setJointPosition(XR1::RightHand , temp_vec5d);
 
     }
 
@@ -835,7 +871,12 @@ void XR1ControllerOL::lookupRightEFFTarget(tf::StampedTransform &transform, Eige
         else {
             transformTFToEigen(transform, itsafine);
             if (XR1_ptr->setEndEffectorPosition(XR1::RightArm, itsafine, RightElbowAngle)) {
-                setJointPosition(XR1::RightArm, XR1_ptr->getTargetPosition(XR1::RightArm));
+
+                XR1_ptr->getTargetPosition(XR1::RightArm , temp_vec7d);
+
+                setJointPosition(XR1::RightArm, temp_vec7d);
+
+
             } else {
                 VectorXd temp_vec = VectorXd::Zero(7);
 
@@ -871,7 +912,9 @@ void XR1ControllerOL::lookupLeftEFFTarget(tf::StampedTransform &transform, Eigen
             transformTFToEigen(transform, itsafine);
             if (XR1_ptr->setEndEffectorPosition(XR1::LeftArm, itsafine, LeftElbowAngle)) {
 
-                setJointPosition(XR1::LeftArm, XR1_ptr->getTargetPosition(XR1::LeftArm));
+                XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
+
+                setJointPosition(XR1::LeftArm, temp_vec7d);
             } else {
                 VectorXd temp_vec = VectorXd::Zero(7);
 

@@ -20,6 +20,7 @@ public:
 
     //Over load some functions
     VectorXd getTargetJointCurrents();
+    void getTargetJointCurrents(VectorXd & output_ref);
     std::vector<double> getTargetJointCurrentsStd();
     double getTargetJointCurrent(uint8_t joint_id);
 

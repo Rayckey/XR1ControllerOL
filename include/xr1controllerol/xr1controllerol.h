@@ -28,6 +28,7 @@
 
 
 #include "Eigen/Dense"
+#include "xr1controllerolmsgulit.h"
 
 
 using namespace Eigen;
@@ -74,7 +75,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Angles contained in Eigen::VectorXd
     //Reutrns : void , may add error message in the future
-    void setJointPosition(uint8_t control_group, VectorXd JA);
+    void setJointPosition(uint8_t control_group, VectorXd & JA);
 
 
     //Set the Target Joint Positions for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -88,7 +89,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Angular Velocity contained in Eigen::VectorXd
     //Reutrns : void , may add error message in the fulture
-    void setJointVelocity(uint8_t control_group, VectorXd JV);
+    void setJointVelocity(uint8_t control_group, VectorXd & JV);
 
 
     //Set the Target Joint Velocity for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -102,7 +103,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Target Current
     //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t control_group, VectorXd JC);
+    void setJointCurrent(uint8_t control_group, VectorXd & JC);
 
 
     //Set the Target Joint Velocity for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -117,6 +118,7 @@ public:
 
     //Get Target Position for Arms or Body
     VectorXd getTargetPosition(uint8_t control_group, bool vanilla = false);
+    void getTargetPosition(uint8_t control_group, VectorXd  & output_ref , bool vanilla = false);
 
 
     void getEndEffectorTransformation(uint8_t control_group, Affine3d &TransformationReference);
@@ -140,14 +142,6 @@ public:
 
 
 
-
-    // Convert Joint ROS Messages
-
-    Eigen::VectorXd BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs &msg);
-
-    Eigen::VectorXd ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg);
-
-    Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg);
 
 
     // Things regarding actuator controller
@@ -175,17 +169,7 @@ public:
     void judgeActuatorModes(uint8_t control_group);
 
 
-    xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd HandPosition);
 
-    xr1controllerros::HandMsgs ConvertHandMsgs(std::vector<double> HandPosition);
-
-    xr1controllerros::ArmMsgs ConvertArmMsgs(std::vector<double> input);
-
-    xr1controllerros::ArmMsgs ConvertArmMsgs(Eigen::VectorXd input);
-
-    xr1controllerros::BodyMsgs ConvertBodyMsgs(std::vector<double> input);
-
-    xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd input);
 
 
     // Some mumble jumble that no one clear about
@@ -382,6 +366,12 @@ private:
 
     // Very useless temp varibles
     Matrix4d temp_trans;
+    VectorXd temp_vec5d;
+    VectorXd temp_vec7d;
+    VectorXd temp_vec3d;
+    xr1controllerros::HandMsgs temp_handmsgs;
+    xr1controllerros::ArmMsgs temp_armmsgs;
+    xr1controllerros::BodyMsgs temp_bodymsgs;
     bool hand_command_switch;
     int power_reading_counter;
 

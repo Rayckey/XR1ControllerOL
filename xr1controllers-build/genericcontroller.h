@@ -13,24 +13,23 @@ public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     GenericController(uint8_t id , int num_joint);
 
-    virtual void updateValue(VectorXd JointValue , uint8_t value_type);
+    virtual void updateValue(VectorXd & JointValue , uint8_t value_type);
 
     virtual void updateValue(double JointValue, uint8_t JointID , uint8_t value_type);
 
     //Retrive Current Values from each group
     virtual VectorXd getJointAngles();
+    virtual void getJointAngles(VectorXd & output_ref);
 
     virtual std::vector<double> getJointAnglesStd();
 
     virtual VectorXd getJointVelocities();
+    virtual void getJointVelocities(VectorXd & output_ref);
 
     virtual std::vector<double> getJointVelocitiesStd();
 
-    virtual VectorXd getTargetJointAccelerations();
-
-    virtual std::vector<double> getTargetJointAccelerationsStd();
-
     virtual VectorXd getJointCurrents();
+    virtual void getJointCurrents(VectorXd & output_ref);
 
     virtual std::vector<double> getJointCurrentsStd();
 
@@ -38,18 +37,27 @@ public:
 
     //Retrive Target Values from each group
     virtual VectorXd getTargetJointAngles();
+    virtual void getTargetJointAngles(VectorXd & output_ref);
 
     virtual VectorXd getIKJointAngles();
+    virtual void getIKJointAngles(VectorXd & output_ref);
 
     virtual void    overwriteIKJointAngles();
 
     virtual std::vector<double> getTargetJointAnglesStd();
 
     virtual VectorXd getTargetJointVelocities();
+    virtual void getTargetJointVelocities(VectorXd & output_ref);
 
     virtual std::vector<double> getTargetJointVelocitiesStd();
 
+    virtual VectorXd getTargetJointAccelerations();
+    virtual void getTargetJointAccelerations(VectorXd & output_ref);
+
+    virtual std::vector<double> getTargetJointAccelerationsStd();
+
     virtual VectorXd getTargetJointCurrents();
+    virtual void getTargetJointCurrents(VectorXd & output_ref);
 
     virtual std::vector<double> getTargetJointCurrentsStd();
 
