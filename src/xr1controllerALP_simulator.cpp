@@ -196,7 +196,7 @@ int main(int argc, char **argv) {
 
   XR1_ptr = new XR1Controller(path + "/strawberry.xr1para" , sit_pos);
 
-  XRA_ptr = new XR1ControllerALP(path + "/ALP" , XR1_ptr, 130 , 10 , 1 , 1 );
+  XRA_ptr = new XR1ControllerALP(path + "/ALP" , XR1_ptr, 169 , 10 , 1 , 1 );
 
   EFF_Broadcaster = new tf::TransformBroadcaster();
 
