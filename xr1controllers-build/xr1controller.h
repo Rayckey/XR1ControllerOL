@@ -170,13 +170,10 @@ public:
     //-------------------End Effector (Wrist) Control ---------------------------
 
 
-    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle = 8 , uint8_t base_group = XR1::Back_Y);
 
-    void setTrackingPosition(uint8_t control_group , Affine3d & TargetTransformation);
+    bool setTrackingPosition(uint8_t control_group , Affine3d & TargetTransformation);
 
-    void setGrippingSwitch(uint8_t control_group, bool tof);
-
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle = 8 , uint8_t base_group = XR1::Back_Y);
+    void setGrippingSwitch(uint8_t control_group, bool tof);  
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period , uint8_t base_group = XR1::Back_Y);
 
@@ -418,6 +415,14 @@ private:
     VectorXd temp_vec3d;
     VectorXd temp_vec7d;
     VectorXd temp_vec5d;
+
+
+
+    // Legacy
+
+//    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle = 8 , uint8_t base_group = XR1::Back_Y);
+//    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle = 8 , uint8_t base_group = XR1::Back_Y);
+
 
 };
 

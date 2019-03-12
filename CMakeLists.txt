@@ -47,6 +47,7 @@ include_directories(
 add_service_files(
 		FILES
 		IKLinearService.srv
+		IKTrackingService.srv
 )
 
 generate_messages(
@@ -68,6 +69,10 @@ catkin_package(
    src/${PROJECT_NAME}/xr1controllerol.cpp
 		 src/${PROJECT_NAME}/xr1controllerolulit.cpp
 		 src/${PROJECT_NAME}/xr1controllerolmsgulit.cpp
+		 src/${PROJECT_NAME}/xr1controllerolanimation.cpp
+		 src/${PROJECT_NAME}/xr1controllerolhigh.cpp
+		 src/${PROJECT_NAME}/xr1controllerollow.cpp
+		 src/${PROJECT_NAME}/xr1controllerolik.cpp
  )
 
 

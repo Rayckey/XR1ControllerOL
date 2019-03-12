@@ -4,6 +4,7 @@
 #include "ros/ros.h"
 #include "actuatorcontroller.h"
 #include "xr1controller.h"
+#include "xr1controlleralp.h"
 #include "xr1define.h"
 #include "XR1IMUmethods.h"
 
@@ -25,6 +26,10 @@
 
 // The IK planner message service
 #include "xr1controllerol/IKLinearService.h"
+#include "xr1controllerol/IKTrackingService.h"
+
+// The animation message type
+#include "xr1controllerol/AnimationMsgs.h"
 
 
 #include "Eigen/Dense"
@@ -139,7 +144,30 @@ public:
 
 
 
+    // Animation Library Stuff ------------------------------------
 
+    // receive animation start signal
+    void subscribeStartAnimation(const std_msgs::Bool& msg) ;
+
+
+    // receive an animation order
+    void subscribeSetAnimation(const xr1controllerol::AnimationMsgs& msg);
+
+
+    // animation main loop
+    void animationCallback();
+
+    // change the mode of omniwheels
+    void activateOmni();
+
+    // apply velocities
+    void Omni2Actuator();
+
+    void subscribeSetCollisionDetection(const std_msgs::Bool & msg);
+
+    void collisionDetectionCallback();
+
+    // -------------------------------------------------------------
 
 
 
@@ -232,14 +260,10 @@ protected:
              xr1controllerol::IKLinearServiceResponse & res);
 //    void subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget & msg);
 
+    bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest & req ,
+                           xr1controllerol::IKTrackingServiceResponse & res);
+
     void broadcastTransform();
-
-
-    void lookupRightEFFTarget(tf::StampedTransform &transform, Affine3d &itsafine);
-
-    void lookupLeftEFFTarget(tf::StampedTransform &transform, Affine3d &itsafine);
-
-    void lookupBackEFFTarget(tf::StampedTransform & transform,   Affine3d & itsafine);
 
 
 
@@ -264,6 +288,7 @@ private:
     ActuatorController *m_pController;
 
     XR1Controller *XR1_ptr;
+    XR1ControllerALP * XRA_ptr;
     XR1IMUmethods *IMU_ptr;
 
 
@@ -274,6 +299,9 @@ private:
     std::map<uint8_t, Actuator::ActuatorMode> mode_map;
     std::map<int , int> control_modes;
     bool high_frequency_switch;
+    bool animation_switch;
+    bool collision_detection_switch;
+    bool previous_omni_state;
 
 
 
@@ -350,6 +378,8 @@ private:
 
     ros::ServiceServer IKPlannerService;
 
+    ros::ServiceServer IKTrackingService;
+
     ros::Publisher JointAttributePublisher;
 
     ros::Publisher MainBodyPositionPublisher;
@@ -363,6 +393,12 @@ private:
     ros::Publisher LeftHandPositionPublisher;
     ros::Publisher RightHandPositionPublisher;
 
+
+
+    // Animation subscriber
+    ros::Subscriber AnimationSwitchSubscriber;
+    ros::Subscriber AnimationSetSubscriber;
+    ros::Subscriber CollisionDetectionSubscriber;
 
     // Very useless temp varibles
     Matrix4d temp_trans;

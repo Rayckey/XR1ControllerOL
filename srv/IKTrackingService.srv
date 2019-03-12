@@ -1,0 +1,6 @@
+bool NewTarget
+int32 ControlGroup
+---
+bool isReachable
+bool isAccepted
+bool inProgress

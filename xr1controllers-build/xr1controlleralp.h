@@ -21,12 +21,18 @@ public:
     XR1ControllerALP(string library_root_path , XR1Controller *pointer_to_xr1controller, int num_of_animation, int num_of_idle, int num_of_mute, int num_of_teach);
 
     // get next state immediately, also pops the current state
-    std::vector<double> getNextState();
+    void getNextState();
 
     bool isOmniWheelsMoving();
 
     // set this animation into que
-    void setAnimation(uint8_t animation_type , int animation_id);
+    void setAnimation(int animation_type , int animation_id);
+
+    // pop the next animation in queue
+    int popAnimation();
+
+    // check the current animation queue
+    std::list<int> queryAnimation();
 
     // clear all the states , return to initial state, which will force robot to get into idle
     void clearAll();
@@ -43,6 +49,13 @@ private:
 
     // internal functions
     void readLibraries(string library_path);
+
+    int combineID(int animation_type , int animation_id);
+
+    int getAnimationID(int long_id);
+
+    int distinquishAnimationType(int animation_id);
+
 
     std::list<std::vector<double> > readLibrary(string library_path , uint8_t animation_type);
 
@@ -65,8 +78,6 @@ private:
     void requestPMTarget();
 
     int distinquishAnimationType(std::vector<double> next_serving);
-
-    int distinquishAnimationType(int animation_id);
 
 
 
@@ -140,6 +151,8 @@ private:
     int OFFSET_OF_MUTE;
 
     int OFFSET_OF_TEACH;
+
+    int OFFSET_SIZE;
 
     int SIZE_OF_ANIMATION;
 

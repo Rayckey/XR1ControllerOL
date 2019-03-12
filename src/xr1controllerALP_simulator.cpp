@@ -100,7 +100,7 @@ void broadcastTransform(const ros::TimerEvent& event) {
 
 
   if (animation_switch) {
-    std::vector<double> temp_cmd = XRA_ptr->getNextState();
+      XRA_ptr->getNextState();
 
 
       XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d ,true);

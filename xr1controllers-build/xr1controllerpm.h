@@ -143,6 +143,12 @@ public:
 
     double getJointCurrent(uint8_t joint_id);
 
+    double getTargetJointPosition(uint8_t joint_id , uint8_t mode_fixed = 0);
+
+    double getTargetJointVelocity(uint8_t joint_id);
+
+    double getTargetJointCurrent(uint8_t joint_id);
+
     //---------------------------------------------------------------------------------
     //Get Target Position for Arms or Body
     VectorXd getTargetPosition(uint8_t control_group, uint8_t mode_fixed = 0);
@@ -155,13 +161,6 @@ public:
     //Get Target Current for Arms or Body
     VectorXd getTargetCurrent(uint8_t control_group);
     void getTargetCurrent(uint8_t control_group, VectorXd & output_ref );
-
-    double getTargetJointPosition(uint8_t joint_id , uint8_t mode_fixed = 0);
-
-    double getTargetJointVelocity(uint8_t joint_id);
-
-    double getTargetJointCurrent(uint8_t joint_id);
-
 
     //Zero all the values
     void Zero();
@@ -215,18 +214,13 @@ public:
 
     // Brutal Straight Forward Controls----------------------------------------------
 
-
-    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
-
     bool setTrackingPosition(uint8_t control_group , Affine3d & TargetTransformation);
 
-    void solveBackApproach(const Vector3d & goal_position, Vector3d & back_angles);
+    bool solveBackApproach(const Vector3d & goal_position, Vector3d & back_angles);
 
-    void solveHeadTracking(const Vector3d & goal_position , Vector3d & head_angles);
+    bool solveHeadTracking(const Vector3d & goal_position , Vector3d & head_angles);
 
     void setGrippingSwitch(uint8_t control_group, bool tof);
-
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period, uint8_t base_group = XR1::Back_Y);
 
@@ -334,6 +328,11 @@ public:
 private:
 
 
+    // internal functions
+    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
+    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
+
+
     // Pointers to all the controllers
     std::map<uint8_t ,GenericController *> ControllerMap;
     std::map<uint8_t , uint8_t> ControllerIDs;
@@ -399,7 +398,7 @@ private:
     double breakAcceleration(double velocity , double period);
     double breakMotion(double x0 , double v0 , double a, double t);
     bool GripDetection(uint8_t joint_id);
-    bool CollisionThresholding(VectorXd ActualCurrent , VectorXd ExpectedCurrent, std::vector<double> Thresholds, std::vector<double> StaticThreshold);
+    bool CollisionThresholding(VectorXd && ActualCurrent , VectorXd && ExpectedCurrent, std::vector<double> Thresholds, std::vector<double> StaticThreshold);
     bool ReleaseThresholding(VectorXd ActualPosition, VectorXd TargetPosition, VectorXd Thresholds);
     bool CollisionThresholding(double ActualCurrent , double ExpectedCurrent, double Threshold);
     bool ReleaseThresholding(double ActualPosition, double TargetPosition, double Threshold);
