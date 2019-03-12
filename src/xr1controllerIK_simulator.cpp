@@ -356,7 +356,7 @@ int main(int argc, char **argv) {
 
     ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKLPT", serviceIKPlanner);
 
-    ros::ServiceServer IKTrackingService = nh.advertiseService("XR1/IKLTT", serviceIKTracking);
+    ros::ServiceServer IKTrackingService = nh.advertiseService("XR1/IKTT", serviceIKTracking);
 
 
     // cough out the target position as the result of IK;
