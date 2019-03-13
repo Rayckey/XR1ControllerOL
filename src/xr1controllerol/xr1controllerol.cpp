@@ -19,7 +19,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     std::string path = ros::package::getPath("xr1controllerol");
 
-    XR1_ptr = new XR1Controller(path + "/strawberry.xr1para", sit_pos);
+    XR1_ptr = new XR1Controller(path + "/cream.xr1para", sit_pos);
 
     XRA_ptr = new XR1ControllerALP(path + "/ALP" , XR1_ptr, 169 , 10 , 1 , 1 );
 
@@ -445,7 +445,7 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
     }
 }
 
-void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
+void XR1ControllerOL::readingCallback() {
 
     // ROS_INFO(" the current time is [%f]" , (float)this_event.current_real);
 
@@ -522,6 +522,27 @@ void XR1ControllerOL::readingCallback(const ros::TimerEvent &this_event) {
 
 void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
+    readingCallback();
+
+    unleaseJointInfo();
+
+    gravityCallback();
+
+    broadcastTransform();
+
+    if (animation_switch)
+        animationCallback();
+    else
+        stateTransition();
+
+    collisionDetectionCallback();
+
+}
+
+
+
+
+void XR1ControllerOL::unleaseJointInfo(){
     // send out all the current information
     XR1_ptr->getJointPositions(XR1::MainBody, temp_vec7d ,true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
@@ -562,23 +583,7 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
     XR1_ptr->getJointCurrents(XR1::RightHand, temp_vec5d , true);
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     RightHandPositionPublisher.publish(temp_handmsgs);
-
-
-
-
-    gravityCallback();
-
-    broadcastTransform();
-
-    animationCallback();
-
-    stateTransition();
-
-    collisionDetectionCallback();
 }
-
-
-
 
 
 

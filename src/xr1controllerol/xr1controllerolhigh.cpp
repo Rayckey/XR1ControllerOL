@@ -81,41 +81,7 @@ void XR1ControllerOL::stateTransition(){
         // set the modes , if they are the same it will not affect the actuators
         switch2HighFrequency(true);
 
-
-        XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
-        setJointPosition(XR1::LeftArm , temp_vec7d);
-
-//        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
-//        ROS_INFO("[%f][%f][%f][%f][%f][%f][%f]" , XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_X , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_Y , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_Z , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_X , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Z , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_X , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Y , true)) ;
-
-        XR1_ptr->getTargetPosition(XR1::RightArm , temp_vec7d);
-        setJointPosition(XR1::RightArm , temp_vec7d);
-
-        XR1_ptr->getTargetPosition(XR1::MainBody , temp_vec7d);
-        setJointPosition(XR1::MainBody , temp_vec7d);
-
-
-//        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
-//        ROS_INFO("[%f][%f][%f][%f][%f][%f][%f]" , XR1_ptr->getTargetJointPosition(XR1::Knee_X , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Back_Z , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Back_X , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Back_Y , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Neck_Z , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Neck_X , true),
-//                 XR1_ptr->getTargetJointPosition(XR1::Head , true)) ;
-
-        XR1_ptr->getTargetPosition(XR1::LeftHand , temp_vec5d);
-        setJointPosition(XR1::LeftHand , temp_vec5d);
-
-        XR1_ptr->getTargetPosition(XR1::RightHand , temp_vec5d);
-        setJointPosition(XR1::RightHand , temp_vec5d);
-
+        applyJointTarget();
     }
 
     else {
@@ -138,4 +104,42 @@ void XR1ControllerOL::switch2HighFrequency(bool option) {
         judgeControlGroupModes();
     }
 
+}
+
+
+
+void XR1ControllerOL::applyJointTarget(){
+    XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
+    setJointPosition(XR1::LeftArm , temp_vec7d);
+
+//        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
+//        ROS_INFO("[%f][%f][%f][%f][%f][%f][%f]" , XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Shoulder_Y , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_Z , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Elbow_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Z , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Left_Wrist_Y , true)) ;
+
+    XR1_ptr->getTargetPosition(XR1::RightArm , temp_vec7d);
+    setJointPosition(XR1::RightArm , temp_vec7d);
+
+    XR1_ptr->getTargetPosition(XR1::MainBody , temp_vec7d);
+    setJointPosition(XR1::MainBody , temp_vec7d);
+
+
+//        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
+//        ROS_INFO("[%f][%f][%f][%f][%f][%f][%f]" , XR1_ptr->getTargetJointPosition(XR1::Knee_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Back_Z , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Back_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Back_Y , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Neck_Z , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Neck_X , true),
+//                 XR1_ptr->getTargetJointPosition(XR1::Head , true)) ;
+
+    XR1_ptr->getTargetPosition(XR1::LeftHand , temp_vec5d);
+    setJointPosition(XR1::LeftHand , temp_vec5d);
+
+    XR1_ptr->getTargetPosition(XR1::RightHand , temp_vec5d);
+    setJointPosition(XR1::RightHand , temp_vec5d);
 }

@@ -8,8 +8,15 @@
 void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
     animation_switch = msg.data;
 
-    if (!animation_switch)
+    if (animation_switch)
+        ROS_INFO("Animation is now ON");
+
+    else {
+        ROS_INFO("Animation is now OFF");
         XRA_ptr->clearAll();
+        switch2HighFrequency(false);
+    }
+
 }
 
 
@@ -20,13 +27,44 @@ void XR1ControllerOL::subscribeSetAnimation(const xr1controllerol::AnimationMsgs
         XRA_ptr->setAnimation(msg.AnimationType , msg.AnimationID);
 
     else {
-        ROS_INFO("Number of Animation Left: %d " , XRA_ptr->popAnimation());
+//        ROS_INFO("Number of Animation Left: %d " , XRA_ptr->popAnimation());
     }
 }
 
 
 void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg){
     collision_detection_switch = msg.data;
+
+    if (collision_detection_switch){
+        ROS_INFO("Set collision detection to ON");
+        XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
+    }
+
+
+    else{
+        ROS_INFO("Set collision detection to OFF");
+        XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
+    }
+
+
+
+    if (XR1_ptr->isXR1Okay()){
+
+    }
+
+    else {
+        if (collision_detection_switch){
+
+        }
+
+        else {
+
+
+            XR1_ptr->liftLockdown();
+            switch2HighFrequency(false);
+
+        }
+    }
 }
 
 
@@ -34,8 +72,11 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
 void XR1ControllerOL::animationCallback(){
 
 
-    if (animation_switch) {
+        switch2HighFrequency(true);
+
         XRA_ptr->getNextState();
+
+        applyJointTarget();
 
 
         if (previous_omni_state != XRA_ptr->isOmniWheelsMoving()){
@@ -48,7 +89,6 @@ void XR1ControllerOL::animationCallback(){
             Omni2Actuator();
         }
 
-    }
 
 
 }
@@ -81,13 +121,35 @@ void XR1ControllerOL::Omni2Actuator(){
 void XR1ControllerOL::collisionDetectionCallback(){
 
     if (collision_detection_switch) {
-        if (XR1_ptr->CollisionDetection(XR1::LeftArm) || XR1_ptr->CollisionDetection(XR1::RightArm)) {
+        if (XR1_ptr->CollisionDetection(XR1::LeftArm) ) {
 
-            std::cout << "Collision Occured" << std::endl;
-//            on_GC_activate_clicked();
+            ROS_INFO("Collision Occured");
+
+            switch2HighFrequency(false);
+            switch2HighFrequency(true);
+
+
             XR1_ptr->employLockdown();
             XRA_ptr->clearAll();
             animation_switch = false;
+            collision_detection_switch = false;
+            return;
+
+        }
+
+
+        if (XR1_ptr->CollisionDetection(XR1::RightArm)){
+
+            ROS_INFO("Collision Occured");
+
+            switch2HighFrequency(false);
+            switch2HighFrequency(true);
+
+
+            XR1_ptr->employLockdown();
+            XRA_ptr->clearAll();
+            animation_switch = false;
+            collision_detection_switch = false;
             return;
 
         }

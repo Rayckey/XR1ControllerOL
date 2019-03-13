@@ -173,9 +173,13 @@ public:
 
 
     // Things regarding actuator controller
-    void readingCallback(const ros::TimerEvent &);
+    void readingCallback();
 
     void unleaseCallback(const ros::TimerEvent &);
+
+    void unleaseJointInfo();
+
+    void applyJointTarget();
 
     void gravityCallback();
 
