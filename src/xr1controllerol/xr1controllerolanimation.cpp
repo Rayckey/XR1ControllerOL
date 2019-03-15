@@ -59,7 +59,7 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
 
         else {
 
-
+            // Im guessing you want to lift the curse on thy princess eh?
             XR1_ptr->liftLockdown();
             switch2HighFrequency(false);
 

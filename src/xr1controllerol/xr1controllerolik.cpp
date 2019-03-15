@@ -146,6 +146,38 @@ bool XR1ControllerOL::serviceIKTracking(xr1controllerol::IKTrackingServiceReques
 
 
 
+bool XR1ControllerOL::serviceHandGrip(xr1controllerol::HandGripQueryRequest & req,
+                     xr1controllerol::HandGripQueryResponse & res){
+
+
+    res.inProgress = true;
+    res.isGripped = false;
+
+    int root_control_group = (req.ControlGroup == XR1::LeftHand) ? XR1::LeftArm : XR1::RightArm ;
+
+    if (XR1_ptr->isIKPlannerActive(root_control_group)){
+
+        res.inProgress = true;
+        return true;
+
+    }else {
+        int num_of_fingers_not_closed = 0;
+
+        for (int i =  req.ControlGroup ; i < req.ControlGroup+5 ; i++){
+            if (XR1_ptr->getJointPosition(i , true)<0.5 && XR1_ptr->getJointCurrent(i,true)>1.0){
+                num_of_fingers_not_closed++;
+            }
+        }
+
+        if (num_of_fingers_not_closed > 3)
+            res.isGripped = true;
+    }
+
+
+    return true;
+
+}
+
 //
 //void XR1ControllerOL::lookupBackEFFTarget(tf::StampedTransform & transform,   Eigen::Affine3d & itsafine) {
 //    try {

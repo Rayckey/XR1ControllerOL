@@ -48,6 +48,7 @@ add_service_files(
 		FILES
 		IKLinearService.srv
 		IKTrackingService.srv
+		HandGripQuery.srv
 )
 
 generate_messages(

@@ -27,6 +27,7 @@
 // The IK planner message service
 #include "xr1controllerol/IKLinearService.h"
 #include "xr1controllerol/IKTrackingService.h"
+#include "xr1controllerol/HandGripQuery.h"
 
 // The animation message type
 #include "xr1controllerol/AnimationMsgs.h"
@@ -267,6 +268,9 @@ protected:
     bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest & req ,
                            xr1controllerol::IKTrackingServiceResponse & res);
 
+    bool serviceHandGrip(xr1controllerol::HandGripQueryRequest & req,
+            xr1controllerol::HandGripQueryResponse & res);
+
     void broadcastTransform();
 
 
@@ -383,6 +387,9 @@ private:
     ros::ServiceServer IKPlannerService;
 
     ros::ServiceServer IKTrackingService;
+
+    ros::ServiceServer HandGripService;
+
 
     ros::Publisher JointAttributePublisher;
 

@@ -158,23 +158,23 @@ void stateTransition() {
 
 
 //        ROS_INFO("In Active State");
-        XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d, true);
+        XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d);
         ConvertBodyMsgs(temp_vec7d, temp_bodymsgs);
         MainBodyPositionPublisher->publish(temp_bodymsgs);
 
-        XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d, true);
+        XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d);
         ConvertArmMsgs(temp_vec7d, temp_armmsgs);
         LeftArmPositionPublisher->publish(temp_armmsgs);
 
-        XR1_ptr->getTargetPosition(XR1::RightArm, temp_vec7d, true);
+        XR1_ptr->getTargetPosition(XR1::RightArm, temp_vec7d);
         ConvertArmMsgs(temp_vec7d, temp_armmsgs);
         RightArmPositionPublisher->publish(temp_armmsgs);
 
-        XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec5d, true);
+        XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec5d);
         ConvertHandMsgs(temp_vec5d, temp_handmsgs);
         LeftHandPositionPublisher->publish(temp_handmsgs);
 
-        XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec5d, true);
+        XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec5d);
         ConvertHandMsgs(temp_vec5d, temp_handmsgs);
         RightHandPositionPublisher->publish(temp_handmsgs);
     }
@@ -191,7 +191,7 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
 
     uint8_t control_group = req.ControlGroup;
 
-    XR1_ptr->setControlMode(control_group, XR1::IKMode);
+
     // The default response
     res.inProgress = true;
     res.isReachable = false;
@@ -201,7 +201,7 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
         res.inProgress = true;
     } else {
         if (req.NewTarget) {
-
+            XR1_ptr->setControlMode(control_group, XR1::IKMode);
             res.inProgress = false;
             if (XR1_ptr->setEndEffectorPosition(control_group, itsafine, req.TargetElbowAngle, req.Period)) {
                 res.isReachable = true;

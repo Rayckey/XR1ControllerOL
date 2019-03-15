@@ -102,7 +102,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     IKPlannerService = nh.advertiseService("XR1/IKLPT" , &XR1ControllerOL::serviceIKPlanner, this);
     IKTrackingService = nh.advertiseService("XR1/IKTT" , &XR1ControllerOL::serviceIKTracking , this);
-
+    HandGripService = nh.advertiseService("XR1/HGQ" , &XR1ControllerOL::serviceHandGrip , this);
 
 
     MainBodyPositionPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Position", 1);
