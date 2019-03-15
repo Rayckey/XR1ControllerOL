@@ -118,7 +118,8 @@ XR1ControllerOL::XR1ControllerOL() :
 
     LeftHandPositionPublisher = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/Position", 1);
     RightHandPositionPublisher = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Position", 1);
-
+    LeftHandCurrentPublisher = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/Current", 1);
+    RightHandCurrentPublisher = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Current", 1);
 
 
 
@@ -576,13 +577,25 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertArmMsgs(temp_vec7d , temp_armmsgs);
     RightArmCurrentPublisher.publish(temp_armmsgs);
 
-    XR1_ptr->getJointCurrents(XR1::LeftHand, temp_vec5d, true);
+
+    XR1_ptr->getJointPositions(XR1::LeftHand, temp_vec5d, true);
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     LeftHandPositionPublisher.publish(temp_handmsgs);
 
-    XR1_ptr->getJointCurrents(XR1::RightHand, temp_vec5d , true);
+    XR1_ptr->getJointPositions(XR1::RightHand, temp_vec5d , true);
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     RightHandPositionPublisher.publish(temp_handmsgs);
+
+
+    XR1_ptr->getJointCurrents(XR1::LeftHand, temp_vec5d, true);
+    ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+    LeftHandCurrentPublisher.publish(temp_handmsgs);
+
+    XR1_ptr->getJointCurrents(XR1::RightHand, temp_vec5d , true);
+    ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+    RightHandCurrentPublisher.publish(temp_handmsgs);
+
+
 }
 
 

@@ -403,6 +403,8 @@ private:
     ros::Publisher RightArmCurrentPublisher;
     ros::Publisher LeftHandPositionPublisher;
     ros::Publisher RightHandPositionPublisher;
+    ros::Publisher LeftHandCurrentPublisher;
+    ros::Publisher RightHandCurrentPublisher;
 
 
 
