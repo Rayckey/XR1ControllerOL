@@ -13,8 +13,8 @@ void XR1ControllerOL::judgeControlGroupModes(){
     judgeActuatorModes(XR1::MainBody);
     judgeActuatorModes(XR1::LeftArm);
     judgeActuatorModes(XR1::RightArm);
-    judgeActuatorModes(XR1::LeftHand);
-    judgeActuatorModes(XR1::RightHand);
+//    judgeActuatorModes(XR1::LeftHand);
+//    judgeActuatorModes(XR1::RightHand);
 
 }
 
