@@ -28,6 +28,9 @@ public:
     // set this animation into que
     void setAnimation(int animation_type , int animation_id);
 
+    // set this pose for face tracking or marker tracking
+    void setHeadTrackingPosition(Affine3d & target_affine_from_back_y);
+
     // pop the next animation in queue
     int popAnimation();
 
