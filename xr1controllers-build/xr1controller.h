@@ -177,6 +177,8 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period , uint8_t base_group = XR1::Back_Y);
 
+    void stabilizeEndEffector(uint8_t control_group , uint8_t base_id , bool option);
+
     bool setGrippingSwitch();
 
     bool isIKPlannerActive(uint8_t control_group);
@@ -295,6 +297,13 @@ public:
     std::vector<double> getNextState(bool vanilla = false);
     bool isStateActive();
     void state2Actuator(std::vector<double> & some_state);
+    void setState(int joint_id , double goal_position , int period_in_ms , int control_rate = 200);
+    double getNextState(int joint_id);
+    bool isStateActive(int joint_id);
+    void insertNextState(std::vector<double> pos , std::vector<double>  vel, std::vector<double> acc);
+    void insertNextState(int joint_id , double pos , double vel = 0 , double acc = 0);
+    bool inHighFrequencyControl(int joint_id);
+    void setHighFrequencyControl(int joint_id , bool option);
 
 
     //Trun ON/OFF the dynamic compensation of UpperBody, only affects Current Mode

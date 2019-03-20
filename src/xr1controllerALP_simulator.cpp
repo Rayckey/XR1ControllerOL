@@ -102,26 +102,28 @@ void broadcastTransform(const ros::TimerEvent& event) {
   if (animation_switch) {
       XRA_ptr->getNextState();
 
+      if (XR1_ptr->inHighFrequencyControl(XR1::MainBody) ){
+          XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d ,true);
+          ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
+          MainBodyPositionPublisher->publish(temp_bodymsgs);
 
-      XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d ,true);
-      ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
-      MainBodyPositionPublisher->publish(temp_bodymsgs);
+          XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d , true);
+          ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+          LeftArmPositionPublisher->publish(temp_armmsgs);
 
-      XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d , true);
-      ConvertArmMsgs(temp_vec7d , temp_armmsgs);
-      LeftArmPositionPublisher->publish(temp_armmsgs);
+          XR1_ptr->getTargetPosition(XR1::RightArm, temp_vec7d, true);
+          ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+          RightArmPositionPublisher->publish(temp_armmsgs);
 
-      XR1_ptr->getTargetPosition(XR1::RightArm, temp_vec7d, true);
-      ConvertArmMsgs(temp_vec7d , temp_armmsgs);
-      RightArmPositionPublisher->publish(temp_armmsgs);
+          XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec5d, true);
+          ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+          LeftHandPositionPublisher->publish(temp_handmsgs);
 
-      XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec5d, true);
-      ConvertHandMsgs(temp_vec5d , temp_handmsgs);
-      LeftHandPositionPublisher->publish(temp_handmsgs);
+          XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec5d , true);
+          ConvertHandMsgs(temp_vec5d , temp_handmsgs);
+          RightHandPositionPublisher->publish(temp_handmsgs);
+      }
 
-      XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec5d , true);
-      ConvertHandMsgs(temp_vec5d , temp_handmsgs);
-      RightHandPositionPublisher->publish(temp_handmsgs);
 
 
     // trick ourselves into thinking we have velocites

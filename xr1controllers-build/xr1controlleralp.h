@@ -132,6 +132,8 @@ private:
 
     std::vector<double> temp_acc;
 
+    double temp_;
+
 
 
     // varibles to determine different sizes

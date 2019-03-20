@@ -4,6 +4,7 @@
 namespace XR1 {
 
 enum BodyGroups{
+        Odom = 0,
     MainBody = 4,
     BackBody = 5, // included in MainBody
     HeadBody = 8, // included in HeadBody

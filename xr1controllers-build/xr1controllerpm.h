@@ -224,6 +224,8 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period, uint8_t base_group = XR1::Back_Y);
 
+    void stabilizeEndEffector(uint8_t control_group , uint8_t base_id , bool option);
+
     bool isIKPlannerActive(uint8_t control_group);
 
     void getEndEffectorTransformation(uint8_t control_group, Affine3d &TransformationReference);
@@ -303,18 +305,19 @@ public:
 
 
 
-
-
     // Ports for animation library
     void setState(std::vector<double> goal_configuration , int period_in_ms, int control_rate = 200);
+    void setState(int joint_id , double goal_position , int period_in_ms , int control_rate = 200);
+    void insertNextState(std::vector<double> pos , std::vector<double>  vel, std::vector<double> acc);
+    void insertNextState(int joint_id , double pos , double vel = 0, double acc =0);
     bool isStateActive();
+    bool isStateActive(int joint_id);
+    bool inHighFrequencyControl(int joint_id);
+    void setHighFrequencyControl(int joint_id , bool option);
     std::vector<double> getNextState();
-    VectorXd trackBothHands();
+    double getNextState(int joint_id);
+    void trackBothHands(VectorXd &output_ref);
     void clearState();
-
-
-
-
 
 
 
@@ -327,6 +330,9 @@ public:
 
 private:
 
+    // two functions to read parameters
+    void readParameters(string parameters_path);
+    std::vector<std::vector<double> > readParameter(std::string parameter_path);
 
     // internal functions
     bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
@@ -361,16 +367,23 @@ private:
 
     //Private function called internally
     void getState();
+    void getState(int joint_id);
     void calculateStates();
+    void calculateStates(int joint_id);
     void assignState();
-    void readParameters(string parameters_path);
-    std::vector<std::vector<double> > readParameter(std::string parameter_path);
+    void assignState(int joint_id);
+    void moveIKQueue2States(int joint_id);
+    void moveIKTracking2States(int joint_id);
+    void moveHandTracking2States(int joint_id);
+    void moveHandGripping2States(int joint_id);
+    void moveStable2States(int joint_id);
+
 
 
     //private function all calculating states
-    void tinyTriPos(double &value, double & qmin , double &pt_s, double &pt_e);
-    void tinyTriVel(double &value, double & qmin );
-    void tinyTriAcc(double &value, double & qmin );
+    void tinyTriPos(double &value, double & qmin , double &pt_s, double &pt_e, int & pi, int & pn, double & pd, double & pps);
+    void tinyTriVel(double &value, double & qmin , int &pi , int &pn , double &pd , double &pps);
+    void tinyTriAcc(double &value, double & qmin , int &pi, int &pn, double &pd, double &pps);
 
     // private members for calcualting states
     uint8_t XR1_State;
@@ -379,16 +392,20 @@ private:
     int PlaybackIndex;
     std::vector<double> start_state;
     std::vector<double> goal_state;
-    std::deque<std::vector<double> > tri_states;
-    std::deque<std::vector<double> > tri_vels;
-    std::deque<std::vector<double> > tri_accs;
+    std::vector<bool> highFrequencyState;
+    std::vector<std::deque<double> > tri_states;
+    std::vector<std::deque<double> > tri_vels;
+    std::vector<std::deque<double> > tri_accs;
     std::vector<double> temp_state;
     std::vector<double> ready_state;
-    int poly_period_ms;
-    double poly_period_s;
+    std::vector<int> poly_period_ms;
+    std::vector<double> poly_period_s;
+    std::map<int,bool> StableMap;
+    std::map<int,bool> StableBase;
+    std::map<int, Eigen::Affine3d, std::less<int>, Eigen::aligned_allocator<std::pair<const int, Eigen::Affine3d> > > StableAff;
     int poly_rate;
     int poly_index;
-    int poly_num;
+    std::vector<int> poly_num;
     double poly_double;
     double grip_current;
 
@@ -466,6 +483,12 @@ private:
     Affine3d temp_aff3d2;
     Matrix3d temp_mat3d;
     Vector3d temp_vec3d;
+    Vector3d temp_vec3d2;
+
+
+    // temp varibles that save time and money
+    VectorXd temp_vec5d;
+    VectorXd temp_vec7d;
 
 
 };
