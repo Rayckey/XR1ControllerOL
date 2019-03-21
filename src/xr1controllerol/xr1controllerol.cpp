@@ -624,7 +624,7 @@ void XR1ControllerOL::broadcastTransform() {
 
 
     // Publish the head
-    XR1_ptr->getEndEffectorTransformation(XR1::MainBody, itsafine);
+    XR1_ptr->getEndEffectorTransformation(XR1::HeadBody, itsafine);
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 
