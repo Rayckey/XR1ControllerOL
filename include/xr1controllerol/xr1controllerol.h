@@ -28,6 +28,7 @@
 #include "xr1controllerol/IKLinearService.h"
 #include "xr1controllerol/IKTrackingService.h"
 #include "xr1controllerol/HandGripQuery.h"
+#include "xr1controllerol/askReadiness.h"
 
 // The animation message type
 #include "xr1controllerol/AnimationMsgs.h"
@@ -271,6 +272,9 @@ protected:
     bool serviceHandGrip(xr1controllerol::HandGripQueryRequest & req,
             xr1controllerol::HandGripQueryResponse & res);
 
+    bool serviceReady(xr1controllerol::askReadinessRequest & req,
+            xr1controllerol::askReadinessResponse & res);
+
     void broadcastTransform();
 
 
@@ -389,6 +393,7 @@ private:
     ros::ServiceServer IKTrackingService;
 
     ros::ServiceServer HandGripService;
+    ros::ServiceServer ReadinessService;
 
 
     ros::Publisher JointAttributePublisher;

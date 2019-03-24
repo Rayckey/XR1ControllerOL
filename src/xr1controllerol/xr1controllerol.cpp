@@ -103,6 +103,7 @@ XR1ControllerOL::XR1ControllerOL() :
     IKPlannerService = nh.advertiseService("XR1/IKLPT" , &XR1ControllerOL::serviceIKPlanner, this);
     IKTrackingService = nh.advertiseService("XR1/IKTT" , &XR1ControllerOL::serviceIKTracking , this);
     HandGripService = nh.advertiseService("XR1/HGQ" , &XR1ControllerOL::serviceHandGrip , this);
+    ReadinessService = nh.advertiseService("XR1/Ready" , &XR1ControllerOL::serviceReady , this);
 
 
     MainBodyPositionPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Position", 1);
@@ -217,6 +218,28 @@ XR1ControllerOL::~XR1ControllerOL() {
     JointAttributePublisher.shutdown();
     ActuatorLaunchedPublisher.shutdown();
 
+}
+
+bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
+                  xr1controllerol::askReadinessResponse & res){
+    for (int i = XR1::MainBody ; i < XR1::Actuator_Total ; i++){
+
+        if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized) {
+
+
+
+        }
+
+        else {
+             res.isReady = false;
+             return true;
+        }
+
+    }
+
+    res.isReady = true;
+
+    return true;
 }
 
 
