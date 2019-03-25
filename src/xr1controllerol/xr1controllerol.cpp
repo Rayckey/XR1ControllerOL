@@ -226,6 +226,10 @@ bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
     if (req.isAsking){
 
         ROS_INFO("Oh shit them asking");
+
+
+        std::vector<uint8_t> unava_act;
+
         for (int i = XR1::OmniWheels ; i < XR1::Actuator_Total ; i++){
 
             if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized){
@@ -233,16 +237,28 @@ bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
             }
 
             else {
-                m_pController->launchActuator((uint8_t)i);
-                m_pController->regainAttrbute((uint8_t)i , Actuator::INIT_STATE);
+                unava_act.push_back((uint8_t)i);
             }
 
-
-
-
-
         }
+
+
+        for (uint8_t ids : unava_act){
+            m_pController->closeActuator( ids );
+        }
+
+        ros::Duration(0.5).sleep();
+
+        for (uint8_t ids : unava_act){
+            m_pController->launchActuator( ids);
+        }
+
+
+
     }
+
+
+
 
 
 
@@ -251,7 +267,6 @@ bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
     for (int i = XR1::MainBody ; i < XR1::Actuator_Total ; i++){
 
         if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized) {
-
 
 
         }
