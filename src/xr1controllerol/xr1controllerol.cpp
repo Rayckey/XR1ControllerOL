@@ -222,6 +222,32 @@ XR1ControllerOL::~XR1ControllerOL() {
 
 bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
                   xr1controllerol::askReadinessResponse & res){
+
+    if (req.isAsking){
+
+        ROS_INFO("Oh shit them asking");
+        for (int i = XR1::OmniWheels ; i < XR1::Actuator_Total ; i++){
+
+            if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized){
+
+            }
+
+            else {
+                m_pController->launchActuator((uint8_t)i);
+                m_pController->regainAttrbute((uint8_t)i , Actuator::INIT_STATE);
+            }
+
+
+
+
+
+        }
+    }
+
+
+
+
+
     for (int i = XR1::MainBody ; i < XR1::Actuator_Total ; i++){
 
         if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized) {
@@ -231,13 +257,22 @@ bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
         }
 
         else {
+
+            ROS_INFO("Oh shit them not launched fam");
+
              res.isReady = false;
              return true;
         }
 
     }
 
+    ROS_INFO("It is ON SON");
+
     res.isReady = true;
+
+
+
+
 
     return true;
 }
