@@ -124,8 +124,12 @@ void XR1ControllerOL::applyJointTarget(){
     XR1_ptr->getTargetPosition(XR1::RightArm , temp_vec7d);
     setJointPosition(XR1::RightArm , temp_vec7d);
 
-//    XR1_ptr->getTargetPosition(XR1::MainBody , temp_vec7d);
-//    setJointPosition(XR1::MainBody , temp_vec7d);
+
+    if (animation_switch == true){
+        XR1_ptr->getTargetPosition(XR1::MainBody , temp_vec7d);
+        setJointPosition(XR1::MainBody , temp_vec7d);
+    }
+
 
 
 //        ROS_INFO("Unleasing at time [%f]" , ros::WallTime::now().toSec()) ;
