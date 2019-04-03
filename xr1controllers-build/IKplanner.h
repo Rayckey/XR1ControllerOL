@@ -126,5 +126,7 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     void clearStates();
 
+    void clearStates(int control_group);
+
 	~IKplanner();
 };

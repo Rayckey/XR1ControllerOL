@@ -104,7 +104,7 @@ bool XR1ControllerOL::serviceIKTracking(xr1controllerol::IKTrackingServiceReques
     }
 
 
-    else if (control_group == XR1::BackBody){
+    else if (control_group == XR1::MainBody){
 
         try {
             EFF_Listener.lookupTransform( "/Base", "/TrackingTarget",
@@ -127,7 +127,7 @@ bool XR1ControllerOL::serviceIKTracking(xr1controllerol::IKTrackingServiceReques
 
                 setControlMode(control_group , XR1::IKMode);
                 res.inProgress = false;
-                if (XR1_ptr->setTrackingPosition(XR1::BackBody, itsafine)){
+                if (XR1_ptr->setTrackingPosition(XR1::MainBody, itsafine)){
                     res.isReachable = true;
                     res.isAccepted = true;
                 }

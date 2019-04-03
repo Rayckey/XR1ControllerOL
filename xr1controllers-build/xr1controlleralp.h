@@ -18,15 +18,28 @@ class XR1ControllerALP
 {
 
 public:
-    XR1ControllerALP(string library_root_path , XR1Controller *pointer_to_xr1controller, int num_of_animation, int num_of_idle, int num_of_mute, int num_of_teach);
+    XR1ControllerALP(string library_root_path , XR1Controller *pointer_to_xr1controller, int num_of_animation, int num_of_idle, int num_of_teach);
+
+    // switch between animation mode and drive mode
+    void switchAnimationMode(int option , double optional_speed_filter = 0.1 , double optional_angular_speed_filter = 0.1);
+
+
+    // set unfiltered velocities
+    void setUnfilteredOmniCmd(Vector3d & joy_cmd);
+
+    // get filtered velocities
+    void getFilteredOmniCmd(Vector3d & joy_cmd);
+
 
     // get next state immediately, also pops the current state
     void getNextState();
+
 
     bool isOmniWheelsMoving();
 
     // set this animation into que
     void setAnimation(int animation_type , int animation_id);
+
 
     // set this pose for face tracking or marker tracking
     void setHeadTrackingPosition(Affine3d & target_affine_from_back_y);
@@ -35,7 +48,7 @@ public:
     int popAnimation();
 
     // check the current animation queue
-    std::list<int> queryAnimation();
+    std::deque<int> queryAnimation();
 
     // clear all the states , return to initial state, which will force robot to get into idle
     void clearAll();
@@ -46,7 +59,7 @@ private:
     XR1Controller * XR1_ptr;
 
     // the que that decides what plays next
-    std::list<int> animation_que;
+    std::deque<int> animation_que;
 
 
 
@@ -59,14 +72,18 @@ private:
 
     int distinquishAnimationType(int animation_id);
 
+    void judgeAnimationRecovery(int control_group);
 
-    std::list<std::vector<double> > readLibrary(string library_path , uint8_t animation_type);
+
+    std::deque<std::vector<double> > readLibrary(string library_path , uint8_t animation_type);
 
     std::vector<std::vector<double> > readIdle(string library_path);
 
     void setNextState();
 
     void setAnimationTransition();
+
+    void switchAnimationControlType();
 
     void setIdleTransition();
 
@@ -75,6 +92,8 @@ private:
     void pickIdleAnimation();
 
     void propagateStates(std::vector<double> next_serving);
+
+    void propagateStates(uint8_t id, double next_serving);
 
     void feedPMinfos();
 
@@ -92,19 +111,21 @@ private:
 
     double period_s;
 
+    int period_ms;
+
 
 
     // the current state que
-    std::list<std::vector<double> >  states_que;
+    std::deque<std::vector<double> >  states_que;
 
 
 
     // buffers for animation files
-    std::map<int,std::list<std::vector<double> > > animation_map;
+    std::map<int,std::deque<std::vector<double> > > animation_map;
 
     std::vector<std::vector<double> >  idle_animation;
 
-    std::map<int,std::list<std::vector<double> > > idle_map;
+    std::map<int,std::deque<std::vector<double> > > idle_map;
 
     std::map<int,int> animation_sizes_map;
 
@@ -112,13 +133,13 @@ private:
 
     std::map<int,int> animation_offsets_map;
 
-    std::map<int,std::list<std::vector<double> > >::iterator animation_constrains_iterator;
+    std::map<int,std::deque<std::vector<double> > >::iterator animation_constrains_iterator;
+
+    std::map<int ,bool> animation_switched_signal;
 
 
     // all kinds of recorder states
     std::vector<double> rep_state;
-
-    std::vector<double> actuator_state;
 
     std::vector<double> temp_state;
 
@@ -168,6 +189,21 @@ private:
     int SIZE_OF_TEACH;
 
     int ANIMMATION_ERROR_NUM;
+
+
+    // ids flags for the controllers
+    std::vector<uint8_t> control_group_flags;
+    std::vector<uint8_t> temp_ids;
+    std::vector<double> temp_state_commands;
+
+    // Drive Mode speciaty
+    double absoluteOmni(Vector3d & input);
+    double omni_angle;
+    Vector3d temp_omni;
+    Vector3d og_omni;
+    double omni_lnr_filter_val;
+    double omni_ang_filter_val;
+
 };
 
 #endif // XR1CONTROLLERALP_H

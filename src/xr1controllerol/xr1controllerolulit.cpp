@@ -109,6 +109,20 @@ void XR1ControllerOL::subscribeMainBodyPosition(const xr1controllerros::BodyMsgs
     }
 }
 
+
+void XR1ControllerOL::subscribeHeadBodyPosition(const xr1controllerros::HeadMsgs &msg) {
+    if (XR1_ptr->isStateActive()){
+
+    }
+
+    else {
+        HeadMsgs2VectorXd(msg , temp_vec3d);
+        XR1_ptr->setJointPosition(XR1::HeadBody, temp_vec3d);
+        XR1_ptr->getTargetPosition(XR1::HeadBody,temp_vec3d);
+        setJointPosition(XR1::HeadBody, temp_vec3d);
+    }
+}
+
 void XR1ControllerOL::subscribeMainBodyCurrent(const xr1controllerros::BodyMsgs &msg) {
     if (XR1_ptr->isStateActive()){
 
@@ -204,7 +218,7 @@ void XR1ControllerOL::subscribeHeadBodyMode(const xr1controllerros::ChainModeCha
 }
 
 void XR1ControllerOL::subscribeBackBodyMode(const xr1controllerros::ChainModeChange &msg){
-    setControlMode(XR1::BackBody , msg.Mode);
+    setControlMode(XR1::MainBody , msg.Mode);
 }
 
 

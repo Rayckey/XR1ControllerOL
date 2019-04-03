@@ -10,6 +10,7 @@
 #include "xr1controllerros/BodyMsgs.h"
 #include "xr1controllerros/HandMsgs.h"
 #include "xr1controllerros/JointAttributeMsgs.h"
+#include "xr1controllerros/HeadMsgs.h"
 
 #include <eigen_conversions/eigen_msg.h>
 
@@ -26,6 +27,8 @@ Eigen::VectorXd ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg);
 Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg);
 
 void BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs &msg   , VectorXd & output_ref);
+
+void HeadMsgs2VectorXd(const xr1controllerros::HeadMsgs &msg   , VectorXd & output_ref);
 
 void ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg     , VectorXd & output_ref);
 
@@ -45,6 +48,10 @@ xr1controllerros::BodyMsgs ConvertBodyMsgs(std::vector<double> input);
 
 xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd & input);
 
+xr1controllerros::HeadMsgs ConvertHeadMsgs(std::vector<double> input);
+
+xr1controllerros::HeadMsgs ConvertHeadMsgs(Eigen::VectorXd & input);
+
 
 
 void ConvertHandMsgs(Eigen::VectorXd & HandPosition , xr1controllerros::HandMsgs & msg);
@@ -58,6 +65,11 @@ void ConvertArmMsgs(Eigen::VectorXd & input , xr1controllerros::ArmMsgs & msg);
 void  ConvertBodyMsgs(std::vector<double> input , xr1controllerros::BodyMsgs & msg);
 
 void  ConvertBodyMsgs(Eigen::VectorXd & input , xr1controllerros::BodyMsgs & msg);
+
+void  ConvertHeadMsgs(std::vector<double> input , xr1controllerros::HeadMsgs & msg);
+
+void  ConvertHeadMsgs(Eigen::VectorXd & input , xr1controllerros::HeadMsgs & msg);
+
 
 
 

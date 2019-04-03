@@ -87,7 +87,7 @@ bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest &req,
         }
 
 
-    } else if (control_group == XR1::BackBody) {
+    } else if (control_group == XR1::MainBody) {
 
         try {
             EFF_Listener->lookupTransform("/Base", "/TrackingTarget",
@@ -107,7 +107,7 @@ bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest &req,
 
                 XR1_ptr->setControlMode(control_group, XR1::IKMode);
                 res.inProgress = false;
-                if (XR1_ptr->setTrackingPosition(XR1::BackBody, itsafine)) {
+                if (XR1_ptr->setTrackingPosition(XR1::MainBody, itsafine)) {
                     res.isReachable = true;
                     res.isAccepted = true;
                 }
@@ -145,8 +145,8 @@ void subscribeHeadBodyMode(const xr1controllerros::ChainModeChange &msg) {
     XR1_ptr->setControlMode(XR1::HeadBody, msg.Mode);
 }
 
-void subscribeBackBodyMode(const xr1controllerros::ChainModeChange &msg) {
-    XR1_ptr->setControlMode(XR1::BackBody, msg.Mode);
+void subscribeMainBodyMode(const xr1controllerros::ChainModeChange &msg) {
+    XR1_ptr->setControlMode(XR1::MainBody, msg.Mode);
 }
 
 
@@ -344,8 +344,8 @@ int main(int argc, char **argv) {
                                                                 subscribeHeadBodyMode);
 
     //MOREEEEEEEE!
-    ros::Subscriber BackBodyModeChangeSubscriber = nh.subscribe("/XR1/BackBodyChainModeChange", 1,
-                                                                subscribeBackBodyMode);
+    ros::Subscriber MainBodyModeChangeSubscriber = nh.subscribe("/XR1/MainBodyChainModeChange", 1,
+                                                                subscribeMainBodyMode);
 
     // MMMMMMOOOOORRRRRREEEEEEEE!
     ros::Subscriber LeftElbowSubscriber = nh.subscribe("LeftArm/ElbowAngle", 1, subscribeLeftElbowAngle);

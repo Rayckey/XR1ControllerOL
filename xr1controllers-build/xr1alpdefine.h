@@ -4,11 +4,11 @@
 namespace XR1ALP {
 
 enum AnimationType{
-	Idle 	  = 0,
-    Animation = 1,
-    MoCap     = 2,
-    Mute      = 3,
+	Defaults  = 0,
+	Idle 	  = 1,
+    Animation = 2,
     Teach     = 4,
+    Drive	  = 5,
 };
 
 

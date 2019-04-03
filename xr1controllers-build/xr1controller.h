@@ -145,12 +145,9 @@ public:
     //Reutrns : void , may add error message in the fulture
     void setControlMode(uint8_t control_group , uint8_t option);
     uint8_t getControlMode(uint8_t control_group);
-
-
-    //Set Control Mode for Entire XR1, which only has two mode: direct and drive
-    //When in drive mode, it will take over
-    void setMetaMode(uint8_t option);
-    uint8_t getMetaMode();
+    std::vector<uint8_t> getControlGroupIDs(int control_group);
+    void setSubControlMode(int sub_control_group , int option , int base_id = XR1::MainBody);
+    int getSubControlMode(int sub_control_group);
 
 
     //Get the last calculated Jacobian from XR1Controller
@@ -177,7 +174,7 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period , uint8_t base_group = XR1::Back_Y);
 
-    void stabilizeEndEffector(uint8_t control_group , uint8_t base_id , bool option);
+    void stabilizeEndEffector(uint8_t control_group , uint8_t base_id );
 
     bool setGrippingSwitch();
 
@@ -281,9 +278,6 @@ public:
     void setMoCapPosition(std::vector<double> IMU_output);
 
 
-    //Convert Mute data into action
-    void setMutePosition(std::vector<double> MuteData);
-
     //Convert teach data into action
     void setTeachPosition(std::vector<double> TeachData);
 
@@ -300,8 +294,10 @@ public:
     void setState(int joint_id , double goal_position , int period_in_ms , int control_rate = 200);
     double getNextState(int joint_id);
     bool isStateActive(int joint_id);
+    bool isReady4Animation(int joint_id);
     void insertNextState(std::vector<double> pos , std::vector<double>  vel, std::vector<double> acc);
     void insertNextState(int joint_id , double pos , double vel = 0 , double acc = 0);
+    void setNextState(int joint_id , double pos , double vel = 0, double acc = 0);
     bool inHighFrequencyControl(int joint_id);
     void setHighFrequencyControl(int joint_id , bool option);
 
@@ -345,6 +341,11 @@ public:
     void SetOmniWheelsVelocity(Vector3d input);
     Vector3d getOmniWheelsVelocity();
     Vector3d getOmniWheelsPosition();
+
+    void getOmniWheelsVelocity(Vector3d & ref);
+    void getOmniWheelsPosition(Vector3d & ref);
+
+
     void getBaseTransformation(uint8_t control_group , Affine3d & output);
     void resetOdometry();
 

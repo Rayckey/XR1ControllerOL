@@ -5,6 +5,8 @@
 #include "genericcontroller.h"
 #include "Eigen/Dense"
 #include "chaincontroller.h"
+#include "headcontroller.h"
+#include "backcontroller.h"
 #include "handcontroller.h"
 #include "omnicontroller.h"
 #include "dynamicmethod.h"
@@ -29,15 +31,6 @@ public:
     XR1ControllerPM(string parameters_path);
 
 
-    // MoCapCommand
-    void setMoCapPosition(std::vector<double> cmds);
-
-
-    // Mute Commands
-    void setMutePosition(std::vector<double> MuteData);
-
-    // Teach Commands
-    void setTeachPosition(std::vector<double> TeachData);
 
     // The E STOP command
     void employLockdown();
@@ -175,14 +168,10 @@ public:
     //Reutrns : void , may add error message in the fulture
     void setControlMode(uint8_t control_group ,uint8_t option);
     uint8_t getControlMode(uint8_t control_group);
+    std::vector<uint8_t> getControlGroupIDs(int control_group);
+    void setSubControlMode(int sub_control_group , int option , int base_id = XR1::MainBody);
+    int getSubControlMode(int sub_control_group);
     void switchIKMode(bool hand_tracking_switch = false); // switch to a state to IK Mode
-
-
-
-    //Set Control Mode for Entire XR1, which only has two mode: direct and drive
-    //When in drive mode, it will take over
-    void setMetaMode(uint8_t option);
-    uint8_t getMetaMode();
 
 
     void errorHandle();
@@ -224,7 +213,7 @@ public:
 
     bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period, uint8_t base_group = XR1::Back_Y);
 
-    void stabilizeEndEffector(uint8_t control_group , uint8_t base_id , bool option);
+    void stabilizeEndEffector(uint8_t control_group , uint8_t base_id);
 
     bool isIKPlannerActive(uint8_t control_group);
 
@@ -288,11 +277,8 @@ public:
     Vector3d getBaseAcc();
 
     //Dynamics Controls-----------------------------------------------------------------
-
     void updateBaseTransformation();
-
     bool CollisionDetection(uint8_t control_group);
-
     void setPeriod(uint8_t control_group, double reading_interval_in_second);
 
 
@@ -300,9 +286,18 @@ public:
     void SetOmniWheelsVelocity(Vector3d input);
     Vector3d getOmniWheelsVelocity();
     Vector3d getOmniWheelsPosition();
+    void getOmniWheelsVelocity(Vector3d & ref);
+    void getOmniWheelsPosition(Vector3d & ref);
     void getBaseTransformation(uint8_t control_group ,  Affine3d & output);
     void resetOdometry();
 
+
+    // Direct inputs from animation and IMU
+    // MoCapCommand
+    void setMoCapPosition(std::vector<double> cmds);
+
+    // Teach Commands
+    void setTeachPosition(std::vector<double> TeachData);
 
 
     // Ports for animation library
@@ -310,8 +305,11 @@ public:
     void setState(int joint_id , double goal_position , int period_in_ms , int control_rate = 200);
     void insertNextState(std::vector<double> pos , std::vector<double>  vel, std::vector<double> acc);
     void insertNextState(int joint_id , double pos , double vel = 0, double acc =0);
+    void setNextState(int joint_id , double pos , double vel = 0, double acc =0);
     bool isStateActive();
     bool isStateActive(int joint_id);
+    bool isStateReady(int joint_id);
+    bool isReady4Animation(int joint_id);
     bool inHighFrequencyControl(int joint_id);
     void setHighFrequencyControl(int joint_id , bool option);
     std::vector<double> getNextState();
@@ -327,6 +325,9 @@ public:
     uint8_t getErrorCode();
 
 
+    // Some lookup maps
+    std::map<uint8_t , uint8_t> ControllerIDs;
+    std::map<uint8_t , std::vector<uint8_t>> ControlGroupIDs;
 
 private:
 
@@ -341,10 +342,10 @@ private:
 
     // Pointers to all the controllers
     std::map<uint8_t ,GenericController *> ControllerMap;
-    std::map<uint8_t , uint8_t> ControllerIDs;
     ChainController * LeftArm;
     ChainController * RightArm;
-    ChainController * MainBody;
+    BackController * MainBody;
+    HeadController * HeadBody;
     HandController * LeftHand;
     HandController * RightHand;
     OmniController * OmniWheels;
@@ -355,9 +356,14 @@ private:
 
     // global configs
     std::map<uint8_t, uint8_t> ControlModes;
-    uint8_t MetaMode;
+    std::map<uint8_t , uint8_t> SubControlModes;
+    uint8_t SubControlModes2ControlModes(uint8_t sub_mode);
+    bool SubControlModes2HighFrequency(uint8_t sub_mode);
+
     std::vector<uint8_t> ArrayIDHelper(uint8_t control_group);
     int num_joint_in_chain;
+    int num_joint_in_main;
+    int num_joint_in_head;
     int num_joint_in_hand;
     int num_joint_friction;
     int num_joint_parameters;
@@ -400,9 +406,9 @@ private:
     std::vector<double> ready_state;
     std::vector<int> poly_period_ms;
     std::vector<double> poly_period_s;
-    std::map<int,bool> StableMap;
     std::map<int,bool> StableBase;
     std::map<int, Eigen::Affine3d, std::less<int>, Eigen::aligned_allocator<std::pair<const int, Eigen::Affine3d> > > StableAff;
+    std::map<int,double> stableElbow;
     int poly_rate;
     int poly_index;
     std::vector<int> poly_num;
@@ -431,31 +437,31 @@ private:
     double HandCollisionThreshold;
 
 
-    // tilt control members
-    std::vector<double> driveCmd;
-    std::vector<Vector3d> rawAccVec;
-    Quaterniond rawQua;
-    Quaterniond initQua;
-    Vector3d initAcc;
-    Vector3d tmpAcc;
-    Vector3d rawAcc;
-    Vector3d currAcc;
-    Matrix3d rawTilt;
-    Matrix3d initTilt;
-    Matrix3d currTilt;
-    Matrix3d tempTilt;
-    Vector3d actuAcc;
-    Vector3d actuEul;
-    Vector3d hatAcc;
-    Vector3d innAcc;
-    Vector3d noiAcc;
-    Vector3d no2Acc;
-    Vector3d kvcAcc;
-    Vector3d ganAcc;
-    Vector3d cvcAcc;
-    void accKalman(double x , double y , double z);
-    void TiltCalcualtion(Matrix3d & rotation_of_acc);
-    void assignAcc2Joint();
+//    // tilt control members
+//    std::vector<double> driveCmd;
+//    std::vector<Vector3d> rawAccVec;
+//    Quaterniond rawQua;
+//    Quaterniond initQua;
+//    Vector3d initAcc;
+//    Vector3d tmpAcc;
+//    Vector3d rawAcc;
+//    Vector3d currAcc;
+//    Matrix3d rawTilt;
+//    Matrix3d initTilt;
+//    Matrix3d currTilt;
+//    Matrix3d tempTilt;
+//    Vector3d actuAcc;
+//    Vector3d actuEul;
+//    Vector3d hatAcc;
+//    Vector3d innAcc;
+//    Vector3d noiAcc;
+//    Vector3d no2Acc;
+//    Vector3d kvcAcc;
+//    Vector3d ganAcc;
+//    Vector3d cvcAcc;
+//    void accKalman(double x , double y , double z);
+//    void TiltCalcualtion(Matrix3d & rotation_of_acc);
+//    void assignAcc2Joint();
 
 
 

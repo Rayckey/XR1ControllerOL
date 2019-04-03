@@ -12,6 +12,7 @@
 // Messages for Communication
 #include "xr1controllerros/ArmMsgs.h"
 #include "xr1controllerros/BodyMsgs.h"
+#include "xr1controllerros/HeadMsgs.h"
 #include "xr1controllerros/HandMsgs.h"
 #include "xr1controllerros/JointAttributeMsgs.h"
 
@@ -137,6 +138,7 @@ public:
     //Argu: Control Group ID , Conrol Mode ID
     //Reutrns : void , may add error message in the fulture
     void setControlMode(uint8_t control_group, uint8_t option);
+    void setSubControlMode(uint8_t control_group , uint8_t option);
 
 
     //Set Control Mode for Entire XR1, which only has two mode: direct and drive
@@ -219,6 +221,8 @@ protected:
     void subscribeEStop(const std_msgs::Bool &msg);
 
     void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs &msg);
+
+    void subscribeHeadBodyPosition(const xr1controllerros::HeadMsgs &msg);
 
     void subscribeMainBodyCurrent(const xr1controllerros::BodyMsgs &msg);
 
@@ -354,6 +358,8 @@ private:
 
     ros::Subscriber MainBodyPositionSubscriber;
 
+    ros::Subscriber HeadBodyPositionSubscriber;
+
     ros::Subscriber LeftArmVelocitySubscriber;
 
     ros::Subscriber RightArmVelocitySubscriber;
@@ -393,7 +399,11 @@ private:
 
     ros::Publisher JointAttributePublisher;
 
+    ros::Publisher HeadBodyPositionPublisher;
+    ros::Publisher HeadBodyVelocityPublisher;
+    ros::Publisher HeadBodyCurrentPublisher;
     ros::Publisher MainBodyPositionPublisher;
+    ros::Publisher MainBodyVelocityPublisher;
     ros::Publisher MainBodyCurrentPublisher;
     ros::Publisher LeftArmPositionPublisher;
     ros::Publisher LeftArmVelocityPublisher;

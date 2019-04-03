@@ -3,6 +3,7 @@
 #include "Eigen/Dense"
 #include <vector>
 #include "chaincontroller.h"
+#include "backcontroller.h"
 #include "xr1define.h"
 
 using namespace Eigen;
@@ -10,7 +11,7 @@ class DynamicMethod
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    DynamicMethod(ChainController * LeftArm_ptr , ChainController * RightArm_ptr , ChainController * Body_ptr , std::vector<double> InertiaParameters , std::vector<double> GravityParameters);
+    DynamicMethod(ChainController * LeftArm_ptr , ChainController * RightArm_ptr , BackController * Body_ptr , std::vector<double> InertiaParameters , std::vector<double> GravityParameters);
 
     void NewtonEuler(bool lor);
 
@@ -41,7 +42,7 @@ protected:
     // pointers to controllers
     ChainController * m_pLeftArm;
     ChainController * m_pRightArm;
-    ChainController * m_pBody;
+    BackController * m_pBody;
 
     // temp values
     double Target_Angles[7];

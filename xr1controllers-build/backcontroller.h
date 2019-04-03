@@ -1,20 +1,19 @@
-#ifndef CHAINCONTROLLER_H
-#define CHAINCONTROLLER_H
+#ifndef BACKCONTROLLER_H
+#define BACKCONTROLLER_H
 
 #include "genericcontroller.h"
 #include "Eigen/Dense"
 #include "xr1define.h"
 #include <vector>
-#include "IKsolver.h"
 #include <iostream>
 
 using namespace Eigen;
 
-class ChainController: public GenericController
+class BackController: public GenericController
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ChainController(MatrixXd DH_input, uint8_t id , int num_joint );
+    BackController(MatrixXd DH_input, uint8_t id , int num_joint );
 
     void triggerCalculationPass();
 
@@ -26,35 +25,12 @@ public:
 
 
     // End Effector Controls
-    void setEFFIncrement(const Vector3d& Linear , const Vector3d& Angular);
-    void setEFFVelocity(const Vector3d& Linear , const Vector3d& Angular);
-    void setEFFCurrent(const Vector3d& Force , const Vector3d& Torque);
-    void setEFFIncrement(const VectorXd& twist);
-    void setEFFVelocity(const VectorXd& twist);
-    void setEFFCurrent(const VectorXd& twist);
-    VectorXd getEFFVelocity();
-    VectorXd getEFFPosition();
-    MatrixXd getEFFPositionMatrix();
     void getEndEffectorTransformation(Affine3d & transformationReference);
-    double getElbowAngle();
     void getBaseTransformation(Affine3d &transformationReference);
 
-    // Use this for points that are VERY CLOSE! it sets the target position straight up;
-    bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle);
-    bool setEFFPosition(const Affine3d &transformation, double elbow_lift_angle);
-    void correctIKJointAngles();
-
-
-    // Update the the base
-//    void updateBaseTransformation(Matrix3d BaseT);
-
-    // Returns the last calculated Jacobian matrix
-    MatrixXd getJacobian(uint8_t id = 0);
-    void getJacobian(MatrixXd & jac);
 
     // Return the last calculated end effector Transformation
     MatrixXd getTransformation(uint8_t JointID);
-
 
 
     // DH and MDH methods
@@ -62,43 +38,22 @@ public:
     void T_MDH(MatrixXd &temp_trans, double alpha , double ad , double d , double offset , double theta);
 
 
-    // Saves Jacobian mastix with MDH
-    void Jacobeam();
-
-    // get adjoint from transformation
-    void Adjoint(MatrixXd & adj);
-    MatrixXd invAdjoint(MatrixXd & T);
-    MatrixXd EFF2BaseForceAdjoint(MatrixXd & T);
-
-
-
 
     void clearResults();
-
 
     VectorXd Dynamic_Compensation;
     uint8_t Begin_ID;
 
 
 private:
-    // Saves Jacobian matrix as a the member variable
-    void Jacobeans();
 
     // Saves individual transformation in the transformation collection
     void Transformation();
 
 
 
-    //pointer to ik solver
-    IKsolver * scott_the_solver;
 
     // DH paramters
-    double shoulder_angle_offset;
-    double la1;
-    double la2;
-    double la3;
-    double la4;
-    double la5;
     MatrixXd DH_parameters;
     VectorXd d ;
     VectorXd ad ;
@@ -106,14 +61,13 @@ private:
     VectorXd offset;
 
     //Buffer values
-    std::vector<MatrixXd> Jacobians;
     std::vector<MatrixXd> m_T_array;
     std::vector<MatrixXd> m_Ti_array;
 
 
 
     Affine3d BaseTransformation;
-
+    Affine3d NeckTransformation; // I hate DH
 
 
     //regular consts

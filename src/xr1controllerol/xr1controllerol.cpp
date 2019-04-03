@@ -21,7 +21,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     XR1_ptr = new XR1Controller(path + "/cream.xr1para", sit_pos);
 
-    XRA_ptr = new XR1ControllerALP(path + "/ALP" , XR1_ptr, 169 , 10 , 1 , 1 );
+    XRA_ptr = new XR1ControllerALP(path + "/ALP" , XR1_ptr, 169 , 10 , 1 );
 
     IMU_ptr = new XR1IMUmethods();
 
@@ -39,6 +39,8 @@ XR1ControllerOL::XR1ControllerOL() :
                                  &XR1ControllerOL::subscribeMainBodyPosition, this);
     MainBodyCurrentSubscriber = nh.subscribe("/MainBody/TargetCurrent", 100, &XR1ControllerOL::subscribeMainBodyCurrent,
                                 this);
+
+    HeadBodyPositionSubscriber = nh.subscribe("/HeadBody/TargetPosition" , 100 , &XR1ControllerOL::subscribeHeadBodyPosition , this);
 
     LeftArmPositionSubscriber = nh.subscribe("/LeftArm/TargetPosition", 100, &XR1ControllerOL::subscribeLeftArmPosition,
                                 this);
@@ -105,7 +107,14 @@ XR1ControllerOL::XR1ControllerOL() :
     HandGripService = nh.advertiseService("XR1/HGQ" , &XR1ControllerOL::serviceHandGrip , this);
 
 
+
+
+    HeadBodyPositionPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Position", 1);
+    HeadBodyVelocityPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Velocity", 1);
+    HeadBodyCurrentPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Current", 1);
+
     MainBodyPositionPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Position", 1);
+    MainBodyVelocityPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Velocity" , 1);
     MainBodyCurrentPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Current", 1);
 
     LeftArmPositionPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/Position", 1);
@@ -182,7 +191,7 @@ XR1ControllerOL::XR1ControllerOL() :
     control_modes[XR1::LeftHand] = 0;
     control_modes[XR1::RightHand] = 0;
     control_modes[XR1::HeadBody] = 0;
-    control_modes[XR1::BackBody] = 0;
+    control_modes[XR1::MainBody] = 0;
 
 
 
@@ -256,23 +265,23 @@ void XR1ControllerOL::requestQue(const ros::TimerEvent &) {
 
 void XR1ControllerOL::setMetaMode(const std_msgs::Int32 &msg) {
     XR1_ptr->tiltInit();
-    XR1_ptr->setMetaMode(msg.data);
+//    XR1_ptr->setMetaMode(msg.data);
 }
 
 
 void XR1ControllerOL::MoCapCallback(const ros::TimerEvent &) {
 
-    if (XR1_ptr->getMetaMode() == XR1::MoCapMode) {
-
-        std::vector<double> temp_vec = IMU_ptr->getJointAngles();
-
-        XR1_ptr->setMoCapPosition(IMU_ptr->getJointAngles());
-
-        XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
-
-        setJointPosition(XR1::LeftArm, temp_vec7d);
-
-    }
+//    if (XR1_ptr->getMetaMode() == XR1::MoCapMode) {
+//
+//        std::vector<double> temp_vec = IMU_ptr->getJointAngles();
+//
+//        XR1_ptr->setMoCapPosition(IMU_ptr->getJointAngles());
+//
+//        XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
+//
+//        setJointPosition(XR1::LeftArm, temp_vec7d);
+//
+//    }
 
 }
 
@@ -321,7 +330,6 @@ void XR1ControllerOL::stopSimulation() {
     control_modes[XR1::LeftHand] = 0;
     control_modes[XR1::RightHand] = 0;
     control_modes[XR1::HeadBody] = 0;
-    control_modes[XR1::BackBody] = 0;
 
     stopAllMotors();
 }
@@ -345,7 +353,7 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
         if (high_frequency_switch){
 
 
-            if (control_group == XR1::HeadBody || control_group == XR1::BackBody){
+            if (control_group == XR1::HeadBody || control_group == XR1::MainBody){
                 XR1_ptr->setControlMode(control_group , option);
                 control_modes[control_group] = option;
             }
@@ -378,6 +386,10 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
 
 }
 
+
+void XR1ControllerOL::setSubControlMode(uint8_t control_group , uint8_t option){
+    XR1_ptr->setSubControlMode(control_group, option);
+}
 
 
 void XR1ControllerOL::updatingCallback(uint8_t id, uint8_t attrId, double value) {
@@ -545,9 +557,26 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
 void XR1ControllerOL::unleaseJointInfo(){
     // send out all the current information
+
+    XR1_ptr->getJointPositions(XR1::HeadBody, temp_vec3d ,true);
+    ConvertBodyMsgs(temp_vec3d , temp_bodymsgs);
+    MainBodyPositionPublisher.publish(temp_bodymsgs);
+
+    XR1_ptr->getJointVelocities(XR1::HeadBody, temp_vec3d ,true);
+    ConvertBodyMsgs(temp_vec3d , temp_bodymsgs);
+    MainBodyVelocityPublisher.publish(temp_bodymsgs);
+
+    XR1_ptr->getJointCurrents(XR1::HeadBody, temp_vec3d , true);
+    ConvertBodyMsgs(temp_vec3d , temp_bodymsgs);
+    MainBodyCurrentPublisher.publish(temp_bodymsgs);
+
     XR1_ptr->getJointPositions(XR1::MainBody, temp_vec7d ,true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyPositionPublisher.publish(temp_bodymsgs);
+
+    XR1_ptr->getJointVelocities(XR1::MainBody, temp_vec7d ,true);
+    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
+    MainBodyVelocityPublisher.publish(temp_bodymsgs);
 
     XR1_ptr->getJointCurrents(XR1::MainBody, temp_vec7d , true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);

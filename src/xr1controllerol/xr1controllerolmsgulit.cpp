@@ -9,18 +9,28 @@ using namespace Eigen;
 
 Eigen::VectorXd BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs &msg) {
 
-    Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
+    Eigen::VectorXd res = Eigen::VectorXd::Zero(4);
 
     res << msg.Knee,
             msg.Back_Z,
             msg.Back_X,
-            msg.Back_Y,
-            msg.Neck_Z,
+            msg.Back_Y;
+
+    return res;
+}
+
+
+Eigen::VectorXd HeadMsgs2VectorXd(const xr1controllerros::HeadMsgs &msg) {
+
+    Eigen::VectorXd res = Eigen::VectorXd::Zero(3);
+
+    res <<  msg.Neck_Z,
             msg.Neck_X,
             msg.Head;
 
     return res;
 }
+
 
 Eigen::VectorXd ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg) {
 
@@ -55,20 +65,23 @@ Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg) {
 
 void BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs &msg , VectorXd & output_ref) {
 
-
-
     output_ref << msg.Knee,
             msg.Back_Z,
             msg.Back_X,
-            msg.Back_Y,
-            msg.Neck_Z,
+            msg.Back_Y;
+
+}
+
+
+void HeadMsgs2VectorXd(const xr1controllerros::HeadMsgs &msg , VectorXd & output_ref) {
+
+    output_ref << msg.Neck_Z,
             msg.Neck_X,
             msg.Head;
 
 }
 
 void ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg , VectorXd & output_ref) {
-
 
     output_ref << msg.Shoulder_X,
             msg.Shoulder_Y,
@@ -82,13 +95,11 @@ void ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg , VectorXd & output_r
 
 void HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg , VectorXd & output_ref) {
 
-
     output_ref << msg.Thumb,
             msg.Index,
             msg.Middle,
             msg.Ring,
             msg.Pinky;
-
 
 }
 
@@ -155,9 +166,6 @@ xr1controllerros::BodyMsgs ConvertBodyMsgs(std::vector<double> input) {
     msg.Back_Z = input[1];
     msg.Back_X = input[2];
     msg.Back_Y = input[3];
-    msg.Neck_Z = input[4];
-    msg.Neck_X = input[5];
-    msg.Head = input[6];
 
     return msg;
 }
@@ -170,14 +178,33 @@ xr1controllerros::BodyMsgs ConvertBodyMsgs(Eigen::VectorXd & input) {
     msg.Back_Z = input(1);
     msg.Back_X = input(2);
     msg.Back_Y = input(3);
-    msg.Neck_Z = input(4);
-    msg.Neck_X = input(5);
-    msg.Head = input(6);
 
     return msg;
 }
 
 
+xr1controllerros::HeadMsgs ConvertHeadMsgs(std::vector<double> input) {
+
+    xr1controllerros::HeadMsgs msg;
+
+    msg.Neck_Z = input[0];
+    msg.Neck_X = input[1];
+    msg.Head = input[2];
+
+    return msg;
+}
+
+xr1controllerros::HeadMsgs ConvertHeadMsgs(Eigen::VectorXd & input) {
+
+    xr1controllerros::HeadMsgs msg;
+
+
+    msg.Neck_Z = input(0);
+    msg.Neck_X = input(1);
+    msg.Head = input(2);
+
+    return msg;
+}
 
 
 
@@ -232,9 +259,6 @@ void ConvertBodyMsgs(std::vector<double> input , xr1controllerros::BodyMsgs & ms
     msg.Back_Z = input[1];
     msg.Back_X = input[2];
     msg.Back_Y = input[3];
-    msg.Neck_Z = input[4];
-    msg.Neck_X = input[5];
-    msg.Head = input[6];
 
 }
 
@@ -244,8 +268,22 @@ void ConvertBodyMsgs(Eigen::VectorXd & input , xr1controllerros::BodyMsgs & msg)
     msg.Back_Z = input(1);
     msg.Back_X = input(2);
     msg.Back_Y = input(3);
-    msg.Neck_Z = input(4);
-    msg.Neck_X = input(5);
-    msg.Head = input(6);
+
+}
+
+
+void ConvertHeadMsgs(std::vector<double> input , xr1controllerros::HeadMsgs & msg) {
+
+    msg.Neck_Z = input[0];
+    msg.Neck_X = input[1];
+    msg.Head = input[2];
+
+}
+
+void ConvertHeadMsgs(Eigen::VectorXd & input , xr1controllerros::HeadMsgs & msg) {
+
+    msg.Neck_Z = input(0);
+    msg.Neck_X = input(1);
+    msg.Head = input(2);
 
 }

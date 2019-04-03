@@ -1,3 +1,5 @@
+#ifndef IKSOLVER_H
+#define IKSOLVER_H
 
 // Created by Chaojie Feng
 // Modified and maintained by Weiqi Wang
@@ -100,3 +102,5 @@ public:
 
 	~IKsolver();
 };
+
+#endif // IKSOLVER_H

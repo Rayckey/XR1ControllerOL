@@ -18,7 +18,11 @@ public:
 
     Vector3d getVelocity();
 
+    void getVelocity(Vector3d & ref);
+
     Vector3d getPosition();
+
+    void getPosition(Vector3d & ref);
 
     void getBaseTransformation(Affine3d & input);
 
