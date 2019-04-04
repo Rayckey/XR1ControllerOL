@@ -41,7 +41,6 @@
 using namespace Eigen;
 
 
-
 class XR1ControllerOL {
 
 public:
@@ -49,40 +48,30 @@ public:
 
     ~XR1ControllerOL();
 
-    //Identical to startSimulation() in simulation, trigger sync mode and start the simulation
-    //Used in the XR1Controller
-    void launchAllMotors();//
+
+    // Power Control Functions ------------------------------------------------------------------
+    //Identical to startSimulation() in simulation, launch all the motors
+    //Both does the same thing, I think one function calls the other, idk tho, too lazy to check
+    void launchAllMotors();
     void startSimulation();
 
-    //Identical to stopAllMotors() in simulation, stop the simulation
-    void stopSimulation();//
-
-    //Identical to stopSimulation() in simulation, stop the simulation
-    //Used in the XR1Controller
-    void stopAllMotors();//
-
-
-    void updatingCallback(uint8_t id, uint8_t attrId, double value);
-
-    void QuaCallBack(uint64_t id, double w, double x, double y, double z);
-
-    // void accCallBack(uint8_t id , double x , double y , double z , int pres);
+    //Identical to stopSimulation() in simulation, turn off all the motors
+    //MAKE SURE THE ROBOT IS SECURED WHEN YOU DO THIS!
+    //Both does the same thing, I think one function calls the other, idk tho, too lazy to check
+    void stopSimulation();
+    void stopAllMotors();
+    // --------------------------------------------------------------------------------------------
 
 
-    //--------Joint Control----------------------------------
 
-    //Set the Joint PID values for a joint
-    //Used in the XR1Controller
-    //Argu: Joint ID , Attribute ID , value
-    //Reutrns : void , may add error message in the fulture
-    void setJointAttribute(uint8_t joint_idx, uint8_t attribute_idx, double value);
 
+    // Straight up Joint Control------------------------------------------------------------------
 
     //Set the Target Joint Positions for an entire control group, i.e. LeftARM , RightHand
     //Used in the XR1Controller
     //Argu: Control Group ID , Angles contained in Eigen::VectorXd
     //Reutrns : void , may add error message in the future
-    void setJointPosition(uint8_t control_group, VectorXd & JA);
+    void setJointPosition(uint8_t control_group, VectorXd &JA);
 
 
     //Set the Target Joint Positions for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -96,7 +85,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Angular Velocity contained in Eigen::VectorXd
     //Reutrns : void , may add error message in the fulture
-    void setJointVelocity(uint8_t control_group, VectorXd & JV);
+    void setJointVelocity(uint8_t control_group, VectorXd &JV);
 
 
     //Set the Target Joint Velocity for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -110,7 +99,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Target Current
     //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t control_group, VectorXd & JC);
+    void setJointCurrent(uint8_t control_group, VectorXd &JC);
 
 
     //Set the Target Joint Velocity for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -119,112 +108,182 @@ public:
     //Reutrns : void , may add error message in the fulture
     void setJointCurrent(uint8_t joint_idx, double JC);
 
+    // ------------------------------------------------------------------------------------------
+
+
+    // Retrieve joint values -------------------------------------------------------------------------
+    // In some instances, we need to get values out without messages too
 
     // Get the target joint position, set vanilla to true to get simulation value
     double getTargetJointPosition(uint8_t joint_id, bool vanilla = false);
 
     //Get Target Position for Arms or Body
-    VectorXd getTargetPosition(uint8_t control_group, bool vanilla = false);
-    void getTargetPosition(uint8_t control_group, VectorXd  & output_ref , bool vanilla = false);
+    void getTargetPosition(uint8_t control_group, VectorXd &output_ref, bool vanilla = false);
 
-
+    // Get transformation information
     void getEndEffectorTransformation(uint8_t control_group, Affine3d &TransformationReference);
 
+    // Get the current elbow anlge
+    // THIS WILL TRIGGER AN INTERNAL CALCULATION, don't use it too much in a loop, I mean why would you ?
     double getElbowAngle(uint8_t control_gourp);
+    // -------------------------------------------------------------------------------------------------
 
 
+    // Control Mode Shenanigans --------------------------------------------------------------
     //Set the Control Method for an entire Control Group , i.e. LeftARM , RightHand
     //Used in the XR1Controller
-    //Argu: Control Group ID , Conrol Mode ID
+    //Argu: Control Group ID , Control Mode ID
     //Reutrns : void , may add error message in the fulture
     void setControlMode(uint8_t control_group, uint8_t option);
-    void setSubControlMode(uint8_t control_group , uint8_t option);
 
 
-    //Set Control Mode for Entire XR1, which only has two mode: direct and drive
-    //When in drive mode, it will take over
-    void setMetaMode(const std_msgs::Int32 &msg);
+    //Set the Sub Control Method for an entire Control Group , i.e. LeftARM , RightHand
+    //Used in the XR1Controller
+    //Argu: Control Group ID , Control Mode ID
+    //Reutrns : void , may add error message in the fulture
+    void setSubControlMode(uint8_t control_group, uint8_t option);
+
+    // ----------------------------------------------------------------------------------
 
 
 
-    // Animation Library Stuff ------------------------------------
+    // Animation Library Player Stuff ------------------------------------
 
-    // receive animation start signal
-    void subscribeStartAnimation(const std_msgs::Bool& msg) ;
-
-
-    // receive an animation order
-    void subscribeSetAnimation(const xr1controllerol::AnimationMsgs& msg);
-
-
-    // animation main loop
+    // animation main loop, does every thing there
     void animationCallback();
 
-    // change the mode of omniwheels
+    // Clear the animation data an queue
+    void clearStates();
+
+
+    // -------------------------------------------------------------------
+
+
+
+    // Animation Library Player Messages and Services -------------------
+
+    // receive animation start signal
+    // WILL ALSO CHANGE ALL THE SUB CONTROL MODES
+    void subscribeStartAnimation(const std_msgs::Bool &msg);
+
+    // receive an animation order
+    // one animation coming right up , chump
+    void subscribeSetAnimation(const xr1controllerol::AnimationMsgs &msg);
+
+    // ------------------------------------------------------------------
+
+
+
+    // Omni wheels control -------------------------------------------
+
+    // change the mode of the OmniWheels
     void activateOmni();
 
-    // apply velocities
+    // apply velocity commands to Omniwheels
     void Omni2Actuator();
 
-    void subscribeSetCollisionDetection(const std_msgs::Bool & msg);
+    // --------------------------------------------------------------
 
+
+    // Collision Detection messages ---------------------------------------
+
+    //Receive a message to start collision detection
+    // THIS WILL OVERWRITE THE INVERSE DYNAMICS MODE
+    // THE GRAVITY COMPENSATION SHOULD BE TURNED OFF
+    void subscribeSetCollisionDetection(const std_msgs::Bool &msg);
+    // --------------------------------------------------------------------
+
+
+    // Collision Detection related function -------------------------------
+
+    // Detect collision here, does all the stuff internally
     void collisionDetectionCallback();
 
-    // -------------------------------------------------------------
+    // --------------------------------------------------------------------
 
 
+    // MoCap main loop ----------------------------------------------------
+    // The targets are saved in target joint positions
+    void MoCapCallback(const ros::TimerEvent &);
+    // --------------------------------------------------------------------
 
 
-    // Things regarding actuator controller
-    void readingCallback();
+    // Main High frequency control call back ------------------------------
 
+    // Main Loop, trigger most of other callbacks
     void unleaseCallback(const ros::TimerEvent &);
 
+    // Call back to publish all the dame joint information and tf
     void unleaseJointInfo();
 
+    // FOR HIGH FREQUENCY COMMANDS
+    // Apply the target joint angles to the robot
+    // Not activated in low frequency mode
     void applyJointTarget();
 
+    // FOR HIGH FREQUENCY COMMANDS
+    // Apply the target joint currents to the robot
+    // Not activated when not in the right mode
     void gravityCallback();
 
-    void requestAcc(const ros::TimerEvent &);
-
-    void requestQue(const ros::TimerEvent &);
-
-    void MoCapCallback(const ros::TimerEvent &);
+    // -------------------------------------------------------------------
 
 
-    void actuatorOperation(uint8_t nId, uint8_t nType);
+    // Actuator Controller Shenanigans ------------------------------------
 
-    bool allActuatorHasLaunched();
+    // Request all the important joint information
+    void readingCallback();
 
-    void stateTransition();
-
+    // Change actuator control modes
     void switch2HighFrequency(bool option);
+
+    // figure out the precise modes that each control modes should be in
     void judgeControlGroupModes();
+
+    // figure out the precise modes that each actuators should be in
     void judgeActuatorModes(uint8_t control_group);
 
+    // WHAT DO I DO ?!
+    void actuatorOperation(uint8_t nId, uint8_t nType);
+
+    // determine if all the actuators have been launched
+    bool allActuatorHasLaunched();
+
+    // ---------------------------------------------------------------------
 
 
-
-
-    // Some mumble jumble that no one clear about
-    // Clear the path data
-    void clearStates();
 
 
 protected:
 
+
+    // Actuator Connection funcitons -------------------------------------------------
+    //This function gets called whenever the actuator controller return a value
+    //Not meant to be used outside
+    void updatingCallback(uint8_t id, uint8_t attrId, double value);
+
+
+    //MoCap Information we get from the actuator controller
+    //Can be deactivated to save some resources
+    void QuaCallBack(uint64_t id, double w, double x, double y, double z);
+    // --------------------------------------------------------------------------------
+
+
+    // Power control Message Subscriber -------------------------------------------
     void subscribeLaunch(const std_msgs::Bool &msg);
 
     void subscribeShutdown(const std_msgs::Bool &msg);
 
     void subscribeEStop(const std_msgs::Bool &msg);
+    // ----------------------------------------------------------------------------
 
+
+    // Target State Control Message Subscriber -------------------------------------
     void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs &msg);
 
-    void subscribeHeadBodyPosition(const xr1controllerros::HeadMsgs &msg);
-
     void subscribeMainBodyCurrent(const xr1controllerros::BodyMsgs &msg);
+
+    void subscribeHeadBodyPosition(const xr1controllerros::HeadMsgs &msg);
 
     void subscribeLeftArmPosition(const xr1controllerros::ArmMsgs &msg);
 
@@ -238,24 +297,6 @@ protected:
 
     void subscribeRightArmCurrent(const xr1controllerros::ArmMsgs &msg);
 
-
-    void subscribeMainBodyMode(const xr1controllerros::ChainModeChange &msg);
-
-    void subscribeLeftArmMode(const xr1controllerros::ChainModeChange &msg);
-
-    void subscribeRightArmMode(const xr1controllerros::ChainModeChange &msg);
-
-    void subscribeLeftHandMode(const xr1controllerros::ChainModeChange &msg);
-
-    void subscribeRightHandMode(const xr1controllerros::ChainModeChange &msg);
-
-    void subscribeHeadBodyMode(const xr1controllerros::ChainModeChange &msg);
-
-    void subscribeBackBodyMode(const xr1controllerros::ChainModeChange &msg);
-
-
-
-
     void subscribeLeftHandPosition(const xr1controllerros::HandMsgs &msg);
 
     void subscribeRightHandPosition(const xr1controllerros::HandMsgs &msg);
@@ -263,31 +304,42 @@ protected:
     void subscribeLeftHandCurrent(const xr1controllerros::HandMsgs &msg);
 
     void subscribeRightHandCurrent(const xr1controllerros::HandMsgs &msg);
+    // -----------------------------------------------------------------------------
 
 
-    bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest & req ,
-             xr1controllerol::IKLinearServiceResponse & res);
-//    void subscribeIKLinearPlanner(const xr1controllerol::IKLinearTarget & msg);
+    // Mode change Subscriber ------------------------------------------------------
+    void subscribeRobotMode(const xr1controllerros::ChainModeChange &msg);
+    // -----------------------------------------------------------------------------
 
-    bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest & req ,
-                           xr1controllerol::IKTrackingServiceResponse & res);
 
-    bool serviceHandGrip(xr1controllerol::HandGripQueryRequest & req,
-            xr1controllerol::HandGripQueryResponse & res);
+    // IK related message and services ---------------------------------------------
+    bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
+                          xr1controllerol::IKLinearServiceResponse &res);
 
+    bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest &req,
+                           xr1controllerol::IKTrackingServiceResponse &res);
+
+    bool serviceHandGrip(xr1controllerol::HandGripQueryRequest &req,
+                         xr1controllerol::HandGripQueryResponse &res);
+    // ------------------------------------------------------------------------------
+
+
+
+    // FK related messages, tf ,and services -----------------------------------
     void broadcastTransform();
+    // -------------------------------------------------------------------------
 
 
 
-    void subscribeLeftElbowAngle(const std_msgs::Float64 &msg);
 
-    void subscribeRightElbowAngle(const std_msgs::Float64 &msg);
-
-
-
-    void subscribetiltInit(const std_msgs::Bool &msg);
-
-    void subscribeMoCapInit(const std_msgs::Bool &msg);
+    // LEGACY ----------------------------------------------------------------
+//    void subscribetiltInit(const std_msgs::Bool &msg);
+//    void subscribeMoCapInit(const std_msgs::Bool &msg);
+//    void accCallBack(uint8_t id , double x , double y , double z , int pres);
+//    void requestAcc(const ros::TimerEvent &);
+//    void requestQue(const ros::TimerEvent &);
+//    void stateTransition();
+    // -----------------------------------------------------------------------
 
 
 
@@ -295,110 +347,42 @@ protected:
 
 private:
 
-    // Pay no Attention Here Plz
+    // Pay no Attention Here Plz ---------------------------
     ros::NodeHandle nh;
     ActuatorController *m_pController;
 
     XR1Controller *XR1_ptr;
-    XR1ControllerALP * XRA_ptr;
+    XR1ControllerALP *XRA_ptr;
     XR1IMUmethods *IMU_ptr;
+    // -----------------------------------------------------
 
 
-
-    // Very important mode variables
+    // Very important mode variables -----------------------------------
     std::map<uint8_t, std::vector<uint8_t> > control_group_map;
     std::map<uint8_t, uint8_t> attribute_map;
     std::map<uint8_t, Actuator::ActuatorMode> mode_map;
-    std::map<int , int> control_modes;
+    std::map<int, int> control_modes;
     bool high_frequency_switch;
     bool animation_switch;
     bool collision_detection_switch;
     bool previous_omni_state;
+    // -----------------------------------------------------------------
 
 
 
-
-    double LeftElbowAngle;
-    double RightElbowAngle;
-    Matrix4d temp_4d;
-
-    tf::TransformBroadcaster EFF_Broadcaster;
-    tf::TransformListener EFF_Listener;
-
-
-    ros::Publisher ActuatorLaunchedPublisher;
-
+    // Power Control messages ----------------------
     ros::Subscriber LaunchSubscriber;
-
     ros::Subscriber ShutdownSubscriber;
-
     ros::Subscriber EStopSubscriber;
-
-    ros::Subscriber MainBodyModeChangeSubscriber;
-
-    ros::Subscriber MainBodyCurrentSubscriber;
-
-    ros::Subscriber LeftArmModeChangeSubscriber;
-
-    ros::Subscriber RightArmModeChangeSubscriber;
-
-    ros::Subscriber LeftHandModeChangeSubscriber;
-
-    ros::Subscriber RightHandModeChangeSubscriber;
-
-    ros::Subscriber HeadBodyModeChangeSubscriber;
-
-    ros::Subscriber BackBodyModeChangeSubscriber;
-
-    ros::Subscriber JointVisualizationSubscriber;
-
-    ros::Subscriber LeftArmPositionSubscriber;
-
-    ros::Subscriber RightArmPositionSubscriber;
-
-    ros::Subscriber MainBodyPositionSubscriber;
-
-    ros::Subscriber HeadBodyPositionSubscriber;
-
-    ros::Subscriber LeftArmVelocitySubscriber;
-
-    ros::Subscriber RightArmVelocitySubscriber;
-
-    ros::Subscriber LeftArmCurrentSubscriber;
-
-    ros::Subscriber RightArmCurrentSubscriber;
-
-    ros::Subscriber LeftHandPositionSubscriber;
-
-    ros::Subscriber RightHandPositionSubscriber;
-
-    ros::Subscriber LeftHandCurrentSubscriber;
-
-    ros::Subscriber RightHandCurrentSubscriber;
-
-    ros::Subscriber LeftElbowSubscriber;
-    ros::Subscriber RightElbowSubscriber;
+    // ---------------------------------------------
 
 
+    // Mode change Subscriber ----------------------
+    ros::Subscriber ModeChangeSubscriber;
+    // ---------------------------------------------
 
 
-
-
-    ros::Subscriber MetaModeSubscriber;
-
-    ros::Subscriber tiltInitSubscriber;
-
-    ros::Subscriber MoCapInitSubscriber;
-
-    ros::ServiceServer IKPlannerService;
-
-    ros::ServiceServer IKTrackingService;
-
-    ros::ServiceServer HandGripService;
-
-
-    ros::Publisher JointAttributePublisher;
-
+    // Body States Publishers ------------------------
     ros::Publisher HeadBodyPositionPublisher;
     ros::Publisher HeadBodyVelocityPublisher;
     ros::Publisher HeadBodyCurrentPublisher;
@@ -415,29 +399,84 @@ private:
     ros::Publisher RightHandPositionPublisher;
     ros::Publisher LeftHandCurrentPublisher;
     ros::Publisher RightHandCurrentPublisher;
+    // ------------------------------------------------
 
 
 
-    // Animation subscriber
+    // Body Target State Subscriber -----------------------
+    ros::Subscriber MainBodyPositionSubscriber;
+    ros::Subscriber MainBodyCurrentSubscriber;
+    ros::Subscriber HeadBodyPositionSubscriber;
+    ros::Subscriber LeftArmPositionSubscriber;
+    ros::Subscriber RightArmPositionSubscriber;
+    ros::Subscriber LeftArmVelocitySubscriber;
+    ros::Subscriber RightArmVelocitySubscriber;
+    ros::Subscriber LeftArmCurrentSubscriber;
+    ros::Subscriber RightArmCurrentSubscriber;
+    ros::Subscriber LeftHandPositionSubscriber;
+    ros::Subscriber RightHandPositionSubscriber;
+    ros::Subscriber LeftHandCurrentSubscriber;
+    ros::Subscriber RightHandCurrentSubscriber;
+    // ---------------------------------------------------
+
+
+
+    // IK related messages and services -------------
+    ros::Subscriber LeftElbowSubscriber;
+    ros::Subscriber RightElbowSubscriber;
+    ros::ServiceServer IKPlannerService;
+    ros::ServiceServer IKTrackingService;
+    ros::ServiceServer HandGripService;
+    // --------------------------------------------
+
+
+    // FK related stuff ---------------------------
+    tf::TransformBroadcaster EFF_Broadcaster;
+    tf::TransformListener EFF_Listener;
+    // --------------------------------------------
+
+
+
+    // LEGACY-------------------------------------
+    ros::Subscriber tiltInitSubscriber;
+    // -------------------------------------------
+
+
+    // Local MoCap system messages ---------------
+    ros::Subscriber MoCapInitSubscriber;
+    // -------------------------------------------
+
+
+
+    // Animation subscriber -----------------------
     ros::Subscriber AnimationSwitchSubscriber;
     ros::Subscriber AnimationSetSubscriber;
-    ros::Subscriber CollisionDetectionSubscriber;
+    // --------------------------------------------
 
-    // Very useless temp varibles
+
+    // Collision detection subscriber -------------
+    ros::Subscriber CollisionDetectionSubscriber;
+    // --------------------------------------------
+
+
+
+    // Very useless temporary variables ----------------
     Matrix4d temp_trans;
     VectorXd temp_vec5d;
     VectorXd temp_vec7d;
     VectorXd temp_vec3d;
+    Matrix4d temp_4d;
     xr1controllerros::HandMsgs temp_handmsgs;
     xr1controllerros::ArmMsgs temp_armmsgs;
     xr1controllerros::BodyMsgs temp_bodymsgs;
     bool hand_command_switch;
     int power_reading_counter;
-
-
-    Eigen::Affine3d itsafine;
+    Affine3d itsafine;
     tf::StampedTransform transform;
     geometry_msgs::Transform temp_geo_trans;
+    // ---------------------------------------------
+
+
 }; //class
 
 #endif // my_namespace__my_plugin_H

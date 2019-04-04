@@ -56,24 +56,12 @@ XR1ControllerOL::XR1ControllerOL() :
     RightArmCurrentSubscriber = nh.subscribe("/RightArm/TargetCurrent", 100, &XR1ControllerOL::subscribeRightArmCurrent,
                                 this);
 
+    ModeChangeSubscriber = nh.subscribe("/XR1/ChainModeChange", 10,
+                                        &XR1ControllerOL::subscribeMode, this);
+
 
     MainBodyModeChangeSubscriber = nh.subscribe("/XR1/MainBodyChainModeChange", 10,
                                    &XR1ControllerOL::subscribeMainBodyMode, this);
-    LeftArmModeChangeSubscriber = nh.subscribe("/XR1/LeftArmChainModeChange", 10,
-                                  &XR1ControllerOL::subscribeLeftArmMode, this);
-    RightArmModeChangeSubscriber = nh.subscribe("/XR1/RightArmChainModeChange", 10,
-                                   &XR1ControllerOL::subscribeRightArmMode, this);
-    LeftHandModeChangeSubscriber = nh.subscribe("/XR1/LeftHandChainModeChange", 10,
-                                   &XR1ControllerOL::subscribeLeftHandMode, this);
-    RightHandModeChangeSubscriber = nh.subscribe("/XR1/RightHandChainModeChange", 10,
-                                    &XR1ControllerOL::subscribeRightHandMode, this);
-
-
-    HeadBodyModeChangeSubscriber = nh.subscribe("/XR1/HeadBodyChainModeChange", 10,
-                                                &XR1ControllerOL::subscribeHeadBodyMode, this);
-    BackBodyModeChangeSubscriber = nh.subscribe("/XR1/BackBodyChainModeChange", 10,
-                                                &XR1ControllerOL::subscribeBackBodyMode, this);
-
 
     MetaModeSubscriber = nh.subscribe("/XR1/MetaModeChange", 1, &XR1ControllerOL::setMetaMode, this);
 
@@ -223,103 +211,17 @@ XR1ControllerOL::XR1ControllerOL() :
 XR1ControllerOL::~XR1ControllerOL() {
     // unregister all publishers here
 
-    JointAttributePublisher.shutdown();
-    ActuatorLaunchedPublisher.shutdown();
 
-}
-
-
-void XR1ControllerOL::QuaCallBack(uint64_t id, double w, double x, double y, double z) {
-
-    // ROS_INFO("[%f][%f][%f][%f]",w,x,y,z);
-    // if (precision > 1){
-
-    // If it is the base frame
-    if (id == ActuatorController::toLongId("192.168.1.4", 0))
-        XR1_ptr->tiltCallback(w, x, y, z);
-
-    // If it is a MoCap module
-    else {
-        IMU_ptr->quaternioncallback(ActuatorController::toByteId(id), w, x, y, z);
-    }
-
-    // }
 
 }
 
 
 
-// void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
-//  // ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
-// }
-
-void XR1ControllerOL::requestAcc(const ros::TimerEvent &) {
-    m_pController->requestSingleQuaternion(ActuatorController::toLongId("192.168.1.4", 0));
-    // m_pController->requestSingleQuaternion();
-}
-
-void XR1ControllerOL::requestQue(const ros::TimerEvent &) {
-    m_pController->requestAllQuaternions();
-}
-
-
-void XR1ControllerOL::setMetaMode(const std_msgs::Int32 &msg) {
-    XR1_ptr->tiltInit();
-//    XR1_ptr->setMetaMode(msg.data);
-}
-
-
-void XR1ControllerOL::MoCapCallback(const ros::TimerEvent &) {
-
-//    if (XR1_ptr->getMetaMode() == XR1::MoCapMode) {
-//
-//        std::vector<double> temp_vec = IMU_ptr->getJointAngles();
-//
-//        XR1_ptr->setMoCapPosition(IMU_ptr->getJointAngles());
-//
-//        XR1_ptr->getTargetPosition(XR1::LeftArm , temp_vec7d);
-//
-//        setJointPosition(XR1::LeftArm, temp_vec7d);
-//
-//    }
-
-}
-
-
-void XR1ControllerOL::launchAllMotors() {
-
-    m_pController->launchAllActuators();
-    if (allActuatorHasLaunched()) {
-        XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
-        std_msgs::Bool stuff;
-        stuff.data = true;
-        ActuatorLaunchedPublisher.publish(stuff);
-    }
-
-}
-
-bool XR1ControllerOL::allActuatorHasLaunched() {
-    vector<uint8_t> idArray = m_pController->getActuatorIdArray();
-    for (int i = 0; i < idArray.size(); ++i) {
-        if (m_pController->getActuatorAttribute((uint8_t) idArray.at(i), Actuator::INIT_STATE) != Actuator::Initialized)
-            return false;
-    }
-    return true;
-}
 
 void XR1ControllerOL::startSimulation() {
     launchAllMotors();
 }
 
-void XR1ControllerOL::stopAllMotors() {
-
-    std::vector<uint8_t> IDArray = m_pController->getActuatorIdArray();
-
-    for (int i = 0; i < IDArray.size(); i++) {
-        m_pController->closeActuator(IDArray.at(i));
-    }
-
-}
 
 void XR1ControllerOL::stopSimulation() {
 
@@ -335,67 +237,9 @@ void XR1ControllerOL::stopSimulation() {
 }
 
 
-void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
-
-
-    if (control_modes.find(control_group) == control_modes.end()){
-        ROS_INFO("Wrong input received for Control Mode");
-        return;
-    }
-
-
-    if (control_modes[control_group] == option){
-    }
-
-    else {
-
-
-        if (high_frequency_switch){
-
-
-            if (control_group == XR1::HeadBody || control_group == XR1::MainBody){
-                XR1_ptr->setControlMode(control_group , option);
-                control_modes[control_group] = option;
-            }
 
 
 
-
-        }
-
-        else {
-
-            ROS_INFO("Setting Control Group [%d] to Mode [%d]" , control_group , option);
-
-            control_modes[control_group] = option;
-
-            XR1_ptr->setControlMode(control_group , option);
-
-            if (control_group_map.find(control_group) != control_group_map.end()){
-                std::vector<uint8_t> temp_vector = control_group_map[control_group];
-
-                for (uint8_t id : temp_vector) {
-                    if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
-                        m_pController->activateActuatorMode(id, mode_map[option]);
-                    }
-                }
-            }
-        }
-
-    }
-
-}
-
-
-void XR1ControllerOL::setSubControlMode(uint8_t control_group , uint8_t option){
-    XR1_ptr->setSubControlMode(control_group, option);
-}
-
-
-void XR1ControllerOL::updatingCallback(uint8_t id, uint8_t attrId, double value) {
-    if (attribute_map.find(attrId) != attribute_map.end())
-        XR1_ptr->updatingCallback(id, attribute_map[attrId], value);
-}
 
 
 void XR1ControllerOL::subscribeLaunch(const std_msgs::Bool &msg) {
@@ -433,9 +277,6 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
         break;
     case Actuator::Launch_Finished:
         if (allActuatorHasLaunched()) {
-            std_msgs::Bool stuff;
-            stuff.data = true;
-            ActuatorLaunchedPublisher.publish(stuff);
 
             setControlMode(XR1::OmniWheels, XR1::PositionMode);
 

@@ -70,6 +70,8 @@ private:
 
     int getAnimationID(int long_id);
 
+    bool distinquishAnimationProcedure();
+
     int distinquishAnimationType(int animation_id);
 
     void judgeAnimationRecovery(int control_group);

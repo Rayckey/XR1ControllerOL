@@ -295,6 +295,7 @@ public:
     double getNextState(int joint_id);
     bool isStateActive(int joint_id);
     bool isReady4Animation(int joint_id);
+    bool isReady4Teachmotion(int joint_id);
     void insertNextState(std::vector<double> pos , std::vector<double>  vel, std::vector<double> acc);
     void insertNextState(int joint_id , double pos , double vel = 0 , double acc = 0);
     void setNextState(int joint_id , double pos , double vel = 0, double acc = 0);

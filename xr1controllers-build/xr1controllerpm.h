@@ -310,11 +310,13 @@ public:
     bool isStateActive(int joint_id);
     bool isStateReady(int joint_id);
     bool isReady4Animation(int joint_id);
+    bool isReady4Teachmotion(int joint_id);
     bool inHighFrequencyControl(int joint_id);
     void setHighFrequencyControl(int joint_id , bool option);
     std::vector<double> getNextState();
     double getNextState(int joint_id);
-    void trackBothHands(VectorXd &output_ref);
+    void trackBothHandsWithBack(VectorXd &output_ref);
+    void trackBothHandsWithHead(VectorXd &output_ref);
     void clearState();
 
 
@@ -380,7 +382,9 @@ private:
     void assignState(int joint_id);
     void moveIKQueue2States(int joint_id);
     void moveIKTracking2States(int joint_id);
-    void moveHandTracking2States(int joint_id);
+//    void moveHandTracking2States(int joint_id);
+    void moveHandTracking2MainBodyStates(int joint_id);
+    void moveHandTracking2HeadBodyStates(int joint_id);
     void moveHandGripping2States(int joint_id);
     void moveStable2States(int joint_id);
 
@@ -495,7 +499,8 @@ private:
     // temp varibles that save time and money
     VectorXd temp_vec5d;
     VectorXd temp_vec7d;
-
+    VectorXd temp_vec4d;
+    VectorXd temp_vec3d3;
 
 };
 
