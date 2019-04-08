@@ -71,25 +71,17 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
 // animation main loop
 void XR1ControllerOL::animationCallback(){
 
-
-        switch2HighFrequency(true);
-
         XRA_ptr->getNextState();
 
-        applyJointTarget();
-
-
-        if (previous_omni_state != XRA_ptr->isOmniWheelsMoving()){
-            previous_omni_state = XRA_ptr->isOmniWheelsMoving();
-            activateOmni();
-        }
-
-
-        if (previous_omni_state){
-            Omni2Actuator();
-        }
-
-
+//        if (previous_omni_state != XRA_ptr->isOmniWheelsMoving()){
+//            previous_omni_state = XRA_ptr->isOmniWheelsMoving();
+//            activateOmni();
+//        }
+//
+//
+//        if (previous_omni_state){
+//            Omni2Actuator();
+//        }
 
 }
 

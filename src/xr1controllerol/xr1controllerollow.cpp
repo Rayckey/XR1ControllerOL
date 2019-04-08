@@ -7,23 +7,50 @@
 
 
 
-void XR1ControllerOL::setJointPosition(uint8_t control_group, VectorXd & JA) {
+
+void XR1ControllerOL::setControlGroupTarget(uint8_t control_group){
+
+    if (XR1_ptr->isXR1Okay()){
 
 
-    if (XR1_ptr->isXR1Okay()) {
+        switch (XR1_ptr->getControlMode(control_group)){
 
-        std::vector<uint8_t> temp_vector = control_group_map[control_group];
+            case XR1::PositionMode :
 
-        for (uint8_t id : temp_vector) {
-            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
-                m_pController->setPosition(id, JA(id - control_group));
-            }
+                XR1_ptr->getTargetPosition(control_group , temp_vec7d);
+
+                for (uint8_t joint_id : control_group_map[control_group])
+                    m_pController->setPosition(joint_id , temp_vec7d(joint_id - control_group));
+
+                break;
+
+            case XR1::VelocityMode :
+
+                XR1_ptr->getTargetVelocity(control_group , temp_vec7d);
+
+                for (uint8_t joint_id : control_group_map[control_group])
+                    m_pController->setVelocity(joint_id , temp_vec7d(joint_id - control_group));
+
+                break;
+
+            case XR1::ForceMode :
+
+                XR1_ptr->getTargetCurrent(control_group , temp_vec7d);
+
+                for (uint8_t joint_id : control_group_map[control_group])
+                    m_pController->setCurrent(joint_id , temp_vec7d(joint_id - control_group));
+
+                break;
+
+            default:
+                break;
         }
 
     }
 
-
 }
+
+
 
 
 double XR1ControllerOL::getTargetJointPosition(uint8_t joint_id, bool vanilla) {
@@ -32,40 +59,3 @@ double XR1ControllerOL::getTargetJointPosition(uint8_t joint_id, bool vanilla) {
 
 }
 
-void XR1ControllerOL::setJointVelocity(uint8_t control_group, VectorXd & JV) {
-
-    if (XR1_ptr->isXR1Okay()) {
-        std::vector<uint8_t> temp_vector = control_group_map[control_group];
-
-        for (uint8_t id : temp_vector) {
-            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
-                m_pController->setVelocity(id, JV(id - control_group));
-            }
-        }
-    }
-
-}
-
-void XR1ControllerOL::setJointCurrent(uint8_t control_group, VectorXd & JC) {
-
-    if (XR1_ptr->isXR1Okay()) {
-        std::vector<uint8_t> temp_vector = control_group_map[control_group];
-
-        for (uint8_t id : temp_vector) {
-            if ((int) m_pController->getActuatorAttribute(id, Actuator::INIT_STATE) == Actuator::Initialized) {
-                m_pController->setCurrent(id, JC(id - control_group));
-            }
-        }
-    }
-
-}
-
-
-void XR1ControllerOL::setJointCurrent(uint8_t joint_idx, double JC) {
-
-    if ((int) m_pController->getActuatorAttribute(joint_idx, Actuator::INIT_STATE) == Actuator::Initialized) {
-        if (XR1_ptr->isXR1Okay()) {
-            m_pController->setCurrent(joint_idx, JC);
-        }
-    }
-}

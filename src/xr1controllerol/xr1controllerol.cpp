@@ -17,6 +17,8 @@ XR1ControllerOL::XR1ControllerOL() :
         sit_pos.push_back(0);
 
 
+
+    // Bunch of calculation objects ---------------------------------------
     std::string path = ros::package::getPath("xr1controllerol");
 
     XR1_ptr = new XR1Controller(path + "/cream.xr1para", sit_pos);
@@ -27,11 +29,11 @@ XR1ControllerOL::XR1ControllerOL() :
 
     m_pController = ActuatorController::getInstance();
 
+    // --------------------------------------------------------------------
 
-    JointAttributePublisher = nh.advertise<xr1controllerros::JointAttributeMsgs>("XR1/JointAttribute", 1);
 
-    ActuatorLaunchedPublisher = nh.advertise<std_msgs::Bool>("XR1/LaunchedSignal", 1);
 
+    // Bunch of Target Subscribers --------------------------------------
     LaunchSubscriber = nh.subscribe("/startSimulation", 1, &XR1ControllerOL::subscribeLaunch, this);
     ShutdownSubscriber = nh.subscribe("/stopSimulation", 1, &XR1ControllerOL::subscribeShutdown, this);
 
@@ -56,15 +58,6 @@ XR1ControllerOL::XR1ControllerOL() :
     RightArmCurrentSubscriber = nh.subscribe("/RightArm/TargetCurrent", 100, &XR1ControllerOL::subscribeRightArmCurrent,
                                 this);
 
-    ModeChangeSubscriber = nh.subscribe("/XR1/ChainModeChange", 10,
-                                        &XR1ControllerOL::subscribeMode, this);
-
-
-    MainBodyModeChangeSubscriber = nh.subscribe("/XR1/MainBodyChainModeChange", 10,
-                                   &XR1ControllerOL::subscribeMainBodyMode, this);
-
-    MetaModeSubscriber = nh.subscribe("/XR1/MetaModeChange", 1, &XR1ControllerOL::setMetaMode, this);
-
     LeftHandPositionSubscriber = nh.subscribe("/LeftHand/TargetPosition", 10,
                                  &XR1ControllerOL::subscribeLeftHandPosition, this);
     RightHandPositionSubscriber = nh.subscribe("/RightHand/TargetPosition", 10,
@@ -74,29 +67,39 @@ XR1ControllerOL::XR1ControllerOL() :
     RightHandCurrentSubscriber = nh.subscribe("/RightHand/TargetCurrent", 10,
                                  &XR1ControllerOL::subscribeRightHandCurrent, this);
 
+    ModeChangeSubscriber = nh.subscribe("/XR1/ChainModeChange", 10,
+                                        &XR1ControllerOL::subscribeRobotMode, this);
+
     EStopSubscriber = nh.subscribe("XR1/EStop", 1, &XR1ControllerOL::subscribeEStop, this);
 
-
-    LeftElbowSubscriber = nh.subscribe("LeftArm/ElbowAngle", 1, &XR1ControllerOL::subscribeLeftElbowAngle, this);
-    RightElbowSubscriber = nh.subscribe("RightArm/ElbowAngle", 1, &XR1ControllerOL::subscribeRightElbowAngle, this);
+    // -----------------------------------------------------------------------
 
 
-    tiltInitSubscriber = nh.subscribe("XR1/tiltInit", 1, &XR1ControllerOL::subscribetiltInit, this);
-    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
 
 
+
+    // Animation callbacks -------------------------------------------------------
     AnimationSwitchSubscriber = nh.subscribe("/startAnimation" , 1 , &XR1ControllerOL::subscribeStartAnimation , this);
     AnimationSetSubscriber = nh.subscribe("/setAnimation" , 1 , &XR1ControllerOL::subscribeSetAnimation , this);
+    // ---------------------------------------------------------------------------
+
+
+
+    // Collision Detection set ---------------------------------------------------
     CollisionDetectionSubscriber = nh.subscribe("/setCollisionDetection" , 1 , &XR1ControllerOL::subscribeSetCollisionDetection , this);
+    // ---------------------------------------------------------------------------
 
 
+
+
+    // Inverse Kinematics callbacks ----------------------------------------------
     IKPlannerService = nh.advertiseService("XR1/IKLPT" , &XR1ControllerOL::serviceIKPlanner, this);
     IKTrackingService = nh.advertiseService("XR1/IKTT" , &XR1ControllerOL::serviceIKTracking , this);
     HandGripService = nh.advertiseService("XR1/HGQ" , &XR1ControllerOL::serviceHandGrip , this);
+    // ---------------------------------------------------------------------------
 
 
-
-
+    // Joint Information Publishers ---------------------------------------------------
     HeadBodyPositionPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Position", 1);
     HeadBodyVelocityPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Velocity", 1);
     HeadBodyCurrentPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Current", 1);
@@ -115,63 +118,48 @@ XR1ControllerOL::XR1ControllerOL() :
 
     LeftHandPositionPublisher = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/Position", 1);
     RightHandPositionPublisher = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Position", 1);
+
     LeftHandCurrentPublisher = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/Current", 1);
     RightHandCurrentPublisher = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Current", 1);
+// --------------------------------------------------------------------------------
 
 
 
-    m_pController->m_sOperationFinished->connect_member(this, &XR1ControllerOL::actuatorOperation);
 
 
     // Getting all the group ID right ------------------------------------------------
-    std::vector<uint8_t> temp_vector;
+    control_group_map[XR1::MainBody] = XR1_ptr->getControlGroupIDs(XR1::MainBody);
 
-    temp_vector.clear();
-    for (uint8_t i = XR1::MainBody; i < XR1::LeftArm; i++) {
-        temp_vector.push_back(i);
-    }
-    control_group_map[XR1::MainBody] = temp_vector;
+    control_group_map[XR1::HeadBody] = XR1_ptr->getControlGroupIDs(XR1::HeadBody);
 
-    temp_vector.clear();
-    for (uint8_t i = XR1::LeftArm; i < XR1::RightArm; i++) {
-        temp_vector.push_back(i);
-    }
-    control_group_map[XR1::LeftArm] = temp_vector;
+    control_group_map[XR1::LeftArm] = XR1_ptr->getControlGroupIDs(XR1::LeftArm);
+
+    control_group_map[XR1::RightArm] = XR1_ptr->getControlGroupIDs(XR1::RightArm);
+
+    control_group_map[XR1::LeftHand] = XR1_ptr->getControlGroupIDs(XR1::LeftHand);
+
+    control_group_map[XR1::RightHand] = XR1_ptr->getControlGroupIDs(XR1::RightHand);
 
 
-    temp_vector.clear();
-    for (uint8_t i = XR1::RightArm; i < XR1::LeftHand; i++) {
-        temp_vector.push_back(i);
-    }
-    control_group_map[XR1::RightArm] = temp_vector;
-
-
-    temp_vector.clear();
-    for (uint8_t i = XR1::LeftHand; i < XR1::RightHand; i++) {
-        temp_vector.push_back(i);
-    }
-    control_group_map[XR1::LeftHand] = temp_vector;
-
-
-    temp_vector.clear();
-    for (uint8_t i = XR1::RightHand; i < XR1::Actuator_Total; i++) {
-        temp_vector.push_back(i);
-    }
-    control_group_map[XR1::RightHand] = temp_vector;
+    control_group_flags.push_back(XR1::OmniWheels);
+    control_group_flags.push_back(XR1::MainBody);
+    control_group_flags.push_back(XR1::HeadBody);
+    control_group_flags.push_back(XR1::LeftArm);
+    control_group_flags.push_back(XR1::RightArm);
+    control_group_flags.push_back(XR1::LeftHand);
+    control_group_flags.push_back(XR1::RightHand);
     // ------------------------------------------------
 
 
 
-    attribute_map[Actuator::ACTUAL_POSITION] = XR1::ActualPosition;
-    attribute_map[Actuator::ACTUAL_VELOCITY] = XR1::ActualVelocity;
-    attribute_map[Actuator::ACTUAL_CURRENT] = XR1::ActualCurrent;
 
 
-    mode_map[XR1::PositionMode] = Actuator::Mode_Profile_Pos;
-    mode_map[XR1::VelocityMode] = Actuator::Mode_Profile_Vel;
-    mode_map[XR1::ForceMode] = Actuator::Mode_Cur;
-    mode_map[XR1::IKMode] = Actuator::Mode_Profile_Pos;
+//    mode_map[XR1::PositionMode] = Actuator::Mode_Profile_Pos;
+//    mode_map[XR1::VelocityMode] = Actuator::Mode_Profile_Vel;
+//    mode_map[XR1::ForceMode] = Actuator::Mode_Cur;
+//    mode_map[XR1::IKMode] = Actuator::Mode_Profile_Pos;
 
+// Buffered control modes -----------------------------
     control_modes[XR1::OmniWheels] = 0;
     control_modes[XR1::MainBody] = 0;
     control_modes[XR1::LeftArm] = 0;
@@ -180,38 +168,66 @@ XR1ControllerOL::XR1ControllerOL() :
     control_modes[XR1::RightHand] = 0;
     control_modes[XR1::HeadBody] = 0;
     control_modes[XR1::MainBody] = 0;
+ // --------------------------------------------------
 
 
-
-    //Update Callback
+    //Actuators Update Callback --------------------------------
     m_pController->m_sActuatorAttrChanged->connect_member(this, &XR1ControllerOL::updatingCallback);
 
     m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
 
-    // m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
+    m_pController->m_sOperationFinished->connect_member(this, &XR1ControllerOL::actuatorOperation);
+
+    attribute_map[Actuator::ACTUAL_POSITION] = XR1::ActualPosition;
+    attribute_map[Actuator::ACTUAL_VELOCITY] = XR1::ActualVelocity;
+    attribute_map[Actuator::ACTUAL_CURRENT] = XR1::ActualCurrent;
+
+    // -----------------------------------------------
 
 
-    // Elbow lower anlges, measured from the top, by default:
-    // For left arm, the desirable range is 1.0 to 3.0
-    // For right arm, the desirable ranfge is -3.0 to -1.0
-    LeftElbowAngle = 2.5;
-    RightElbowAngle = -2.5;
-    ROS_INFO("OL finished");
+
+
 
 
     temp_vec5d = VectorXd::Zero(5);
     temp_vec7d = VectorXd::Zero(7);
     temp_vec3d = VectorXd::Zero(3);
+    temp_vec4d = VectorXd::Zero(4);
 
     XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
 
 
+
+    // Legacy ---------------------------------------------------------------------
+
+//    tiltInitSubscriber = nh.subscribe("XR1/tiltInit", 1, &XR1ControllerOL::subscribetiltInit, this);
+//    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
+    // m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
+// ----------------------------------------------------------------------------
+
+
+    ROS_INFO("OL Constructor finished");
 }
 
 XR1ControllerOL::~XR1ControllerOL() {
     // unregister all publishers here
 
-
+    HeadBodyPositionPublisher  .shutdown();
+    HeadBodyVelocityPublisher .shutdown();
+    HeadBodyCurrentPublisher.shutdown();
+    MainBodyPositionPublisher .shutdown();
+    MainBodyVelocityPublisher .shutdown();
+    MainBodyCurrentPublisher.shutdown();
+    LeftArmPositionPublisher .shutdown();
+    LeftArmVelocityPublisher .shutdown();
+    LeftArmCurrentPublisher.shutdown();
+    RightArmPositionPublisher .shutdown();
+    RightArmVelocityPublisher .shutdown();
+    RightArmCurrentPublisher.shutdown();
+    LeftHandPositionPublisher .shutdown();
+    RightHandPositionPublisher.shutdown();
+    LeftHandCurrentPublisher .shutdown();
+    RightHandCurrentPublisher .shutdown();
 
 }
 
@@ -241,26 +257,34 @@ void XR1ControllerOL::stopSimulation() {
 
 
 
-
 void XR1ControllerOL::subscribeLaunch(const std_msgs::Bool &msg) {
     launchAllMotors();
 }
+
 
 void XR1ControllerOL::subscribeShutdown(const std_msgs::Bool &msg) {
     stopAllMotors();
 }
 
+
+
 void XR1ControllerOL::subscribeEStop(const std_msgs::Bool &msg) {
 
+    // set true to lock the robot
     if (msg.data) {
         XR1_ptr->employLockdown();
         for (uint8_t i = XR1::OmniWheels; i < XR1::Actuator_Total; i++)
             m_pController->activateActuatorMode(i, Actuator::Mode_Pos);
-    } else {
+    }
+    // set false to unlock the robot
+    else {
         XR1_ptr->liftLockdown();
-        setControlMode(XR1::LeftArm, XR1::PositionMode);
-        setControlMode(XR1::RightArm, XR1::PositionMode);
-        setControlMode(XR1::MainBody, XR1::PositionMode);
+        setControlMode(XR1::LeftArm, XR1::DirectMode);
+        setControlMode(XR1::RightArm, XR1::DirectMode);
+        setControlMode(XR1::MainBody, XR1::DirectMode);
+        setControlMode(XR1::HeadBody, XR1::DirectMode);
+        setControlMode(XR1::LeftHand, XR1::DirectMode);
+        setControlMode(XR1::RightHand, XR1::DirectMode);
     }
 
 
@@ -278,17 +302,12 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
     case Actuator::Launch_Finished:
         if (allActuatorHasLaunched()) {
 
-            setControlMode(XR1::OmniWheels, XR1::PositionMode);
-
-            setControlMode(XR1::MainBody, XR1::PositionMode);
-
-            setControlMode(XR1::LeftArm, XR1::PositionMode);
-
-            setControlMode(XR1::RightArm, XR1::PositionMode);
-
-            setControlMode(XR1::LeftHand, XR1::PositionMode);
-
-            setControlMode(XR1::RightHand, XR1::PositionMode);
+            setControlMode(XR1::OmniWheels, XR1::DirectMode);
+            setControlMode(XR1::MainBody, XR1::DirectMode);
+            setControlMode(XR1::LeftArm, XR1::DirectMode);
+            setControlMode(XR1::RightArm, XR1::DirectMode);
+            setControlMode(XR1::LeftHand, XR1::DirectMode);
+            setControlMode(XR1::RightHand, XR1::DirectMode);
 
             ROS_INFO("All Actuators Have Launched");
         }
@@ -309,26 +328,21 @@ void XR1ControllerOL::readingCallback() {
         }
     }
 
-
-
     for (uint8_t i = XR1::RightArm; i < XR1::LeftHand; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
             m_pController->getCVPValue(i);
         }
     }
 
-
     for (uint8_t i = XR1::Back_Z; i <= XR1::Back_Y; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
-            // m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+            m_pController->getCVPValue(i);
         }
     }
 
     for (uint8_t i = XR1::Neck_Z; i < XR1::LeftArm; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
+            m_pController->getCVPValue(i);
         }
     }
 
@@ -345,14 +359,14 @@ void XR1ControllerOL::readingCallback() {
         {
             if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
             {
-                m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+                m_pController->getCVPValue(i);
             }
         }
 
 
         if ((int) m_pController->getActuatorAttribute((uint8_t) XR1::Knee_X, Actuator::INIT_STATE) ==
                 Actuator::Initialized) {
-            m_pController->regainAttrbute((uint8_t) XR1::Knee_X, Actuator::ACTUAL_POSITION);
+            m_pController->getCVPValue((uint8_t)XR1::Knee_X);
         }
     }
 
@@ -386,8 +400,9 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
     if (animation_switch)
         animationCallback();
-    else
-        stateTransition();
+
+
+    applyJointsTargets();
 
     collisionDetectionCallback();
 
@@ -411,15 +426,15 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertBodyMsgs(temp_vec3d , temp_bodymsgs);
     MainBodyCurrentPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointPositions(XR1::MainBody, temp_vec7d ,true);
+    XR1_ptr->getJointPositions(XR1::MainBody, temp_vec4d ,true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyPositionPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointVelocities(XR1::MainBody, temp_vec7d ,true);
+    XR1_ptr->getJointVelocities(XR1::MainBody, temp_vec4d ,true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyVelocityPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointCurrents(XR1::MainBody, temp_vec7d , true);
+    XR1_ptr->getJointCurrents(XR1::MainBody, temp_vec4d , true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyCurrentPublisher.publish(temp_bodymsgs);
 
@@ -447,7 +462,6 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertArmMsgs(temp_vec7d , temp_armmsgs);
     RightArmCurrentPublisher.publish(temp_armmsgs);
 
-
     XR1_ptr->getJointPositions(XR1::LeftHand, temp_vec5d, true);
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     LeftHandPositionPublisher.publish(temp_handmsgs);
@@ -455,7 +469,6 @@ void XR1ControllerOL::unleaseJointInfo(){
     XR1_ptr->getJointPositions(XR1::RightHand, temp_vec5d , true);
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     RightHandPositionPublisher.publish(temp_handmsgs);
-
 
     XR1_ptr->getJointCurrents(XR1::LeftHand, temp_vec5d, true);
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
@@ -477,7 +490,7 @@ void XR1ControllerOL::broadcastTransform() {
 //    XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
 
     // This function triggers almost all the computation in the library
-    XR1_ptr->triggerCalculation(collision_detection_switch);
+    XR1_ptr->triggerCalculation(true);
 
     // Publish the left one
     XR1_ptr->getEndEffectorTransformation(XR1::LeftArm, itsafine);
@@ -487,10 +500,8 @@ void XR1ControllerOL::broadcastTransform() {
 
     // Publish the right one
     XR1_ptr->getEndEffectorTransformation(XR1::RightArm, itsafine);
-    // std::cout << itsafine.matrix() << std::endl;
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
-
 
 
     // Publish the head
@@ -499,11 +510,15 @@ void XR1ControllerOL::broadcastTransform() {
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 
 
+    XR1_ptr->getBaseTransformation(XR1::OmniWheels, itsafine);
+    tf::transformEigenToTF(itsafine, transform);
+    EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Odom", "/Base"));
 
-    // Publish the Base
+
     XR1_ptr->getBaseTransformation(XR1::MainBody, itsafine);
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Base", "/Back_Y"));
+
 
 }
 
@@ -519,28 +534,4 @@ void XR1ControllerOL::getEndEffectorTransformation(uint8_t control_group, Affine
 
 void XR1ControllerOL::clearStates() {
     XR1_ptr->clearStates();
-}
-
-void XR1ControllerOL::gravityCallback() {
-
-
-    if (XR1_ptr->getControlMode(XR1::LeftArm) == XR1::ForceMode) {
-        for (uint8_t i = XR1::LeftArm; i < XR1::Left_Wrist_Z; i++) {
-            ROS_INFO("The Current for joint [%d] is [%f]", (int) i, XR1_ptr->getTargetJointCurrent(i));
-
-            setJointCurrent(i, XR1_ptr->getTargetJointCurrent(i));
-
-        }
-    }
-//
-    if (XR1_ptr->getControlMode(XR1::RightArm) == XR1::ForceMode) {
-        for (uint8_t i = XR1::RightArm; i < XR1::Right_Wrist_Z; i++) {
-            ROS_INFO("The Current for joint [%d] is [%f]", (int) i, XR1_ptr->getTargetJointCurrent(i));
-
-            setJointCurrent(i, XR1_ptr->getTargetJointCurrent(i));
-
-        }
-    }
-
-
 }

@@ -71,42 +71,10 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Angles contained in Eigen::VectorXd
     //Reutrns : void , may add error message in the future
-    void setJointPosition(uint8_t control_group, VectorXd &JA);
+    void setControlGroupTarget(uint8_t control_group);
 
+    void setJointTarget(uint8_t joint_id);
 
-    //Set the Target Joint Positions for a single joint, i.e. LeftShoulderX , RightWristZ
-    //Used in the XR1Controller
-    //Argu: Control Group ID , Angles contained in std::vector<double>
-    //Reutrns : void , may add error message in the fulture
-    void setJointPosition(uint8_t joint_idx, double JA);
-
-
-    //Set the Target Joint Velocity for an entire control group, i.e. LeftARM , RightHand
-    //Used in the XR1Controller
-    //Argu: Control Group ID , Angular Velocity contained in Eigen::VectorXd
-    //Reutrns : void , may add error message in the fulture
-    void setJointVelocity(uint8_t control_group, VectorXd &JV);
-
-
-    //Set the Target Joint Velocity for a single joint, i.e. LeftShoulderX , RightWristZ
-    //Used in the XR1Controller
-    //Argu: Control Group ID , Angular Velocity contained in std::vector<double>
-    //Reutrns : void , may add error message in the fulture
-    void setJointVelocity(uint8_t joint_idx, double JV);
-
-
-    //Set the Target Joint Positions for an entire control group, i.e. LeftARM , RightHand
-    //Used in the XR1Controller
-    //Argu: Control Group ID , Target Current
-    //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t control_group, VectorXd &JC);
-
-
-    //Set the Target Joint Velocity for a single joint, i.e. LeftShoulderX , RightWristZ
-    //Used in the XR1Controller
-    //Argu: Control Group ID , Angular Velocity contained in std::vector<double>
-    //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t joint_idx, double JC);
 
     // ------------------------------------------------------------------------------------------
 
@@ -157,6 +125,7 @@ public:
 
 
     // -------------------------------------------------------------------
+
 
 
 
@@ -219,7 +188,7 @@ public:
     // FOR HIGH FREQUENCY COMMANDS
     // Apply the target joint angles to the robot
     // Not activated in low frequency mode
-    void applyJointTarget();
+    void applyJointsTargets();
 
     // FOR HIGH FREQUENCY COMMANDS
     // Apply the target joint currents to the robot
@@ -354,11 +323,13 @@ private:
     XR1Controller *XR1_ptr;
     XR1ControllerALP *XRA_ptr;
     XR1IMUmethods *IMU_ptr;
+    std::vector<uint8_t> temp_ids;
     // -----------------------------------------------------
 
 
     // Very important mode variables -----------------------------------
     std::map<uint8_t, std::vector<uint8_t> > control_group_map;
+    std::vector<uint8_t> control_group_flags;
     std::map<uint8_t, uint8_t> attribute_map;
     std::map<uint8_t, Actuator::ActuatorMode> mode_map;
     std::map<int, int> control_modes;
@@ -465,6 +436,7 @@ private:
     VectorXd temp_vec5d;
     VectorXd temp_vec7d;
     VectorXd temp_vec3d;
+    VectorXd temp_vec4d;
     Matrix4d temp_4d;
     xr1controllerros::HandMsgs temp_handmsgs;
     xr1controllerros::ArmMsgs temp_armmsgs;
@@ -474,6 +446,7 @@ private:
     Affine3d itsafine;
     tf::StampedTransform transform;
     geometry_msgs::Transform temp_geo_trans;
+    double temp_value;
     // ---------------------------------------------
 
 
