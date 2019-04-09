@@ -9,7 +9,8 @@ XR1ControllerOL::XR1ControllerOL() :
     ,power_reading_counter(30000)
     ,animation_switch(false)
     ,previous_omni_state(false)
-    ,collision_detection_switch(false){
+    ,collision_detection_switch(false)
+    ,RecognizeFinished(false){
 
     std::vector<double> sit_pos;
 
@@ -21,7 +22,7 @@ XR1ControllerOL::XR1ControllerOL() :
     // Bunch of calculation objects ---------------------------------------
     std::string path = ros::package::getPath("xr1controllerol");
 
-    XR1_ptr = new XR1Controller(path + "/cream.xr1para", sit_pos);
+    XR1_ptr = new XR1Controller(path + "/fungus.xr1para", sit_pos);
 
     XRA_ptr = new XR1ControllerALP(path + "/ALP" , XR1_ptr, 169 , 10 , 1 );
 
@@ -141,7 +142,7 @@ XR1ControllerOL::XR1ControllerOL() :
     control_group_map[XR1::RightHand] = XR1_ptr->getControlGroupIDs(XR1::RightHand);
 
 
-    control_group_flags.push_back(XR1::OmniWheels);
+//    control_group_flags.push_back(XR1::OmniWheels);
     control_group_flags.push_back(XR1::MainBody);
     control_group_flags.push_back(XR1::HeadBody);
     control_group_flags.push_back(XR1::LeftArm);
@@ -174,8 +175,6 @@ XR1ControllerOL::XR1ControllerOL() :
     //Actuators Update Callback --------------------------------
     m_pController->m_sActuatorAttrChanged->connect_member(this, &XR1ControllerOL::updatingCallback);
 
-    m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
-
     m_pController->m_sOperationFinished->connect_member(this, &XR1ControllerOL::actuatorOperation);
 
     attribute_map[Actuator::ACTUAL_POSITION] = XR1::ActualPosition;
@@ -203,6 +202,7 @@ XR1ControllerOL::XR1ControllerOL() :
 //    tiltInitSubscriber = nh.subscribe("XR1/tiltInit", 1, &XR1ControllerOL::subscribetiltInit, this);
 //    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
     // m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
+    //    m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
 // ----------------------------------------------------------------------------
 
 
@@ -291,120 +291,34 @@ void XR1ControllerOL::subscribeEStop(const std_msgs::Bool &msg) {
 }
 
 
-void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
-
-    switch (nType) {
-    case Actuator::Recognize_Finished:
-        if (m_pController->hasAvailableActuator()) {
-            ROS_INFO("Recognized Actuators");
-        }
-        break;
-    case Actuator::Launch_Finished:
-        if (allActuatorHasLaunched()) {
-
-            setControlMode(XR1::OmniWheels, XR1::DirectMode);
-            setControlMode(XR1::MainBody, XR1::DirectMode);
-            setControlMode(XR1::LeftArm, XR1::DirectMode);
-            setControlMode(XR1::RightArm, XR1::DirectMode);
-            setControlMode(XR1::LeftHand, XR1::DirectMode);
-            setControlMode(XR1::RightHand, XR1::DirectMode);
-
-            ROS_INFO("All Actuators Have Launched");
-        }
-
-        break;
-    default:
-        break;
-    }
-}
-
-void XR1ControllerOL::readingCallback() {
-
-    // ROS_INFO(" the current time is [%f]" , (float)this_event.current_real);
-
-    for (uint8_t i = XR1::LeftArm; i < XR1::RightArm; ++i) {
-        if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            m_pController->getCVPValue(i);
-        }
-    }
-
-    for (uint8_t i = XR1::RightArm; i < XR1::LeftHand; ++i) {
-        if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            m_pController->getCVPValue(i);
-        }
-    }
-
-    for (uint8_t i = XR1::Back_Z; i <= XR1::Back_Y; ++i) {
-        if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            m_pController->getCVPValue(i);
-        }
-    }
-
-    for (uint8_t i = XR1::Neck_Z; i < XR1::LeftArm; ++i) {
-        if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-            m_pController->getCVPValue(i);
-        }
-    }
-
-    if (hand_command_switch) {
-        for (uint8_t i = XR1::LeftHand; i < XR1::Actuator_Total; ++i) {
-            if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
-                m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
-                m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
-            }
-        }
-
-
-        for (uint8_t i = XR1::OmniWheels; i < XR1::MainBody; ++i)
-        {
-            if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
-            {
-                m_pController->getCVPValue(i);
-            }
-        }
-
-
-        if ((int) m_pController->getActuatorAttribute((uint8_t) XR1::Knee_X, Actuator::INIT_STATE) ==
-                Actuator::Initialized) {
-            m_pController->getCVPValue((uint8_t)XR1::Knee_X);
-        }
-    }
-
-
-    if (power_reading_counter > (200*5)){
-
-        power_reading_counter = 0;
-
-        if ((int) m_pController->getActuatorAttribute((uint8_t)XR1::Back_Y, Actuator::INIT_STATE) == Actuator::Initialized)
-            m_pController->regainAttrbute((uint8_t)XR1::Back_Y , Actuator::VOLTAGE);
-    }
-
-
-    hand_command_switch = !hand_command_switch;
-
-}
-
-
 
 
 
 void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
+    // Things to do On each loop
+
+    // request to read all the values
     readingCallback();
 
-    unleaseJointInfo();
+    // check all the control modes
+    judgeControlGroupModes();
 
-    gravityCallback();
-
+    // calculate all the tf info and dynamics stuff
     broadcastTransform();
 
+    // send out all the joint information
+    unleaseJointInfo();
+
+    // collision detection check
+    collisionDetectionCallback();
+
+    // assign next animation step
     if (animation_switch)
         animationCallback();
 
-
+    // apply high frequency target if it exists
     applyJointsTargets();
-
-    collisionDetectionCallback();
 
 }
 
@@ -478,16 +392,12 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     RightHandCurrentPublisher.publish(temp_handmsgs);
 
-
 }
 
 
 
 
 void XR1ControllerOL::broadcastTransform() {
-
-//    //just to be sure
-//    XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
 
     // This function triggers almost all the computation in the library
     XR1_ptr->triggerCalculation(true);
@@ -519,7 +429,6 @@ void XR1ControllerOL::broadcastTransform() {
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Base", "/Back_Y"));
 
-
 }
 
 
@@ -529,9 +438,3 @@ void XR1ControllerOL::getEndEffectorTransformation(uint8_t control_group, Affine
     XR1_ptr->getEndEffectorTransformation(control_group, TransformationReference);
 }
 
-
-
-
-void XR1ControllerOL::clearStates() {
-    XR1_ptr->clearStates();
-}

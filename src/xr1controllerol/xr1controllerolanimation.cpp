@@ -6,17 +6,40 @@
 
 // receive animation start signal
 void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
-    animation_switch = msg.data;
 
-    if (animation_switch)
-        ROS_INFO("Animation is now ON");
 
-    else {
-        ROS_INFO("Animation is now OFF");
-        XRA_ptr->clearAll();
-        switch2HighFrequency(false);
+    if (msg.data){
+
+
+        for (uint8_t control_group : control_group_flags){
+
+            if (XR1_ptr->getSubControlMode(control_group) == XR1::DirectMode){
+                setControlMode(control_group , XR1::AnimationMode);
+
+                animation_switch = true;
+            }
+
+            if (animation_switch)
+                ROS_INFO("Animation is now ON");
+
+        }
+
     }
 
+
+    else {
+
+        animation_switch = false;
+        ROS_INFO("Animation is now OFF");
+        clearStates();
+    }
+
+}
+
+
+void XR1ControllerOL::clearStates() {
+    XRA_ptr->clearAll();
+    XR1_ptr->clearStates();
 }
 
 
@@ -33,21 +56,34 @@ void XR1ControllerOL::subscribeSetAnimation(const xr1controllerol::AnimationMsgs
 
 
 void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg){
-    collision_detection_switch = msg.data;
 
-    if (collision_detection_switch){
+
+
+    // we want to turn it on
+    if (msg.data){
         ROS_INFO("Set collision detection to ON");
+
+
+        for (uint8_t control_group : control_group_flags){
+            if (XR1_ptr->getSubControlMode(control_group) >= XR1::TeachMode){
+                return ;
+            }
+        }
+
+        collision_detection_switch = msg.data;
+
         XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
     }
 
-
+    // we want to turn it off
     else{
+        collision_detection_switch = msg.data;
         ROS_INFO("Set collision detection to OFF");
         XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
     }
 
 
-
+    // decide if we need to lift a lock down or two
     if (XR1_ptr->isXR1Okay()){
 
     }
@@ -59,9 +95,8 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
 
         else {
 
-            // Im guessing you want to lift the curse on thy princess eh?
+            // lift the curse on thy princess eh?
             XR1_ptr->liftLockdown();
-            switch2HighFrequency(false);
 
         }
     }
@@ -112,39 +147,43 @@ void XR1ControllerOL::Omni2Actuator(){
 
 void XR1ControllerOL::collisionDetectionCallback(){
 
-    if (collision_detection_switch) {
-        if (XR1_ptr->CollisionDetection(XR1::LeftArm) ) {
+    // MAKE SURE THE COLLISION DETECTION IS ON
+    if (XR1_ptr->getInverseDynamicsOption() >= XR1::FullDynamics){
 
-            ROS_INFO("Collision Occured");
+        if (collision_detection_switch) {
+            if (XR1_ptr->CollisionDetection(XR1::LeftArm) ) {
 
-            switch2HighFrequency(false);
-            switch2HighFrequency(true);
+                ROS_INFO("Collision Occured");
 
+                XR1_ptr->employLockdown();
+                XRA_ptr->clearAll();
+                animation_switch = false;
+                collision_detection_switch = false;
+                return;
 
-            XR1_ptr->employLockdown();
-            XRA_ptr->clearAll();
-            animation_switch = false;
-            collision_detection_switch = false;
-            return;
-
-        }
-
-
-        if (XR1_ptr->CollisionDetection(XR1::RightArm)){
-
-            ROS_INFO("Collision Occured");
-
-            switch2HighFrequency(false);
-            switch2HighFrequency(true);
+            }
 
 
-            XR1_ptr->employLockdown();
-            XRA_ptr->clearAll();
-            animation_switch = false;
-            collision_detection_switch = false;
-            return;
+            if (XR1_ptr->CollisionDetection(XR1::RightArm)){
 
+                ROS_INFO("Collision Occured");
+
+                XR1_ptr->employLockdown();
+                XRA_ptr->clearAll();
+                animation_switch = false;
+                collision_detection_switch = false;
+                return;
+
+            }
         }
     }
+
+    // if it is not, turn collision detection off
+    else {
+        collision_detection_switch = false;
+    }
+
+
+
 
 }

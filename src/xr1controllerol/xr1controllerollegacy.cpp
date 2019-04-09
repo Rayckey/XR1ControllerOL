@@ -54,3 +54,15 @@
 // void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
 //  // ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
 // }
+
+
+
+//void XR1ControllerOL::subscribetiltInit(const std_msgs::Bool &msg) {
+//    XR1_ptr->tiltInit();
+//}
+//
+//void XR1ControllerOL::subscribeMoCapInit(const std_msgs::Bool &msg) {
+//    ROS_INFO("Here be initialized");
+////    XR1_ptr->setMetaMode(XR1::MoCapMode);
+//    IMU_ptr->Initialize();
+//}

@@ -310,6 +310,10 @@ public:
     void setInverseDynamicsOption(uint8_t option);
 
 
+    // get that same option in case it was changed internally
+    uint8_t getInverseDynamicsOption();
+
+
     //Get Target Position for Arms or Body
     VectorXd getTargetPosition(uint8_t control_group , bool vanilla = false);
     void getTargetPosition(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);

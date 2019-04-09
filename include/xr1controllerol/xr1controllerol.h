@@ -186,14 +186,9 @@ public:
     void unleaseJointInfo();
 
     // FOR HIGH FREQUENCY COMMANDS
-    // Apply the target joint angles to the robot
+    // Apply the target joint angles, velocities, or currents to the robot
     // Not activated in low frequency mode
     void applyJointsTargets();
-
-    // FOR HIGH FREQUENCY COMMANDS
-    // Apply the target joint currents to the robot
-    // Not activated when not in the right mode
-    void gravityCallback();
 
     // -------------------------------------------------------------------
 
@@ -202,9 +197,6 @@ public:
 
     // Request all the important joint information
     void readingCallback();
-
-    // Change actuator control modes
-    void switch2HighFrequency(bool option);
 
     // figure out the precise modes that each control modes should be in
     void judgeControlGroupModes();
@@ -231,10 +223,6 @@ protected:
     //Not meant to be used outside
     void updatingCallback(uint8_t id, uint8_t attrId, double value);
 
-
-    //MoCap Information we get from the actuator controller
-    //Can be deactivated to save some resources
-    void QuaCallBack(uint64_t id, double w, double x, double y, double z);
     // --------------------------------------------------------------------------------
 
 
@@ -308,6 +296,11 @@ protected:
 //    void requestAcc(const ros::TimerEvent &);
 //    void requestQue(const ros::TimerEvent &);
 //    void stateTransition();
+
+
+    //MoCap Information we get from the actuator controller
+    //Can be deactivated to save some resources
+//    void QuaCallBack(uint64_t id, double w, double x, double y, double z);
     // -----------------------------------------------------------------------
 
 
@@ -324,6 +317,7 @@ private:
     XR1ControllerALP *XRA_ptr;
     XR1IMUmethods *IMU_ptr;
     std::vector<uint8_t> temp_ids;
+    bool RecognizeFinished;
     // -----------------------------------------------------
 
 

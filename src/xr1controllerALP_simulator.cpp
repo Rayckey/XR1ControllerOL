@@ -93,7 +93,7 @@ void broadcastTransform(const ros::TimerEvent &event) {
     EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
 
-    XR1_ptr->getEndEffectorTransformation(XR1::MainBody, itsafine);
+    XR1_ptr->getEndEffectorTransformation(XR1::HeadBody, itsafine);
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 
@@ -112,14 +112,14 @@ void broadcastTransform(const ros::TimerEvent &event) {
         XRA_ptr->getNextState();
 
         if (XR1_ptr->inHighFrequencyControl(XR1::MainBody)) {
-            XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec4d, true);
-            ConvertBodyMsgs(temp_vec4d, temp_bodymsgs);
+            XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d, true);
+            ConvertBodyMsgs(temp_vec7d, temp_bodymsgs);
             MainBodyPositionPublisher->publish(temp_bodymsgs);
         }
 
         if (XR1_ptr->inHighFrequencyControl(XR1::HeadBody)) {
-            XR1_ptr->getTargetPosition(XR1::HeadBody, temp_vec3d, true);
-            ConvertHeadMsgs(temp_vec3d, temp_headmsgs);
+            XR1_ptr->getTargetPosition(XR1::HeadBody, temp_vec7d, true);
+            ConvertHeadMsgs(temp_vec7d, temp_headmsgs);
             HeadBodyPositionPublisher->publish(temp_headmsgs);
         }
 
@@ -137,14 +137,14 @@ void broadcastTransform(const ros::TimerEvent &event) {
         }
 
         if (XR1_ptr->inHighFrequencyControl(XR1::LeftHand)) {
-            XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec5d, true);
-            ConvertHandMsgs(temp_vec5d, temp_handmsgs);
+            XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec7d, true);
+            ConvertHandMsgs(temp_vec7d, temp_handmsgs);
             LeftHandPositionPublisher->publish(temp_handmsgs);
         }
 
         if (XR1_ptr->inHighFrequencyControl(XR1::RightHand)) {
-            XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec5d, true);
-            ConvertHandMsgs(temp_vec5d, temp_handmsgs);
+            XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec7d, true);
+            ConvertHandMsgs(temp_vec7d, temp_handmsgs);
             RightHandPositionPublisher->publish(temp_handmsgs);
         }
 
@@ -184,27 +184,27 @@ void subscribeRightArmPosition(const xr1controllerros::ArmMsgs &msg) {
 
 void subscribeMainBodyPosition(const xr1controllerros::BodyMsgs &msg) {
 
-    BodyMsgs2VectorXd(msg, temp_vec4d);
-    XR1_ptr->updatingCallback(XR1::MainBody, XR1::ActualPosition, temp_vec4d);
+    BodyMsgs2VectorXd(msg, temp_vec7d);
+    XR1_ptr->updatingCallback(XR1::MainBody, XR1::ActualPosition, temp_vec7d);
 
 }
 
 void subscribeHeadBodyPosition(const xr1controllerros::HeadMsgs &msg) {
 
-    HeadMsgs2VectorXd(msg, temp_vec3d);
-    XR1_ptr->updatingCallback(XR1::HeadBody, XR1::ActualPosition, temp_vec3d);
+    HeadMsgs2VectorXd(msg, temp_vec7d);
+    XR1_ptr->updatingCallback(XR1::HeadBody, XR1::ActualPosition, temp_vec7d);
 
 }
 
 
 void subscribeLeftHandPosition(const xr1controllerros::HandMsgs &msg) {
-    HandsMsgs2VectorXd(msg, temp_vec5d);
-    XR1_ptr->updatingCallback(XR1::LeftHand, XR1::ActualPosition, temp_vec5d);
+    HandsMsgs2VectorXd(msg, temp_vec7d);
+    XR1_ptr->updatingCallback(XR1::LeftHand, XR1::ActualPosition, temp_vec7d);
 }
 
 void subscribeRightHandPosition(const xr1controllerros::HandMsgs &msg) {
-    HandsMsgs2VectorXd(msg, temp_vec5d);
-    XR1_ptr->updatingCallback(XR1::RightHand, XR1::ActualPosition, temp_vec5d);
+    HandsMsgs2VectorXd(msg, temp_vec7d);
+    XR1_ptr->updatingCallback(XR1::RightHand, XR1::ActualPosition, temp_vec7d);
 }
 
 

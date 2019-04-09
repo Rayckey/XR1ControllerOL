@@ -74,6 +74,8 @@ catkin_package(
 		 src/${PROJECT_NAME}/xr1controllerolhigh.cpp
 		 src/${PROJECT_NAME}/xr1controllerollow.cpp
 		 src/${PROJECT_NAME}/xr1controllerolik.cpp
+		 src/${PROJECT_NAME}/xr1controllerolmodes.cpp
+		 src/${PROJECT_NAME}/xr1controllerolactuator.cpp
  )
 
 
@@ -94,9 +96,9 @@ add_executable(actuator_bridge src/actuator_bridge.cpp)
 target_link_libraries(actuator_bridge ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(actuator_bridge ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(tilt_test src/tilt_test.cpp)
-target_link_libraries(tilt_test ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(tilt_test ${PROJECT_NAME} ${catkin_LIBRARIES})
+#add_executable(tilt_test src/tilt_test.cpp)
+#target_link_libraries(tilt_test ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(tilt_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 add_executable(xr1controllerIK_simulator src/xr1controllerIK_simulator.cpp)
 target_link_libraries(xr1controllerIK_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})

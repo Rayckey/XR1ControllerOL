@@ -192,6 +192,9 @@ public:
 
     //Toggle the dynamic modes for left and right arm, be very careful with the options
     void setInverseDynamicsOption( uint8_t option);
+
+    // get that option, in case the varible is changed internally
+    uint8_t getInverseDynamicsOption();
     //----------------------------------------------------------------------------------
 
 

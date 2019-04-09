@@ -11,10 +11,10 @@ Eigen::VectorXd BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs &msg) {
 
     Eigen::VectorXd res = Eigen::VectorXd::Zero(4);
 
-    res << msg.Knee,
-            msg.Back_Z,
-            msg.Back_X,
-            msg.Back_Y;
+    res(0) =  msg.Knee,
+    res(1) =  msg.Back_Z,
+    res(2) =  msg.Back_X,
+    res(3) =  msg.Back_Y;
 
     return res;
 }
@@ -24,9 +24,9 @@ Eigen::VectorXd HeadMsgs2VectorXd(const xr1controllerros::HeadMsgs &msg) {
 
     Eigen::VectorXd res = Eigen::VectorXd::Zero(3);
 
-    res <<  msg.Neck_Z,
-            msg.Neck_X,
-            msg.Head;
+    res(0) =  msg.Neck_Z,
+    res(1) =  msg.Neck_X,
+    res(2) =  msg.Head;
 
     return res;
 }
@@ -36,13 +36,13 @@ Eigen::VectorXd ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg) {
 
     Eigen::VectorXd res = Eigen::VectorXd::Zero(7);
 
-    res << msg.Shoulder_X,
-            msg.Shoulder_Y,
-            msg.Elbow_Z,
-            msg.Elbow_X,
-            msg.Wrist_Z,
-            msg.Wrist_X,
-            msg.Wrist_Y;
+    res(0) =  msg.Shoulder_X,
+    res(1) =  msg.Shoulder_Y,
+    res(2) =  msg.Elbow_Z,
+    res(3) =  msg.Elbow_X,
+    res(4) =  msg.Wrist_Z,
+    res(5) =  msg.Wrist_X,
+    res(6) =  msg.Wrist_Y;
 
 
     return res;
@@ -52,11 +52,11 @@ Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg) {
 
     Eigen::VectorXd res = Eigen::VectorXd::Zero(5);
 
-    res << msg.Thumb,
-            msg.Index,
-            msg.Middle,
-            msg.Ring,
-            msg.Pinky;
+    res(0) =  msg.Thumb,
+    res(1) =  msg.Index,
+    res(2) =  msg.Middle,
+    res(3) =  msg.Ring,
+    res(4) =  msg.Pinky;
 
 
     return res;
@@ -65,41 +65,41 @@ Eigen::VectorXd HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg) {
 
 void BodyMsgs2VectorXd(const xr1controllerros::BodyMsgs &msg , VectorXd & output_ref) {
 
-    output_ref << msg.Knee,
-            msg.Back_Z,
-            msg.Back_X,
-            msg.Back_Y;
+    output_ref(0) =  msg.Knee,
+    output_ref(1) =  msg.Back_Z,
+    output_ref(2) =  msg.Back_X,
+    output_ref(3) =  msg.Back_Y;
 
 }
 
 
 void HeadMsgs2VectorXd(const xr1controllerros::HeadMsgs &msg , VectorXd & output_ref) {
 
-    output_ref << msg.Neck_Z,
-            msg.Neck_X,
-            msg.Head;
+    output_ref(0) =  msg.Neck_Z,
+    output_ref(1) =  msg.Neck_X,
+    output_ref(2) =  msg.Head;
 
 }
 
 void ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg , VectorXd & output_ref) {
 
-    output_ref << msg.Shoulder_X,
-            msg.Shoulder_Y,
-            msg.Elbow_Z,
-            msg.Elbow_X,
-            msg.Wrist_Z,
-            msg.Wrist_X,
-            msg.Wrist_Y;
+    output_ref(0) =  msg.Shoulder_X,
+    output_ref(1) =  msg.Shoulder_Y,
+    output_ref(2) =  msg.Elbow_Z,
+    output_ref(3) =  msg.Elbow_X,
+    output_ref(4) =  msg.Wrist_Z,
+    output_ref(5) =  msg.Wrist_X,
+    output_ref(6) =  msg.Wrist_Y;
 
 }
 
 void HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg , VectorXd & output_ref) {
 
-    output_ref << msg.Thumb,
-            msg.Index,
-            msg.Middle,
-            msg.Ring,
-            msg.Pinky;
+    output_ref(0) =  msg.Thumb,
+    output_ref(1) =  msg.Index,
+    output_ref(2) =  msg.Middle,
+    output_ref(3) =  msg.Ring,
+    output_ref(4) =  msg.Pinky;
 
 }
 
