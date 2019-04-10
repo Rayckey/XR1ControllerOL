@@ -29,6 +29,7 @@
 #include "xr1controllerol/IKLinearService.h"
 #include "xr1controllerol/IKTrackingService.h"
 #include "xr1controllerol/HandGripQuery.h"
+#include "xr1controllerol/askReadiness.h"
 
 // The animation message type
 #include "xr1controllerol/AnimationMsgs.h"
@@ -281,6 +282,11 @@ protected:
     // ------------------------------------------------------------------------------
 
 
+    // Service that determine if the robot is ready ---------------
+    bool serviceReady(xr1controllerol::askReadinessRequest & req,
+            xr1controllerol::askReadinessResponse & res);
+    // ------------------------------------------------------------
+
 
     // FK related messages, tf ,and services -----------------------------------
     void broadcastTransform();
@@ -411,6 +417,10 @@ private:
     ros::Subscriber MoCapInitSubscriber;
     // -------------------------------------------
 
+
+    // Check readness of the robot ---------------
+    ros::ServiceServer ReadinessService;
+    // -------------------------------------------
 
 
     // Animation subscriber -----------------------

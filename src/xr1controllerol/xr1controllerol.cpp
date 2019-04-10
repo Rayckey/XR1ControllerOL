@@ -10,7 +10,7 @@ XR1ControllerOL::XR1ControllerOL() :
     ,animation_switch(false)
     ,previous_omni_state(false)
     ,collision_detection_switch(false)
-    ,RecognizeFinished(false){
+    ,RecognizeFinished(false) {
 
     std::vector<double> sit_pos;
 
@@ -24,7 +24,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     XR1_ptr = new XR1Controller(path + "/fungus.xr1para", sit_pos);
 
-    XRA_ptr = new XR1ControllerALP(path + "/ALP" , XR1_ptr, 169 , 10 , 1 );
+    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1);
 
     IMU_ptr = new XR1IMUmethods();
 
@@ -39,34 +39,35 @@ XR1ControllerOL::XR1ControllerOL() :
     ShutdownSubscriber = nh.subscribe("/stopSimulation", 1, &XR1ControllerOL::subscribeShutdown, this);
 
     MainBodyPositionSubscriber = nh.subscribe("/MainBody/TargetPosition", 100,
-                                 &XR1ControllerOL::subscribeMainBodyPosition, this);
+                                              &XR1ControllerOL::subscribeMainBodyPosition, this);
     MainBodyCurrentSubscriber = nh.subscribe("/MainBody/TargetCurrent", 100, &XR1ControllerOL::subscribeMainBodyCurrent,
-                                this);
+                                             this);
 
-    HeadBodyPositionSubscriber = nh.subscribe("/HeadBody/TargetPosition" , 100 , &XR1ControllerOL::subscribeHeadBodyPosition , this);
+    HeadBodyPositionSubscriber = nh.subscribe("/HeadBody/TargetPosition", 100,
+                                              &XR1ControllerOL::subscribeHeadBodyPosition, this);
 
     LeftArmPositionSubscriber = nh.subscribe("/LeftArm/TargetPosition", 100, &XR1ControllerOL::subscribeLeftArmPosition,
-                                this);
+                                             this);
     LeftArmVelocitySubscriber = nh.subscribe("/LeftArm/TargetVelocity", 100, &XR1ControllerOL::subscribeLeftArmVelocity,
-                                this);
+                                             this);
     LeftArmCurrentSubscriber = nh.subscribe("/LeftArm/TargetCurrent", 100, &XR1ControllerOL::subscribeLeftArmCurrent,
                                             this);
 
     RightArmPositionSubscriber = nh.subscribe("/RightArm/TargetPosition", 100,
-                                 &XR1ControllerOL::subscribeRightArmPosition, this);
+                                              &XR1ControllerOL::subscribeRightArmPosition, this);
     RightArmVelocitySubscriber = nh.subscribe("/RightArm/TargetVelocity", 100,
-                                 &XR1ControllerOL::subscribeRightArmVelocity, this);
+                                              &XR1ControllerOL::subscribeRightArmVelocity, this);
     RightArmCurrentSubscriber = nh.subscribe("/RightArm/TargetCurrent", 100, &XR1ControllerOL::subscribeRightArmCurrent,
-                                this);
+                                             this);
 
     LeftHandPositionSubscriber = nh.subscribe("/LeftHand/TargetPosition", 10,
-                                 &XR1ControllerOL::subscribeLeftHandPosition, this);
+                                              &XR1ControllerOL::subscribeLeftHandPosition, this);
     RightHandPositionSubscriber = nh.subscribe("/RightHand/TargetPosition", 10,
-                                  &XR1ControllerOL::subscribeRightHandPosition, this);
+                                               &XR1ControllerOL::subscribeRightHandPosition, this);
     LeftHandCurrentSubscriber = nh.subscribe("/LeftHand/TargetCurrent", 10, &XR1ControllerOL::subscribeLeftHandCurrent,
-                                this);
+                                             this);
     RightHandCurrentSubscriber = nh.subscribe("/RightHand/TargetCurrent", 10,
-                                 &XR1ControllerOL::subscribeRightHandCurrent, this);
+                                              &XR1ControllerOL::subscribeRightHandCurrent, this);
 
     ModeChangeSubscriber = nh.subscribe("/XR1/ChainModeChange", 10,
                                         &XR1ControllerOL::subscribeRobotMode, this);
@@ -80,24 +81,31 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
     // Animation callbacks -------------------------------------------------------
-    AnimationSwitchSubscriber = nh.subscribe("/startAnimation" , 1 , &XR1ControllerOL::subscribeStartAnimation , this);
-    AnimationSetSubscriber = nh.subscribe("/setAnimation" , 1 , &XR1ControllerOL::subscribeSetAnimation , this);
+    AnimationSwitchSubscriber = nh.subscribe("/startAnimation", 1, &XR1ControllerOL::subscribeStartAnimation, this);
+    AnimationSetSubscriber = nh.subscribe("/setAnimation", 1, &XR1ControllerOL::subscribeSetAnimation, this);
     // ---------------------------------------------------------------------------
 
 
 
     // Collision Detection set ---------------------------------------------------
-    CollisionDetectionSubscriber = nh.subscribe("/setCollisionDetection" , 1 , &XR1ControllerOL::subscribeSetCollisionDetection , this);
+    CollisionDetectionSubscriber = nh.subscribe("/setCollisionDetection", 1,
+                                                &XR1ControllerOL::subscribeSetCollisionDetection, this);
     // ---------------------------------------------------------------------------
 
 
 
 
     // Inverse Kinematics callbacks ----------------------------------------------
-    IKPlannerService = nh.advertiseService("XR1/IKLPT" , &XR1ControllerOL::serviceIKPlanner, this);
-    IKTrackingService = nh.advertiseService("XR1/IKTT" , &XR1ControllerOL::serviceIKTracking , this);
-    HandGripService = nh.advertiseService("XR1/HGQ" , &XR1ControllerOL::serviceHandGrip , this);
+    IKPlannerService = nh.advertiseService("XR1/IKLPT", &XR1ControllerOL::serviceIKPlanner, this);
+    IKTrackingService = nh.advertiseService("XR1/IKTT", &XR1ControllerOL::serviceIKTracking, this);
+    HandGripService = nh.advertiseService("XR1/HGQ", &XR1ControllerOL::serviceHandGrip, this);
+
     // ---------------------------------------------------------------------------
+
+
+    // Decide if the Robot is ready ------------------------------------------------------------
+    ReadinessService = nh.advertiseService("XR1/Ready", &XR1ControllerOL::serviceReady, this);
+    // -----------------------------------------------------------------------------------------
 
 
     // Joint Information Publishers ---------------------------------------------------
@@ -106,7 +114,7 @@ XR1ControllerOL::XR1ControllerOL() :
     HeadBodyCurrentPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Current", 1);
 
     MainBodyPositionPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Position", 1);
-    MainBodyVelocityPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Velocity" , 1);
+    MainBodyVelocityPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Velocity", 1);
     MainBodyCurrentPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Current", 1);
 
     LeftArmPositionPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/Position", 1);
@@ -169,7 +177,7 @@ XR1ControllerOL::XR1ControllerOL() :
     control_modes[XR1::RightHand] = 0;
     control_modes[XR1::HeadBody] = 0;
     control_modes[XR1::MainBody] = 0;
- // --------------------------------------------------
+    // --------------------------------------------------
 
 
     //Actuators Update Callback --------------------------------
@@ -208,6 +216,80 @@ XR1ControllerOL::XR1ControllerOL() :
 
     ROS_INFO("OL Constructor finished");
 }
+
+bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
+                  xr1controllerol::askReadinessResponse & res){
+
+    if (req.isAsking){
+
+        ROS_INFO("Oh shit them asking");
+
+
+        std::vector<uint8_t> unava_act;
+
+        for (int i = XR1::OmniWheels ; i < XR1::Actuator_Total ; i++){
+
+            if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized){
+
+            }
+
+            else {
+                unava_act.push_back((uint8_t)i);
+            }
+
+        }
+
+
+        for (uint8_t ids : unava_act){
+            m_pController->closeActuator( ids );
+        }
+
+        ros::Duration(0.5).sleep();
+
+        for (uint8_t ids : unava_act){
+            m_pController->launchActuator( ids);
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+    for (int i = XR1::MainBody ; i < XR1::Actuator_Total ; i++){
+
+        if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized) {
+
+
+        }
+
+        else {
+
+            ROS_INFO("Oh shit them not launched fam");
+
+             res.isReady = false;
+             return true;
+        }
+
+    }
+
+    ROS_INFO("It is ON SON");
+
+    res.isReady = true;
+
+
+
+
+
+    return true;
+}
+
+
 
 XR1ControllerOL::~XR1ControllerOL() {
     // unregister all publishers here
