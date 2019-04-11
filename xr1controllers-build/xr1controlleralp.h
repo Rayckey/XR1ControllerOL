@@ -28,7 +28,7 @@ public:
     void setUnfilteredOmniCmd(Vector3d & joy_cmd);
 
     // get filtered velocities
-    void getFilteredOmniCmd(Vector3d & joy_cmd);
+    void employFilteredOmniCmd();
 
 
     // get next state immediately, also pops the current state

@@ -151,7 +151,6 @@ public:
 
     // apply velocity commands to Omniwheels
     void Omni2Actuator();
-
     // --------------------------------------------------------------
 
 
@@ -264,6 +263,10 @@ protected:
     void subscribeRightHandCurrent(const xr1controllerros::HandMsgs &msg);
     // -----------------------------------------------------------------------------
 
+    // Omni messages --------------------------------------------------------
+    void subscribeOmniCommands(const geometry_msgs::Twist & msg);
+    // ----------------------------------------------------------------------
+
 
     // Mode change Subscriber ------------------------------------------------------
     void subscribeRobotMode(const xr1controllerros::ChainModeChange &msg);
@@ -291,6 +294,7 @@ protected:
     // FK related messages, tf ,and services -----------------------------------
     void broadcastTransform();
     // -------------------------------------------------------------------------
+
 
 
 
@@ -409,7 +413,7 @@ private:
 
 
     // LEGACY-------------------------------------
-    ros::Subscriber tiltInitSubscriber;
+//    ros::Subscriber tiltInitSubscriber;
     // -------------------------------------------
 
 
@@ -434,6 +438,11 @@ private:
     // --------------------------------------------
 
 
+    // OmniWheels Information --------------------
+    ros::Publisher OmniSpeedPublisher;
+    ros::Subscriber OmniSpeedSubscriber;
+    // -------------------------------------------
+
 
     // Very useless temporary variables ----------------
     Matrix4d temp_trans;
@@ -441,6 +450,7 @@ private:
     VectorXd temp_vec7d;
     VectorXd temp_vec3d;
     VectorXd temp_vec4d;
+    Vector3d temp_omni_cmd;
     Matrix4d temp_4d;
     xr1controllerros::HandMsgs temp_handmsgs;
     xr1controllerros::ArmMsgs temp_armmsgs;

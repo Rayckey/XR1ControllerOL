@@ -121,30 +121,6 @@ void XR1ControllerOL::animationCallback(){
 }
 
 
-// change the mode of omniwheels
-void XR1ControllerOL::activateOmni(){
-    if (previous_omni_state){
-        for (uint8_t i = XR1::OmniWheels; i < XR1::MainBody ; i ++)
-            m_pController->activateActuatorMode(i , Actuator::Mode_Vel);
-    }
-
-    else{
-        for (uint8_t i = XR1::OmniWheels; i < XR1::MainBody ; i ++)
-            m_pController->activateActuatorMode(i , Actuator::Mode_Pos);
-    }
-}
-
-// apply velocities
-void XR1ControllerOL::Omni2Actuator(){
-
-    XR1_ptr->getTargetVelocity(XR1::OmniWheels , temp_vec3d);
-
-    for (uint8_t i = XR1::OmniWheels ; i < XR1::MainBody ; i++) {
-        m_pController->setVelocity(i , temp_vec3d(i - XR1::OmniWheels) );
-    }
-
-}
-
 void XR1ControllerOL::collisionDetectionCallback(){
 
     // MAKE SURE THE COLLISION DETECTION IS ON

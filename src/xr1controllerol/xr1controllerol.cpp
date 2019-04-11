@@ -137,6 +137,8 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
     // Getting all the group ID right ------------------------------------------------
+    control_group_map[XR1::OmniWheels] = XR1_ptr->getControlGroupIDs(XR1::OmniWheels);
+
     control_group_map[XR1::MainBody] = XR1_ptr->getControlGroupIDs(XR1::MainBody);
 
     control_group_map[XR1::HeadBody] = XR1_ptr->getControlGroupIDs(XR1::HeadBody);
@@ -250,15 +252,7 @@ bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
             m_pController->launchActuator( ids);
         }
 
-
-
     }
-
-
-
-
-
-
 
 
     for (int i = XR1::MainBody ; i < XR1::Actuator_Total ; i++){
