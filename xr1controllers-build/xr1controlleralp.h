@@ -25,10 +25,7 @@ public:
 
 
     // set unfiltered velocities
-    void setUnfilteredOmniCmd(Vector3d & joy_cmd);
-
-    // get filtered velocities
-    void employFilteredOmniCmd();
+    void setTargetOmniCmd(Vector3d & joy_cmd);
 
 
     // get next state immediately, also pops the current state
@@ -198,13 +195,25 @@ private:
     std::vector<uint8_t> temp_ids;
     std::vector<double> temp_state_commands;
 
-    // Drive Mode speciaty
+    // Drive Mode speciaty -----------------------------------
+
+    // get filtered velocities
+    void employCurrentOmniCmd();
+
+    // clear the omni wheels commands, used internally
+    void clearOmniCmd();
     double absoluteOmni(Vector3d & input);
     double omni_angle;
+    int omni_old_mode;
     Vector3d temp_omni;
-    Vector3d og_omni;
+    Vector3d target_omni;
+    Vector3d old_omni;
+    Vector3d state_omni;
+    int omni_acc_counter;
+    int omni_max_counter;
     double omni_lnr_filter_val;
     double omni_ang_filter_val;
+    // -------------------------------------------------------
 
 };
 

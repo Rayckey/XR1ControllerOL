@@ -19,8 +19,14 @@ void XR1ControllerOL::setControlGroupTarget(uint8_t control_group){
 
                 XR1_ptr->getTargetPosition(control_group , temp_vec7d);
 
-                for (uint8_t joint_id : control_group_map[control_group])
+                for (uint8_t joint_id : control_group_map[control_group]){
+
+                    if (joint_id < XR1::LeftArm && joint_id >= XR1::HeadBody)
+                        ROS_INFO("id : [%d] , value : [%f]" , (int)joint_id ,temp_vec7d(joint_id - control_group));
+
                     m_pController->setPosition(joint_id , temp_vec7d(joint_id - control_group));
+                }
+
 
                 break;
 

@@ -10,7 +10,7 @@ XR1ControllerOL::XR1ControllerOL() :
     ,animation_switch(false)
     ,previous_omni_state(false)
     ,collision_detection_switch(false)
-    ,RecognizeFinished(false) {
+    ,RecognizeFinished(true) {
 
     std::vector<double> sit_pos;
 
@@ -130,10 +130,15 @@ XR1ControllerOL::XR1ControllerOL() :
 
     LeftHandCurrentPublisher = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/Current", 1);
     RightHandCurrentPublisher = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Current", 1);
-// --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------
 
 
+    // Omni information Publisher and Subscriber -------------------------------------
 
+    OmniSpeedPublisher = nh.advertise<geometry_msgs::Twist>("/OmniWheels/Velocity",1);
+    OmniSpeedSubscriber = nh.subscribe("/cmd_vel" , 10 , &XR1ControllerOL::subscribeOmniCommands ,this);
+
+    // -------------------------------------------------------------------------------
 
 
     // Getting all the group ID right ------------------------------------------------
@@ -159,7 +164,7 @@ XR1ControllerOL::XR1ControllerOL() :
     control_group_flags.push_back(XR1::RightArm);
     control_group_flags.push_back(XR1::LeftHand);
     control_group_flags.push_back(XR1::RightHand);
-    // ------------------------------------------------
+    // -----------------------------------------------------------------------------
 
 
 
@@ -213,7 +218,7 @@ XR1ControllerOL::XR1ControllerOL() :
 //    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
     // m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
     //    m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
-// ----------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
 
 
     ROS_INFO("OL Constructor finished");
@@ -390,11 +395,13 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
     collisionDetectionCallback();
 
     // assign next animation step
-    if (animation_switch)
-        animationCallback();
+    animationCallback();
 
     // apply high frequency target if it exists
     applyJointsTargets();
+
+    // send out omni commands if they are in the right modes
+    Omni2Actuator();
 
 }
 
@@ -404,27 +411,27 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 void XR1ControllerOL::unleaseJointInfo(){
     // send out all the current information
 
-    XR1_ptr->getJointPositions(XR1::HeadBody, temp_vec3d ,true);
-    ConvertBodyMsgs(temp_vec3d , temp_bodymsgs);
+    XR1_ptr->getJointPositions(XR1::HeadBody, temp_vec7d ,true);
+    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyPositionPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointVelocities(XR1::HeadBody, temp_vec3d ,true);
-    ConvertBodyMsgs(temp_vec3d , temp_bodymsgs);
+    XR1_ptr->getJointVelocities(XR1::HeadBody, temp_vec7d ,true);
+    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyVelocityPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointCurrents(XR1::HeadBody, temp_vec3d , true);
-    ConvertBodyMsgs(temp_vec3d , temp_bodymsgs);
+    XR1_ptr->getJointCurrents(XR1::HeadBody, temp_vec7d , true);
+    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyCurrentPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointPositions(XR1::MainBody, temp_vec4d ,true);
+    XR1_ptr->getJointPositions(XR1::MainBody, temp_vec7d ,true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyPositionPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointVelocities(XR1::MainBody, temp_vec4d ,true);
+    XR1_ptr->getJointVelocities(XR1::MainBody, temp_vec7d ,true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyVelocityPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointCurrents(XR1::MainBody, temp_vec4d , true);
+    XR1_ptr->getJointCurrents(XR1::MainBody, temp_vec7d , true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyCurrentPublisher.publish(temp_bodymsgs);
 

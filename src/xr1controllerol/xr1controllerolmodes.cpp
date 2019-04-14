@@ -36,6 +36,9 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
 
         // redundant command
         if (control_modes[control_group] == option) {
+
+            ROS_INFO("Redundant Mode change messaged received : Control Group [%d], Mode [%d]", control_group, option);
+
         } else {
 
             ROS_INFO("Setting Control Group [%d] to Mode [%d]", control_group, option);
