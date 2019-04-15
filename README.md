@@ -57,44 +57,44 @@ There are a total of 9 control modes:
 	RoamMode = 10,
 	TeachMode = 11
  
-# 1. Direction Mode
+### 1. Direction Mode
 The user can directly control the robot via ros messages.
 The actuators are set to profile position mode
 
-# 4. MoCap Mode
+### 4. MoCap Mode
 The user can directly control the robot via Motion Capture.
 The actuators are set to profile position mode
 
-# 5. IK Mode
+### 5. IK Mode
 The inverse kinemaitcs planner mode
 The user can assign IK targets through the IK services
 The actuators are set to position mode
 
-# 6. Track Mode
+### 6. Track Mode
 Don't actually use this yet 
 The actuators are set to position mode
 
-# 7. Stable Mode
+### 7. Stable Mode
 Useable for left and right arm.
 The arms will try to maintain their hands position at the moment they receive the commands
 The actuators are set to position mode
 
-# 8. Animation Mode
+### 8. Animation Mode
 Use the data from animation linrary
 Any group that gets assigned this mode will immediately start playing animation
 The actuators are set to position mode
 
-# 9. Drive Mode
+### 9. Drive Mode
 Not implemented yet, meant to be used for driving.
 Wanted to do that peper thing but we ran out of motion capture units
 
 
-# 10. Roam Mode
+### 10. Roam Mode
 Only usable on the OmniWheels.
 Enable driving with the combination of this node: Tele_FPS_Cmd
 The actuators are set to velocity mode
  
-# 11. Teach Mode
+### 11. Teach Mode
 Trigger Gravity Compensation Mode.
 Will deactivate collision detection
 ONLY WORKS WITH BOTH ARMS
@@ -110,11 +110,20 @@ As soon as any body group enters AnimationMode animation will start playing
 Animation will not affect any control group not in AnimationMode or DirectMode
 If you want to set animation mode to all control group, publish a message to "/startAnimation"
 
-# Animation type
+### Animation type
 There are currently three animation type:
 Idle, Animation, Teach.
 You can queue the animations with /setAnimation topic.
 
+
+# Collision Detection
+## Set Collision Detection Mode
+You can start collision detection mode with the topic /setCollisionDetection
+Any control group in gravity compensation mode will switch mode, as the two calculation cannot co-exist
+
+## Deactivate Collision Detection
+When the robot has entered lock down mode (It detected collision)
+Set the collision Detection to false to lift the lockdown
 
 
 # XR1ControllerOL
