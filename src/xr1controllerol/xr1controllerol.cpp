@@ -5,9 +5,7 @@
 
 XR1ControllerOL::XR1ControllerOL() :
     hand_command_switch(true)
-    ,high_frequency_switch(false)
     ,power_reading_counter(30000)
-    ,animation_switch(false)
     ,previous_omni_state(false)
     ,collision_detection_switch(false)
     ,RecognizeFinished(true) {

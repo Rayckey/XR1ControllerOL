@@ -337,8 +337,6 @@ private:
     std::map<uint8_t, uint8_t> attribute_map;
     std::map<uint8_t, Actuator::ActuatorMode> mode_map;
     std::map<int, int> control_modes;
-    bool high_frequency_switch;
-    bool animation_switch;
     bool collision_detection_switch;
     bool previous_omni_state;
     // -----------------------------------------------------------------

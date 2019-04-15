@@ -14,13 +14,12 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
         for (uint8_t control_group : control_group_flags){
 
             if (XR1_ptr->getSubControlMode(control_group) == XR1::DirectMode){
+
                 setControlMode(control_group , XR1::AnimationMode);
 
-                animation_switch = true;
-            }
+                ROS_INFO("Animation for Control Group [%d] , is now ON",  (int)control_group );
 
-            if (animation_switch)
-                ROS_INFO("Animation is now ON");
+            }
 
         }
 
@@ -29,8 +28,19 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 
     else {
 
-        animation_switch = false;
-        ROS_INFO("Animation is now OFF");
+
+        for (uint8_t control_group : control_group_flags){
+
+            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
+
+                setControlMode(control_group , XR1::DirectMode);
+
+                ROS_INFO("Animation for Control Group [%d] , is now OFF",  (int)control_group );
+
+            }
+
+        }
+
         clearStates();
     }
 
@@ -61,14 +71,19 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
 
     // we want to turn it on
     if (msg.data){
-        ROS_INFO("Set collision detection to ON");
+
 
 
         for (uint8_t control_group : control_group_flags){
             if (XR1_ptr->getSubControlMode(control_group) >= XR1::TeachMode){
+
+                ROS_INFO("Collision detection is unable to activate");
+
                 return ;
             }
         }
+
+        ROS_INFO("Set collision detection to ON");
 
         collision_detection_switch = msg.data;
 
@@ -131,10 +146,15 @@ void XR1ControllerOL::collisionDetectionCallback(){
 
                 ROS_INFO("Collision Occured");
 
+                for (uint8_t control_group : control_group_flags){
+                    setControlMode(control_group , XR1::DirectMode);
+                }
+
                 XR1_ptr->employLockdown();
                 XRA_ptr->clearAll();
-                animation_switch = false;
+
                 collision_detection_switch = false;
+
                 return;
 
             }
@@ -144,9 +164,13 @@ void XR1ControllerOL::collisionDetectionCallback(){
 
                 ROS_INFO("Collision Occured");
 
+                for (uint8_t control_group : control_group_flags){
+                    setControlMode(control_group , XR1::DirectMode);
+                }
+
                 XR1_ptr->employLockdown();
                 XRA_ptr->clearAll();
-                animation_switch = false;
+
                 collision_detection_switch = false;
                 return;
 
