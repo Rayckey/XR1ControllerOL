@@ -199,6 +199,19 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
 
+    // Hopps Port integration -----------------------------
+
+    setupJointStateTable();
+
+
+
+    // ----------------------------------------------------
+
+
+
+
+
+
 
 
     temp_vec5d = VectorXd::Zero(5);

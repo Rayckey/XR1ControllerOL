@@ -25,6 +25,11 @@
 #include <std_msgs/Float64.h>
 #include <std_msgs/Int32.h>
 
+// Hopps Port messages
+#include <sensor_msgs/JointState.h>
+
+
+
 // The IK planner message service
 #include "xr1controllerol/IKLinearService.h"
 #include "xr1controllerol/IKTrackingService.h"
@@ -37,6 +42,11 @@
 
 #include "Eigen/Dense"
 #include "xr1controllerolmsgulit.h"
+
+
+// std stuff
+#include <map>
+#include <string>
 
 
 using namespace Eigen;
@@ -215,6 +225,9 @@ public:
 
 
 
+
+
+
 protected:
 
 
@@ -297,6 +310,15 @@ protected:
 
 
 
+    // Hopps port -------------------------------------------------------
+
+    void setupJointStateTable();
+
+    void subscribeJointStates(const sensor_msgs::JointState & msg);
+
+    void publishJointStates();
+
+    // ------------------------------------------------------------------
 
 
     // LEGACY ----------------------------------------------------------------
@@ -440,6 +462,21 @@ private:
     ros::Publisher OmniSpeedPublisher;
     ros::Subscriber OmniSpeedSubscriber;
     // -------------------------------------------
+
+
+
+    // Hopps Port varibles, subscribers and publishers -----------------------
+
+    sensor_msgs::JointState temp_jointstate;
+
+    std::map<std::string , uint8_t> m_jointlookup;
+
+    std::map<uint8_t , std::string> m_namelookup;
+
+    // -------------------------------------------
+
+
+
 
 
     // Very useless temporary variables ----------------

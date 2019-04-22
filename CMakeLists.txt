@@ -61,7 +61,7 @@ generate_messages(
 catkin_package(
 		INCLUDE_DIRS include
 		LIBRARIES xr1controllerol
-		CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs
+		CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs sensor_msgs
 )
 
 
