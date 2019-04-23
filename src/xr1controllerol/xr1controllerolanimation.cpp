@@ -65,6 +65,30 @@ void XR1ControllerOL::subscribeSetAnimation(const xr1controllerol::AnimationMsgs
 }
 
 
+void XR1ControllerOL::subscribeSetIdle(const std_msgs::Bool &msg) {
+    XRA_ptr->setIdleOption(msg.data);
+}
+
+bool XR1ControllerOL::serviceAnimation(xr1controllerol::AnimationQueryRequest &req,
+                      xr1controllerol::AnimationQueryResponse &res){
+
+
+    std::deque<int> temp_queue =  XRA_ptr->queryAnimation();
+
+    if (req.isQuery && temp_queue.size()){
+
+        res.AnimationType = XRA_ptr->distinquishAnimationType(temp_queue.front());
+
+        res.AnimationID = XRA_ptr->getAnimationID(temp_queue.front());
+
+    }
+
+
+    return true;
+
+}
+
+
 void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg){
 
 
@@ -182,8 +206,5 @@ void XR1ControllerOL::collisionDetectionCallback(){
     else {
         collision_detection_switch = false;
     }
-
-
-
 
 }

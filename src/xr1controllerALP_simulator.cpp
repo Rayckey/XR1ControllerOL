@@ -69,6 +69,12 @@ void subscribeSetAnimation(const xr1controllerol::AnimationMsgs &msg) {
     XRA_ptr->setAnimation(msg.AnimationType, msg.AnimationID);
 }
 
+
+void subscribeSetIdle(const std_msgs::Bool &msg) {
+    XRA_ptr->setIdleOption(msg.data);
+}
+
+
 //-----------------------------------------------------------------------------
 
 void broadcastTransform(const ros::TimerEvent &event) {
@@ -257,6 +263,8 @@ int main(int argc, char **argv) {
     ros::Subscriber SetAnimationSubscriber = nh.subscribe("/setAnimation", 3, subscribeSetAnimation);
 
     ros::Subscriber setSubControlModeSubscriber = nh.subscribe("/setSubControlMode" , 3 , subscribeSubControlMode);
+
+    ros::Subscriber SetIdleSubscriber = nh.subscribe("setIdle" , 1 , subscribeSetIdle);
 
     // cough out the target position as the result of ALP
     ros::Publisher LAPP = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/TargetPosition", 1);

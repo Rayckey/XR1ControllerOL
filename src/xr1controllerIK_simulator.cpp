@@ -34,6 +34,7 @@ ros::Publisher *RightArmPositionPublisher;
 ros::Publisher *LeftHandPositionPublisher;
 ros::Publisher *RightHandPositionPublisher;
 ros::Publisher *MainBodyPositionPublisher;
+ros::Publisher *HeadBodyPositionPublisher;
 
 
 VectorXd temp_vec5d;
@@ -42,6 +43,7 @@ VectorXd temp_vec3d;
 xr1controllerros::HandMsgs temp_handmsgs;
 xr1controllerros::ArmMsgs temp_armmsgs;
 xr1controllerros::BodyMsgs temp_bodymsgs;
+xr1controllerros::HeadMsgs temp_headmsgs;
 
 
 
@@ -161,6 +163,10 @@ void stateTransition() {
         XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d);
         ConvertBodyMsgs(temp_vec7d, temp_bodymsgs);
         MainBodyPositionPublisher->publish(temp_bodymsgs);
+
+        XR1_ptr->getTargetPosition(XR1::HeadBody, temp_vec7d);
+        ConvertHeadMsgs(temp_vec7d, temp_headmsgs);
+        HeadBodyPositionPublisher->publish(temp_headmsgs);
 
         XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d);
         ConvertArmMsgs(temp_vec7d, temp_armmsgs);
@@ -299,6 +305,12 @@ void subscribeRightHandPosition(const xr1controllerros::HandMsgs &msg) {
 }
 
 
+void subscribeHeadBodyPosition(const xr1controllerros::HeadMsgs &msg) {
+    HeadMsgs2VectorXd(msg, temp_vec7d);
+    XR1_ptr->updatingCallback(temp_vec7d, XR1::HeadBody, XR1::ActualPosition);
+}
+
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "IK_Simulator");
 
@@ -330,6 +342,10 @@ int main(int argc, char **argv) {
 
 
     ros::Subscriber MainBodyPositionSubscriber = nh.subscribe("/MainBody/Position", 3, subscribeMainBodyPosition);
+
+
+    ros::Subscriber HeadBodyPositionSubscriber = nh.subscribe("/HeadBody/Position", 3, subscribeHeadBodyPosition);
+
 
     // More!!
     ros::Subscriber LeftArmModeChangeSubscriber = nh.subscribe("/XR1/LeftArmChainModeChange", 1, subscribeLeftArmMode);
@@ -365,13 +381,14 @@ int main(int argc, char **argv) {
     ros::Publisher LHPP = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/TargetPosition", 1);
     ros::Publisher RHPP = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/TargetPosition", 1);
     ros::Publisher MBPP = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/TargetPosition", 1);
+    ros::Publisher HBPP = nh.advertise<xr1controllerros::BodyMsgs>("/HeadBody/TargetPosition", 1);
 
     LeftArmPositionPublisher = &LAPP;
     RightArmPositionPublisher = &RAPP;
     MainBodyPositionPublisher = &MBPP;
     LeftHandPositionPublisher = &LHPP;
     RightHandPositionPublisher = &RHPP;
-
+    HeadBodyPositionPublisher = &HBPP;
 
     LeftElbowAngle = 2.0;
     RightElbowAngle = -2.0;
