@@ -38,6 +38,10 @@ public:
     void setAnimation(int animation_type , int animation_id);
 
 
+    // set Idle stuff on or off
+    void setIdleOption(bool option);
+
+
     // set this pose for face tracking or marker tracking
     void setHeadTrackingPosition(Affine3d & target_affine_from_back_y);
 
@@ -46,6 +50,14 @@ public:
 
     // check the current animation queue
     std::deque<int> queryAnimation();
+
+
+    // get the propoer ID
+    int getAnimationID(int long_id);
+
+    // get the proper animation type
+    int distinquishAnimationType(int animation_id);
+
 
     // clear all the states , return to initial state, which will force robot to get into idle
     void clearAll();
@@ -58,18 +70,17 @@ private:
     // the que that decides what plays next
     std::deque<int> animation_que;
 
-
+    // The option for whether idle animations are played
+    bool idle_switch;
 
     // internal functions
     void readLibraries(string library_path);
 
     int combineID(int animation_type , int animation_id);
 
-    int getAnimationID(int long_id);
-
     bool distinquishAnimationProcedure();
 
-    int distinquishAnimationType(int animation_id);
+
 
     void judgeAnimationRecovery(int control_group);
 
@@ -194,6 +205,7 @@ private:
     std::vector<uint8_t> control_group_flags;
     std::vector<uint8_t> temp_ids;
     std::vector<double> temp_state_commands;
+
 
     // Drive Mode speciaty -----------------------------------
 

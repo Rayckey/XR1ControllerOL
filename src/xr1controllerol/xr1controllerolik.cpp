@@ -37,6 +37,11 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
         if (req.NewTarget){
 
             setControlMode(control_group , XR1::IKMode);
+            if (control_group == XR1::LeftArm)
+                setControlMode(XR1::LeftHand , XR1::IKMode);
+            else if (control_group == XR1::RightArm)
+                setControlMode(XR1::RightHand , XR1::IKMode);
+
             res.inProgress = false;
             if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
                 res.isReachable = true;

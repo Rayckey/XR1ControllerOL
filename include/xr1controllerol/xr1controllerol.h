@@ -30,6 +30,7 @@
 #include "xr1controllerol/IKTrackingService.h"
 #include "xr1controllerol/HandGripQuery.h"
 #include "xr1controllerol/askReadiness.h"
+#include "xr1controllerol/AnimationQuery.h"
 
 // The animation message type
 #include "xr1controllerol/AnimationMsgs.h"
@@ -139,6 +140,11 @@ public:
     // receive an animation order
     // one animation coming right up , chump
     void subscribeSetAnimation(const xr1controllerol::AnimationMsgs &msg);
+
+
+    // receive idle on/off optionIdle
+    // will determine if an idle animation will be played when default runs out
+    void subscribeSetIdle(const std_msgs::Bool &msg);
 
     // ------------------------------------------------------------------
 
@@ -282,6 +288,9 @@ protected:
 
     bool serviceHandGrip(xr1controllerol::HandGripQueryRequest &req,
                          xr1controllerol::HandGripQueryResponse &res);
+
+    bool serviceAnimation(xr1controllerol::AnimationQueryRequest &req,
+                         xr1controllerol::AnimationQueryResponse &res);
     // ------------------------------------------------------------------------------
 
 
@@ -400,6 +409,7 @@ private:
     ros::ServiceServer IKPlannerService;
     ros::ServiceServer IKTrackingService;
     ros::ServiceServer HandGripService;
+    ros::ServiceServer AnimationService;
     // --------------------------------------------
 
 
@@ -428,6 +438,7 @@ private:
     // Animation subscriber -----------------------
     ros::Subscriber AnimationSwitchSubscriber;
     ros::Subscriber AnimationSetSubscriber;
+    ros::Subscriber IdleSwitchSubscriber;
     // --------------------------------------------
 
 

@@ -81,6 +81,8 @@ XR1ControllerOL::XR1ControllerOL() :
     // Animation callbacks -------------------------------------------------------
     AnimationSwitchSubscriber = nh.subscribe("/startAnimation", 1, &XR1ControllerOL::subscribeStartAnimation, this);
     AnimationSetSubscriber = nh.subscribe("/setAnimation", 1, &XR1ControllerOL::subscribeSetAnimation, this);
+    IdleSwitchSubscriber = nh.subscribe("/setIdle", 1, &XR1ControllerOL::subscribeSetIdle, this);
+    AnimationService = nh.advertiseService("/getAnimation", &XR1ControllerOL::serviceAnimation, this);
     // ---------------------------------------------------------------------------
 
 

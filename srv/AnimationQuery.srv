@@ -1,0 +1,5 @@
+bool isQuery
+---
+int64 AnimationType
+int64 AnimationID
+

@@ -42,6 +42,7 @@ VectorXd temp_vec3d;
 xr1controllerros::HandMsgs temp_handmsgs;
 xr1controllerros::ArmMsgs temp_armmsgs;
 xr1controllerros::BodyMsgs temp_bodymsgs;
+xr1controllerros::HeadMsgs temp_headmsgs;
 
 
 
@@ -161,6 +162,10 @@ void stateTransition() {
         XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d);
         ConvertBodyMsgs(temp_vec7d, temp_bodymsgs);
         MainBodyPositionPublisher->publish(temp_bodymsgs);
+
+        XR1_ptr->getTargetPosition(XR1::HeadBody, temp_vec7d);
+        ConvertHeadMsgs(temp_vec7d, temp_bodymsgs);
+        HeadBodyPositionPublisher->publish(temp_bodymsgs);
 
         XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d);
         ConvertArmMsgs(temp_vec7d, temp_armmsgs);

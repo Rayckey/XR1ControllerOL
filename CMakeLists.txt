@@ -50,6 +50,7 @@ add_service_files(
 		IKTrackingService.srv
 		HandGripQuery.srv
 		askReadiness.srv
+		AnimationQuery.srv
 )
 
 generate_messages(
