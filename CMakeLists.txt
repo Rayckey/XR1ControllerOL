@@ -134,9 +134,9 @@ add_dependencies(xr1controllerALP_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
 
-add_executable(ik_example src/IK_Example.cpp)
-target_link_libraries(ik_example ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(ik_example ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_executable(ik_example src/IK_Example.cpp)
+#target_link_libraries(ik_example ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(ik_example ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 
 #add_executable(ik_bench src/IK_Bench.cpp)
