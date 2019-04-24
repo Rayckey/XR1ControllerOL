@@ -262,7 +262,7 @@ int main(int argc, char **argv) {
 
     ros::Subscriber SetAnimationSubscriber = nh.subscribe("/setAnimation", 3, subscribeSetAnimation);
 
-    ros::Subscriber setSubControlModeSubscriber = nh.subscribe("/setSubControlMode" , 3 , subscribeSubControlMode);
+    ros::Subscriber setSubControlModeSubscriber = nh.subscribe("/XR1/ChainModeChange" , 3 , subscribeSubControlMode);
 
     ros::Subscriber SetIdleSubscriber = nh.subscribe("setIdle" , 1 , subscribeSetIdle);
 

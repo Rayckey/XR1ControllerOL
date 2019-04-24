@@ -62,7 +62,7 @@ The user can directly control the robot via ros messages.
 The actuators are set to profile position mode
 
 ### 4. MoCap Mode
-The user can directly control the robot via Motion Capture.
+The user can directly control the robot via Joint State Topics.
 The actuators are set to profile position mode
 
 ### 5. IK Mode

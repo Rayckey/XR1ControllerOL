@@ -79,6 +79,7 @@ catkin_package(
 		 src/${PROJECT_NAME}/xr1controllerolmodes.cpp
 		 src/${PROJECT_NAME}/xr1controllerolactuator.cpp
 		 src/${PROJECT_NAME}/xr1controllerolomni.cpp
+		 src/${PROJECT_NAME}/xr1controllerolhopps.cpp
  )
 
 

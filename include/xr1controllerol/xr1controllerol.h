@@ -480,9 +480,15 @@ private:
 
     sensor_msgs::JointState temp_jointstate;
 
+    ros::Publisher m_joint_state_publisher;
+
+    ros::Subscriber m_joint_state_subscriber;
+
     std::map<std::string , uint8_t> m_jointlookup;
 
     std::map<uint8_t , std::string> m_namelookup;
+
+    std::map<uint8_t , uint8_t> m_control_group_lookup;
 
     // -------------------------------------------
 

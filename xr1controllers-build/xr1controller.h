@@ -288,6 +288,7 @@ public:
 
     //Convert output from Data files to Motor Joint Angles;
     void setState(std::vector<double> goal_configuration , int period_in_ms, int control_rate = 200);
+    void setAnimationState(std::vector<double> goal_configuration , int period_in_ms, int control_rate = 200);
     std::vector<double> getNextState(bool vanilla = false);
     bool isStateActive();
     void state2Actuator(std::vector<double> & some_state);

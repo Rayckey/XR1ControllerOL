@@ -8,7 +8,7 @@ XR1ControllerOL::XR1ControllerOL() :
     ,power_reading_counter(30000)
     ,previous_omni_state(false)
     ,collision_detection_switch(false)
-    ,RecognizeFinished(true) {
+    ,RecognizeFinished(false) {
 
     std::vector<double> sit_pos;
 
@@ -205,6 +205,26 @@ XR1ControllerOL::XR1ControllerOL() :
 
     setupJointStateTable();
 
+    uint8_t temp_id = 1;
+
+    while (temp_id < XR1::MainBody) { m_control_group_lookup[temp_id] = XR1::OmniWheels ;  temp_id++;}
+
+    while (temp_id < XR1::HeadBody) { m_control_group_lookup[temp_id] = XR1::MainBody ;  temp_id++;}
+
+    while (temp_id < XR1::LeftArm) { m_control_group_lookup[temp_id] = XR1::HeadBody ;  temp_id++;}
+
+    while (temp_id < XR1::RightArm) { m_control_group_lookup[temp_id] = XR1::LeftArm ;  temp_id++;}
+
+    while (temp_id < XR1::LeftHand) { m_control_group_lookup[temp_id] = XR1::RightArm ;  temp_id++;}
+
+    while (temp_id < XR1::RightHand) { m_control_group_lookup[temp_id] = XR1::LeftHand ;  temp_id++;}
+
+    while (temp_id < XR1::Actuator_Total) { m_control_group_lookup[temp_id] = XR1::RightHand ;  temp_id++;}
+
+
+    m_joint_state_publisher = nh.advertise<sensor_msgs::JointState>("/ginger/joint_states", 10);
+
+    m_joint_state_subscriber = nh.subscribe("/joint_states", 10 , &XR1ControllerOL::subscribeJointStates , this);
 
 
     // ----------------------------------------------------
@@ -403,6 +423,11 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
     // send out all the joint information
     unleaseJointInfo();
+
+
+    // unlease joint states information
+    publishJointStates();
+
 
     // collision detection check
     collisionDetectionCallback();
