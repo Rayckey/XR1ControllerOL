@@ -48,7 +48,7 @@
 // std stuff
 #include <map>
 #include <string>
-
+#include "std_srvs/SetBool.h"
 
 using namespace Eigen;
 
@@ -302,8 +302,8 @@ protected:
     bool serviceHandGrip(xr1controllerol::HandGripQueryRequest &req,
                          xr1controllerol::HandGripQueryResponse &res);
 
-    bool serviceAnimation(xr1controllerol::AnimationQueryRequest &req,
-                         xr1controllerol::AnimationQueryResponse &res);
+    bool serviceIdle(std_srvs::SetBoolRequest &req,
+                     std_srvs::SetBoolResponse &res);
     // ------------------------------------------------------------------------------
 
 
@@ -431,7 +431,7 @@ private:
     ros::ServiceServer IKPlannerService;
     ros::ServiceServer IKTrackingService;
     ros::ServiceServer HandGripService;
-    ros::ServiceServer AnimationService;
+    ros::ServiceServer IdleService;
     // --------------------------------------------
 
 
@@ -461,6 +461,7 @@ private:
     ros::Subscriber AnimationSwitchSubscriber;
     ros::Subscriber AnimationSetSubscriber;
     ros::Subscriber IdleSwitchSubscriber;
+
     // --------------------------------------------
 
 

@@ -22,7 +22,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     XR1_ptr = new XR1Controller(path + "/fungus.xr1para", sit_pos);
 
-    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1);
+    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 135, 10, 1);
 
     IMU_ptr = new XR1IMUmethods();
 
@@ -82,7 +82,7 @@ XR1ControllerOL::XR1ControllerOL() :
     AnimationSwitchSubscriber = nh.subscribe("/startAnimation", 1, &XR1ControllerOL::subscribeStartAnimation, this);
     AnimationSetSubscriber = nh.subscribe("/setAnimation", 1, &XR1ControllerOL::subscribeSetAnimation, this);
     IdleSwitchSubscriber = nh.subscribe("/setIdle", 1, &XR1ControllerOL::subscribeSetIdle, this);
-    AnimationService = nh.advertiseService("/getAnimation", &XR1ControllerOL::serviceAnimation, this);
+    IdleService = nh.advertiseService("/inIdle", &XR1ControllerOL::serviceIdle, this);
     // ---------------------------------------------------------------------------
 
 
