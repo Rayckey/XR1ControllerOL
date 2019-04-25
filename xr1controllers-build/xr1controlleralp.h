@@ -51,6 +51,9 @@ public:
     // check the current animation queue
     std::deque<int> queryAnimation();
 
+    // check if the animation is in idle
+    bool isIdle();
+
 
     // get the propoer ID
     int getAnimationID(int long_id);

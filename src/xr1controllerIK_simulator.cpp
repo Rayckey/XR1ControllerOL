@@ -16,18 +16,20 @@
 #include "xr1controllerros/ChainModeChange.h"
 
 #include "xr1controllerol/IKLinearService.h"
-#include "xr1controllerol/IKTrackingService.h"
+#include "xr1controllerol/HandGripQuery.h"
+#include "xr1controllerol/askReadiness.h"
 #include <ros/package.h>
+
+#include <vector>
 
 // Global Varibles
 XR1ControllerPM *XR1_ptr;
-double RightElbowAngle;
-double LeftElbowAngle;
+std::vector<uint8_t> control_group_flags;
+std::vector<uint8_t> temp_ids;
 Eigen::Affine3d itsafine;
 tf::StampedTransform tform;
 geometry_msgs::Transform temp_geo_trans;
 tf::TransformBroadcaster *EFF_Broadcaster;
-tf::TransformListener *EFF_Listener;
 
 ros::Publisher *LeftArmPositionPublisher;
 ros::Publisher *RightArmPositionPublisher;
@@ -47,77 +49,101 @@ xr1controllerros::HeadMsgs temp_headmsgs;
 
 
 
+void setControlGroupTarget(uint8_t control_group){
 
-bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest &req,
-                       xr1controllerol::IKTrackingServiceResponse &res) {
+    XR1_ptr->getTargetPosition(control_group , temp_vec7d);
+
+    switch (control_group){
+
+        case XR1::MainBody:{
+
+            ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
+            MainBodyPositionPublisher->publish(temp_bodymsgs);
+
+        }
+
+        break;
 
 
-    // The default response
+        case XR1::HeadBody:{
+
+            ConvertHeadMsgs(temp_vec7d , temp_headmsgs);
+            HeadBodyPositionPublisher->publish(temp_headmsgs);
+
+        }
+
+            break;
+
+
+        case XR1::LeftArm:{
+
+            ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+            LeftArmPositionPublisher->publish(temp_armmsgs);
+
+        }
+
+            break;
+
+
+        case XR1::RightArm:{
+
+            ConvertArmMsgs(temp_vec7d , temp_armmsgs);
+            RightArmPositionPublisher->publish(temp_armmsgs);
+
+        }
+
+            break;
+
+
+        case XR1::LeftHand:{
+
+            ConvertHandMsgs(temp_vec7d , temp_handmsgs);
+            LeftHandPositionPublisher->publish(temp_handmsgs);
+
+        }
+
+            break;
+
+        case XR1::RightHand:{
+
+            ConvertHandMsgs(temp_vec7d , temp_handmsgs);
+            RightHandPositionPublisher->publish(temp_handmsgs);
+
+        }
+
+            break;
+
+
+        default:
+            break;
+
+
+
+    }
+}
+
+
+
+
+
+bool serviceHandGrip(xr1controllerol::HandGripQueryRequest & req,
+                                      xr1controllerol::HandGripQueryResponse & res){
+
+
     res.inProgress = true;
-    res.isReachable = false;
-    res.isAccepted = false;
+    res.isGripped = false;
 
-    uint8_t control_group = req.ControlGroup;
+    int root_control_group = (req.ControlGroup == XR1::LeftHand) ? XR1::LeftArm : XR1::RightArm ;
 
-    if (control_group == XR1::HeadBody) {
+    if (XR1_ptr->isIKPlannerActive(root_control_group)){
 
-        try {
-            EFF_Listener->lookupTransform("/Back_Y", "/TrackingTarget",
-                                         ros::Time(0), tform);
-        }
-        catch (tf::TransformException &ex) {
-            return true;
-        }
+        res.inProgress = true;
+        return true;
 
-        transformTFToEigen(tform, itsafine);
+    }else {
 
-
-        if (XR1_ptr->isIKPlannerActive(control_group)) {
-            res.inProgress = true;
-        } else {
-            if (req.NewTarget) {
-
-                XR1_ptr->setControlMode(control_group, XR1::IKMode);
-                res.inProgress = false;
-                if (XR1_ptr->setTrackingPosition(XR1::HeadBody, itsafine)) {
-                    res.isReachable = true;
-                    res.isAccepted = true;
-                }
-            }
-            res.inProgress = false;
-
-        }
-
-
-    } else if (control_group == XR1::MainBody) {
-
-        try {
-            EFF_Listener->lookupTransform("/Base", "/TrackingTarget",
-                                         ros::Time(0), tform);
-        }
-        catch (tf::TransformException &ex) {
-            return false;
-        }
-
-        transformTFToEigen(tform, itsafine);
-
-
-        if (XR1_ptr->isIKPlannerActive(control_group)) {
-            res.inProgress = true;
-        } else {
-            if (req.NewTarget) {
-
-                XR1_ptr->setControlMode(control_group, XR1::IKMode);
-                res.inProgress = false;
-                if (XR1_ptr->setTrackingPosition(XR1::MainBody, itsafine)) {
-                    res.isReachable = true;
-                    res.isAccepted = true;
-                }
-            }
-            res.inProgress = false;
-
-        }
-
+        res.inProgress = false;
+        res.isGripped = true;
     }
 
 
@@ -126,65 +152,48 @@ bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest &req,
 }
 
 
-void subscribeLeftElbowAngle(const std_msgs::Float64 &msg) {
-    LeftElbowAngle = msg.data;
-}
-
-void subscribeRightElbowAngle(const std_msgs::Float64 &msg) {
-    RightElbowAngle = msg.data;
-}
-
-
-void subscribeLeftArmMode(const xr1controllerros::ChainModeChange &msg) {
-    XR1_ptr->setControlMode(XR1::LeftArm, msg.Mode);
-}
-
-void subscribeRightArmMode(const xr1controllerros::ChainModeChange &msg) {
-    XR1_ptr->setControlMode(XR1::RightArm, msg.Mode);
-}
-
-void subscribeHeadBodyMode(const xr1controllerros::ChainModeChange &msg) {
-    XR1_ptr->setControlMode(XR1::HeadBody, msg.Mode);
-}
-
-void subscribeMainBodyMode(const xr1controllerros::ChainModeChange &msg) {
-    XR1_ptr->setControlMode(XR1::MainBody, msg.Mode);
-}
 
 
 void stateTransition() {
 
-    std::vector<double> state_cmd = XR1_ptr->getNextState();
+    double temp_value;
 
-    if (state_cmd[0] < 0.5) {
+    for (uint8_t control_group : control_group_flags){
+
+        if (XR1_ptr->inHighFrequencyControl(control_group) && XR1_ptr->isXR1Okay()){
+
+            temp_ids = XR1_ptr->getControlGroupIDs(control_group);
+
+            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
+
+            }
+
+            else {
+                for (uint8_t id : temp_ids)
+                    temp_value = XR1_ptr->getNextState(id);
+
+            }
 
 
-//        ROS_INFO("In Active State");
-        XR1_ptr->getTargetPosition(XR1::MainBody, temp_vec7d);
-        ConvertBodyMsgs(temp_vec7d, temp_bodymsgs);
-        MainBodyPositionPublisher->publish(temp_bodymsgs);
-
-        XR1_ptr->getTargetPosition(XR1::HeadBody, temp_vec7d);
-        ConvertHeadMsgs(temp_vec7d, temp_headmsgs);
-        HeadBodyPositionPublisher->publish(temp_headmsgs);
-
-        XR1_ptr->getTargetPosition(XR1::LeftArm, temp_vec7d);
-        ConvertArmMsgs(temp_vec7d, temp_armmsgs);
-        LeftArmPositionPublisher->publish(temp_armmsgs);
-
-        XR1_ptr->getTargetPosition(XR1::RightArm, temp_vec7d);
-        ConvertArmMsgs(temp_vec7d, temp_armmsgs);
-        RightArmPositionPublisher->publish(temp_armmsgs);
-
-        XR1_ptr->getTargetPosition(XR1::LeftHand, temp_vec5d);
-        ConvertHandMsgs(temp_vec5d, temp_handmsgs);
-        LeftHandPositionPublisher->publish(temp_handmsgs);
-
-        XR1_ptr->getTargetPosition(XR1::RightHand, temp_vec5d);
-        ConvertHandMsgs(temp_vec5d, temp_handmsgs);
-        RightHandPositionPublisher->publish(temp_handmsgs);
+            setControlGroupTarget(control_group);
+        }
     }
 
+}
+
+
+
+
+bool serviceReady(xr1controllerol::askReadinessRequest & req,
+                                   xr1controllerol::askReadinessResponse & res){
+
+    res.isReady = true;
+
+
+
+
+
+    return true;
 }
 
 
@@ -224,6 +233,14 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
 
 }
 
+
+
+void subscribeChainMode(const xr1controllerros::ChainModeChange & msg){
+
+    XR1_ptr->setSubControlMode(msg.ChainID, msg.Mode);
+
+}
+
 //-----------------------------------------------------------------------------
 
 void broadcastTransform(const ros::TimerEvent &event) {
@@ -231,7 +248,7 @@ void broadcastTransform(const ros::TimerEvent &event) {
 
 
     // This function triggers almost all the computation in the library
-    XR1_ptr->triggerCalculation();
+    XR1_ptr->triggerCalculation(true);
 
     // Publish the left one
     XR1_ptr->getEndEffectorTransformation(XR1::LeftArm, itsafine);
@@ -241,31 +258,25 @@ void broadcastTransform(const ros::TimerEvent &event) {
 
     // Publish the right one
     XR1_ptr->getEndEffectorTransformation(XR1::RightArm, itsafine);
-    // std::cout << itsafine.matrix() << std::endl;
     tf::transformEigenToTF(itsafine, tform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(tform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
 
-    XR1_ptr->getEndEffectorTransformation(XR1::MainBody, itsafine);
+    // Publish the head
+    XR1_ptr->getEndEffectorTransformation(XR1::HeadBody, itsafine);
     tf::transformEigenToTF(itsafine, tform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(tform, ros::Time::now(), "/Back_Y", "/Head"));
 
 
+    XR1_ptr->getBaseTransformation(XR1::OmniWheels, itsafine);
+    tf::transformEigenToTF(itsafine, tform);
+    EFF_Broadcaster->sendTransform(tf::StampedTransform(tform, ros::Time::now(), "/Odom", "/Base"));
 
-    // Publish the Base
+
     XR1_ptr->getBaseTransformation(XR1::MainBody, itsafine);
     tf::transformEigenToTF(itsafine, tform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(tform, ros::Time::now(), "/Base", "/Back_Y"));
 
-
-
-//    if (!(XR1_ptr->isIKPlannerActive(XR1::RightArm)))
-//      lookupRightEFFTarget(tform, itsafine);
-//
-//  if (!(XR1_ptr->isIKPlannerActive(XR1::LeftArm)))
-//      lookupLeftEFFTarget(tform, itsafine);
-//
-//    lookupBackEFFTarget(tform , itsafine);
 
     stateTransition();
 
@@ -323,9 +334,16 @@ int main(int argc, char **argv) {
 
     temp_vec5d = VectorXd::Zero(5);
     temp_vec7d = VectorXd::Zero(7);
+    temp_vec3d = VectorXd::Zero(3);
+
+    control_group_flags.push_back(XR1::MainBody);
+    control_group_flags.push_back(XR1::HeadBody);
+    control_group_flags.push_back(XR1::LeftArm);
+    control_group_flags.push_back(XR1::RightArm);
+    control_group_flags.push_back(XR1::LeftHand);
+    control_group_flags.push_back(XR1::RightHand);
 
     EFF_Broadcaster = new tf::TransformBroadcaster();
-    EFF_Listener = new tf::TransformListener();
 
     // Feed me infos
     ros::Subscriber LeftArmPositionSubscriber = nh.subscribe("/LeftArm/Position", 3, subscribeLeftArmPosition);
@@ -348,31 +366,14 @@ int main(int argc, char **argv) {
 
 
     // More!!
-    ros::Subscriber LeftArmModeChangeSubscriber = nh.subscribe("/XR1/LeftArmChainModeChange", 1, subscribeLeftArmMode);
-
-    //MOREEEEEEEE!
-    ros::Subscriber RightArmModeChangeSubscriber = nh.subscribe("/XR1/RightArmChainModeChange", 1,
-                                                                subscribeRightArmMode);
-
-
-    // More!!subscribeHeadBodyMode
-    ros::Subscriber HeadBodyModeChangeSubscriber = nh.subscribe("/XR1/HeadBodyChainModeChange", 1,
-                                                                subscribeHeadBodyMode);
-
-    //MOREEEEEEEE!
-    ros::Subscriber MainBodyModeChangeSubscriber = nh.subscribe("/XR1/MainBodyChainModeChange", 1,
-                                                                subscribeMainBodyMode);
-
-    // MMMMMMOOOOORRRRRREEEEEEEE!
-    ros::Subscriber LeftElbowSubscriber = nh.subscribe("LeftArm/ElbowAngle", 1, subscribeLeftElbowAngle);
-
-    // MMMMMMMMMOOOOOOOOOOOOOOOOAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRR!!!!!!!!!!!!!!!
-    ros::Subscriber RightElbowSubscriber = nh.subscribe("RightArm/ElbowAngle", 1, subscribeRightElbowAngle);
+    ros::Subscriber LeftArmModeChangeSubscriber = nh.subscribe("/XR1/ChainModeChange", 1, subscribeChainMode);
 
 
     ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKLPT", serviceIKPlanner);
 
-    ros::ServiceServer IKTrackingService = nh.advertiseService("XR1/IKTT", serviceIKTracking);
+    ros::ServiceServer HandGripService = nh.advertiseService("XR1/IKTT", serviceHandGrip);
+
+    ros::ServiceServer ReadinessService = nh.advertiseService("XR1/Ready", serviceReady);
 
 
     // cough out the target position as the result of IK;
@@ -381,7 +382,7 @@ int main(int argc, char **argv) {
     ros::Publisher LHPP = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/TargetPosition", 1);
     ros::Publisher RHPP = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/TargetPosition", 1);
     ros::Publisher MBPP = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/TargetPosition", 1);
-    ros::Publisher HBPP = nh.advertise<xr1controllerros::BodyMsgs>("/HeadBody/TargetPosition", 1);
+    ros::Publisher HBPP = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/TargetPosition", 1);
 
     LeftArmPositionPublisher = &LAPP;
     RightArmPositionPublisher = &RAPP;
@@ -390,8 +391,6 @@ int main(int argc, char **argv) {
     RightHandPositionPublisher = &RHPP;
     HeadBodyPositionPublisher = &HBPP;
 
-    LeftElbowAngle = 2.0;
-    RightElbowAngle = -2.0;
 
 
     // Draw some random stuff every three seconds or so
@@ -401,50 +400,6 @@ int main(int argc, char **argv) {
     XR1_ptr->setJointPosition(XR1::Neck_X, 0.5);
 
 
-
-
-
-    // Basic testing ---------------------------------------------------------------------
-
-
-
-//    VectorXd testy = VectorXd::Zero(7);
-//    VectorXd shity = VectorXd::Zero(7);
-//
-//    testy << 0.805673833997187  ,  1.86216218006166  ,  0.795732612652139 ,   -0.172666403436580  ,  -0.410773351865951 ,   -2.11365969021934  ,  0.293479279663677;
-//
-//    shity << M_PI / 2, M_PI / 2 -0.3491,M_PI / 2,0,0,-M_PI / 2,0;
-//
-//    testy = testy + shity;
-//
-//    XR1_ptr->updatingCallback(testy, XR1::LeftArm , XR1::ActualPosition);
-//
-//    XR1_ptr->triggerCalculation();
-//
-//    Affine3d transform;
-//
-//    XR1_ptr->getEndEffectorTransformation(XR1::LeftArm , transform);
-//
-//    Quaterniond testqua;
-//    testqua = transform.rotation();
-//
-//    std::cout << testqua.w() <<" "<< testqua.x() <<" "<< testqua.y() <<" "<< testqua.z() << std::endl;
-//
-//    std::cout << transform.translation().x() <<" "<<transform.translation().y() <<" "<<transform.translation().z() << std::endl;
-
-
-
-    //    XR1_ptr->setControlMode(XR1::LeftArm , XR1::IKMode);
-    //    Affine3d transform;
-
-    //    transform.matrix() <<   0.172364,-0.0596322,  0.983226, 0.0195315,
-    //                            0.379472,  0.925144, -0.010413,   0.11014,
-    //                           -0.909005,  0.374902,   0.18209,    0.2695,
-    //                                   0,         0,         0,         1;
-
-    //    XR1_ptr->setEndEffectorPosition(XR1::LeftArm , transform , 3.0);
-
-    // -----------------------------------------------------------------------------------
 
 
 
