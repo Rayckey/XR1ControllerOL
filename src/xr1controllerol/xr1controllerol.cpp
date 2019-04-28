@@ -22,7 +22,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     XR1_ptr = new XR1Controller(path + "/fungus.xr1para", sit_pos);
 
-    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 135, 10, 1);
+    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1);
 
     IMU_ptr = new XR1IMUmethods();
 

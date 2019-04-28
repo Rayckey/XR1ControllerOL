@@ -13,7 +13,7 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 
         for (uint8_t control_group : control_group_flags){
 
-            if (XR1_ptr->getSubControlMode(control_group) == XR1::DirectMode){
+            if (XR1_ptr->getSubControlMode(control_group) <= XR1::MoCapMode){
 
                 setControlMode(control_group , XR1::AnimationMode);
 

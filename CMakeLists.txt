@@ -110,6 +110,11 @@ target_link_libraries(xr1controllerIK_simulator ${catkin_LIBRARIES} ${PROJECT_NA
 add_dependencies(xr1controllerIK_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
+add_executable(xr1controllerOL_simulator src/xr1controllerOL_simulator.cpp)
+target_link_libraries(xr1controllerOL_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(xr1controllerOL_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+
 #add_executable(xr1controllerodom_simulator src/xr1controllerodom_simulator.cpp)
 #target_link_libraries(xr1controllerodom_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
 #add_dependencies(xr1controllerodom_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
