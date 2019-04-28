@@ -449,17 +449,7 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 void XR1ControllerOL::unleaseJointInfo(){
     // send out all the current information
 
-    XR1_ptr->getJointPositions(XR1::HeadBody, temp_vec7d ,true);
-    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
-    MainBodyPositionPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointVelocities(XR1::HeadBody, temp_vec7d ,true);
-    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
-    MainBodyVelocityPublisher.publish(temp_bodymsgs);
-
-    XR1_ptr->getJointCurrents(XR1::HeadBody, temp_vec7d , true);
-    ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
-    MainBodyCurrentPublisher.publish(temp_bodymsgs);
 
     XR1_ptr->getJointPositions(XR1::MainBody, temp_vec7d ,true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
@@ -472,6 +462,21 @@ void XR1ControllerOL::unleaseJointInfo(){
     XR1_ptr->getJointCurrents(XR1::MainBody, temp_vec7d , true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyCurrentPublisher.publish(temp_bodymsgs);
+
+
+    XR1_ptr->getJointPositions(XR1::HeadBody, temp_vec7d ,true);
+    ConvertHeadMsgs(temp_vec7d , temp_headmsgs);
+    HeadBodyPositionPublisher.publish(temp_headmsgs);
+
+    XR1_ptr->getJointVelocities(XR1::HeadBody, temp_vec7d ,true);
+    ConvertHeadMsgs(temp_vec7d , temp_headmsgs);
+    HeadBodyPositionPublisher.publish(temp_headmsgs);
+
+    XR1_ptr->getJointCurrents(XR1::HeadBody, temp_vec7d , true);
+    ConvertHeadMsgs(temp_vec7d , temp_headmsgs);
+    HeadBodyPositionPublisher.publish(temp_headmsgs);
+
+
 
     XR1_ptr->getJointPositions(XR1::LeftArm, temp_vec7d , true);
     ConvertArmMsgs(temp_vec7d , temp_armmsgs);
