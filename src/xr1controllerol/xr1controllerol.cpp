@@ -82,7 +82,7 @@ XR1ControllerOL::XR1ControllerOL() :
     AnimationSwitchSubscriber = nh.subscribe("/startAnimation", 1, &XR1ControllerOL::subscribeStartAnimation, this);
     AnimationSetSubscriber = nh.subscribe("/setAnimation", 1, &XR1ControllerOL::subscribeSetAnimation, this);
     IdleSwitchSubscriber = nh.subscribe("/setIdle", 1, &XR1ControllerOL::subscribeSetIdle, this);
-    IdleService = nh.advertiseService("/inIdle", &XR1ControllerOL::serviceIdle, this);
+    QueryAnimationService = nh.advertiseService("/queryAnimation", &XR1ControllerOL::serviceQueryAnimation, this);
     // ---------------------------------------------------------------------------
 
 
@@ -475,7 +475,6 @@ void XR1ControllerOL::unleaseJointInfo(){
     XR1_ptr->getJointCurrents(XR1::HeadBody, temp_vec7d , true);
     ConvertHeadMsgs(temp_vec7d , temp_headmsgs);
     HeadBodyPositionPublisher.publish(temp_headmsgs);
-
 
 
     XR1_ptr->getJointPositions(XR1::LeftArm, temp_vec7d , true);

@@ -69,14 +69,22 @@ void XR1ControllerOL::subscribeSetIdle(const std_msgs::Bool &msg) {
     XRA_ptr->setIdleOption(msg.data);
 }
 
-bool XR1ControllerOL::serviceIdle(std_srvs::SetBoolRequest &req,
-                          std_srvs::SetBoolResponse &res){
+bool XR1ControllerOL::serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
+                                            xr1controllerol::AnimationQueryResponse &res){
 
-    res.success = false;
+    int type_id , ani_id, pro_id;
 
+    if (XRA_ptr->checkProgress(type_id,ani_id , pro_id)){
+        res.isIdle = false;
+        res.AnimationType = type_id;
+        res.AnimationID = ani_id;
+        res.AnimationProgress = pro_id;
+    }
 
-    if (XRA_ptr->isIdle())
-        res.success = true;
+    else {
+        res.isIdle = true;
+    }
+
 
 
     return true;

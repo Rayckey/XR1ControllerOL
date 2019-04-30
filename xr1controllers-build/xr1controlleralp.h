@@ -52,7 +52,7 @@ public:
     std::deque<int> queryAnimation();
 
     // check if the animation is in idle
-    bool isIdle();
+    bool checkProgress ( int&  animation_type ,  int & animation_id , int & animation_progress);
 
 
     // get the propoer ID
@@ -174,6 +174,10 @@ private:
     int idle_counter;
 
     int animation_type_current;
+
+    int animation_id_current;
+
+    int animation_size_current;
 
     int NUM_OF_ANIMATION;
 

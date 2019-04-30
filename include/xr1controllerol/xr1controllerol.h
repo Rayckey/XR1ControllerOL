@@ -35,11 +35,11 @@
 #include "xr1controllerol/IKTrackingService.h"
 #include "xr1controllerol/HandGripQuery.h"
 #include "xr1controllerol/askReadiness.h"
-#include "xr1controllerol/AnimationQuery.h"
+
 
 // The animation message type
 #include "xr1controllerol/AnimationMsgs.h"
-
+#include "xr1controllerol/AnimationQuery.h"
 
 #include "Eigen/Dense"
 #include "xr1controllerolmsgulit.h"
@@ -302,8 +302,8 @@ protected:
     bool serviceHandGrip(xr1controllerol::HandGripQueryRequest &req,
                          xr1controllerol::HandGripQueryResponse &res);
 
-    bool serviceIdle(std_srvs::SetBoolRequest &req,
-                     std_srvs::SetBoolResponse &res);
+    bool serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
+                               xr1controllerol::AnimationQueryResponse &res);
     // ------------------------------------------------------------------------------
 
 
@@ -431,7 +431,7 @@ private:
     ros::ServiceServer IKPlannerService;
     ros::ServiceServer IKTrackingService;
     ros::ServiceServer HandGripService;
-    ros::ServiceServer IdleService;
+    ros::ServiceServer QueryAnimationService;
     // --------------------------------------------
 
 

@@ -26,6 +26,7 @@
 #include "xr1controllerol/IKLinearService.h"
 #include "xr1controllerol/HandGripQuery.h"
 #include "xr1controllerol/askReadiness.h"
+#include "xr1controllerol/AnimationQuery.h"
 
 
 // Global Varibles
@@ -53,6 +54,8 @@ geometry_msgs::Transform temp_geo_trans;
 
 
 std::vector<uint8_t> control_group_flags;
+
+ros::ServiceServer QueryAnimationService;
 
 Eigen::Affine3d itsafine;
 tf::StampedTransform temp_transform;
@@ -144,6 +147,30 @@ void clearStates() {
     XR1_ptr->clearStates();
 }
 
+
+
+
+bool serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
+                                            xr1controllerol::AnimationQueryResponse &res){
+
+    int type_id , ani_id, pro_id;
+
+    if (XRA_ptr->checkProgress(type_id,ani_id , pro_id)){
+        res.isIdle = false;
+        res.AnimationType = type_id;
+        res.AnimationID = ani_id;
+        res.AnimationProgress = pro_id;
+    }
+
+    else {
+        res.isIdle = true;
+    }
+
+
+
+    return true;
+
+}
 // --------------------------------------------------------------------------------------
 
 
@@ -461,6 +488,11 @@ int main(int argc, char **argv) {
     LeftHandPositionPublisher = &LHPP;
     RightHandPositionPublisher = &RHPP;
     HeadBodyPositionPublisher = &HBPP;
+
+
+
+    QueryAnimationService = nh.advertiseService("/queryAnimation", serviceQueryAnimation);
+
 
     ROS_INFO("Stuff" );
     // Draw some random stuff every three seconds or so
