@@ -148,13 +148,13 @@ void XR1ControllerOL::publishJointStates(){
     temp_header.stamp = ros::Time::now();
     temp_jointstate.header = temp_header;
 
-    for (uint8_t fake_joint_id = 1; fake_joint_id <= 34 ; fake_joint_id++){
+    for (uint8_t fake_joint_id = 1; fake_joint_id <= 31 ; fake_joint_id++){
 
-        temp_jointstate.position[fake_joint_id - 1] = XR1_ptr->getJointPosition(fake_joint_id , true);
+        temp_jointstate.position[fake_joint_id - 1] = XR1_ptr->getJointPosition(fake_joint_id + 3, true);
 
-        temp_jointstate.velocity[fake_joint_id - 1] = XR1_ptr->getJointVelocity(fake_joint_id , true);
+        temp_jointstate.velocity[fake_joint_id - 1] = XR1_ptr->getJointVelocity(fake_joint_id + 3, true);
 
-        temp_jointstate.effort[fake_joint_id - 1] = XR1_ptr->getJointCurrent(fake_joint_id , true);
+        temp_jointstate.effort[fake_joint_id - 1] = XR1_ptr->getJointCurrent(fake_joint_id + 3, true);
 
     }
 
