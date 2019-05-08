@@ -14,7 +14,6 @@
 #include "xr1controllerros/BodyMsgs.h"
 #include "xr1controllerros/HeadMsgs.h"
 #include "xr1controllerros/HandMsgs.h"
-#include "xr1controllerros/JointAttributeMsgs.h"
 
 #include "xr1controllerros/ChainModeChange.h"
 #include <tf/transform_broadcaster.h>
@@ -41,9 +40,15 @@
 #include "xr1controllerol/AnimationMsgs.h"
 #include "xr1controllerol/AnimationQuery.h"
 
+
+
+// Ultility stuff
 #include "Eigen/Dense"
 #include "xr1controllerolmsgulit.h"
 
+
+// Collision detection and Robot State Serive
+#include "xr1controllerol/RobotStateQuery.h"
 
 // std stuff
 #include <map>
@@ -313,6 +318,11 @@ protected:
     // ------------------------------------------------------------
 
 
+    // Service that report the robot state ------------------------
+    bool serviceState(xr1controllerol::RobotStateQueryRequest & req,
+            xr1controllerol::RobotStateQueryResponse & res);
+    // ------------------------------------------------------------
+
     // FK related messages, tf ,and services -----------------------------------
     void broadcastTransform();
     // -------------------------------------------------------------------------
@@ -457,6 +467,11 @@ private:
     // -------------------------------------------
 
 
+    // Check Robot State (Collision , calculation)-------
+    ros::ServiceServer RobotStateService;
+    // --------------------------------------------------
+
+
     // Animation subscriber -----------------------
     ros::Subscriber AnimationSwitchSubscriber;
     ros::Subscriber AnimationSetSubscriber;
@@ -465,9 +480,10 @@ private:
     // --------------------------------------------
 
 
-    // Collision detection subscriber -------------
+    // Collision detection subscriber and publisher---------
     ros::Subscriber CollisionDetectionSubscriber;
-    // --------------------------------------------
+    ros::Publisher CollisionEventPublisher;
+    // -----------------------------------------------------
 
 
     // OmniWheels Information --------------------

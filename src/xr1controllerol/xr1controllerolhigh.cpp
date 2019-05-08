@@ -50,8 +50,8 @@ void XR1ControllerOL::applyJointsTargets(){
             }
 
             else {
-                for (uint8_t id : temp_ids)
-                    temp_value = XR1_ptr->getNextState(id);
+//                for (uint8_t id : temp_ids)
+//                    temp_value = XR1_ptr->getNextState(id);
 
             }
 

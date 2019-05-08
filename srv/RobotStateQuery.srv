@@ -1,0 +1,14 @@
+bool isQuery
+bool requestLift
+---
+bool isOkay
+int16 RobotState
+bool CollisionSwitch
+int16 MainBodyMode
+int16 HeadBodyMode
+int16 LeftArmMode
+int16 RightArmMode
+int16 LeftHandMode
+int16 RightHandMode
+
+

@@ -90,6 +90,8 @@ XR1ControllerOL::XR1ControllerOL() :
     // Collision Detection set ---------------------------------------------------
     CollisionDetectionSubscriber = nh.subscribe("/setCollisionDetection", 1,
                                                 &XR1ControllerOL::subscribeSetCollisionDetection, this);
+
+    CollisionEventPublisher = nh.advertise<std_msgs::Bool>("/CollisionEvent",1);
     // ---------------------------------------------------------------------------
 
 
@@ -106,6 +108,10 @@ XR1ControllerOL::XR1ControllerOL() :
     // Decide if the Robot is ready ------------------------------------------------------------
     ReadinessService = nh.advertiseService("XR1/Ready", &XR1ControllerOL::serviceReady, this);
     // -----------------------------------------------------------------------------------------
+
+    // Report the robot's state ------------------------------------------------------------
+    RobotStateService = nh.advertiseService("XR1/State" , &XR1ControllerOL::serviceState, this);
+    // -------------------------------------------------------------------------------------
 
 
     // Joint Information Publishers ---------------------------------------------------
@@ -321,6 +327,62 @@ bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
     return true;
 }
 
+
+bool XR1ControllerOL::serviceState(xr1controllerol::RobotStateQueryRequest & req,
+                  xr1controllerol::RobotStateQueryResponse & res){
+
+    res.isOkay = false;
+    res.RobotState = false;
+    res.CollisionSwitch = false;
+    res.HeadBodyMode = 0;
+    res.MainBodyMode = 0;
+    res.LeftArmMode = 0;
+    res.RightArmMode = 0;
+    res.LeftHandMode = 0;
+    res.RightHandMode = 0;
+
+
+
+    if (req.isQuery){
+
+        res.isOkay = XR1_ptr->isXR1Okay();
+
+        res.CollisionSwitch = collision_detection_switch;
+
+        res.RobotState = XR1_ptr->getErrorCode();
+
+        res.HeadBodyMode = XR1_ptr->getSubControlMode(XR1::HeadBody);
+        res.MainBodyMode = XR1_ptr->getSubControlMode(XR1::MainBody);
+        res.LeftArmMode  = XR1_ptr->getSubControlMode(XR1::LeftArm);
+        res.RightArmMode = XR1_ptr->getSubControlMode(XR1::RightArm);
+        res.LeftHandMode = XR1_ptr->getSubControlMode(XR1::LeftHand);
+        res.RightHandMode= XR1_ptr->getSubControlMode(XR1::RightHand);
+
+    }
+
+
+    if (req.requestLift){
+
+        if (XR1_ptr->isXR1Okay()){
+            ROS_INFO("y tho");
+        }
+        else{
+            XR1_ptr->liftLockdown();
+
+
+            setControlMode(XR1::LeftArm, XR1::DirectMode);
+            setControlMode(XR1::RightArm, XR1::DirectMode);
+            setControlMode(XR1::MainBody, XR1::DirectMode);
+            setControlMode(XR1::HeadBody, XR1::DirectMode);
+            setControlMode(XR1::LeftHand, XR1::DirectMode);
+            setControlMode(XR1::RightHand, XR1::DirectMode);
+        }
+
+    }
+
+
+    return true;
+}
 
 
 XR1ControllerOL::~XR1ControllerOL() {

@@ -95,6 +95,7 @@ bool XR1ControllerOL::serviceIKTracking(xr1controllerol::IKTrackingServiceReques
             if (req.NewTarget){
 
                 setControlMode(control_group , XR1::IKMode);
+                setControlMode(XR1::LeftHand , XR1::IKMode);
                 res.inProgress = false;
                 if (XR1_ptr->setTrackingPosition(XR1::HeadBody, itsafine)){
                     res.isReachable = true;

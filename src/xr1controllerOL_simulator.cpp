@@ -137,6 +137,8 @@ void setControlGroupTarget(uint8_t control_group){
 
 void subscribeSubControlMode(const xr1controllerros::ChainModeChange & msg){
 
+
+    ROS_INFO("Setting Control Group [%d] to Mode [%d]", msg.ChainID, msg.Mode);
     XR1_ptr->setSubControlMode(msg.ChainID,msg.Mode);
 
 }
@@ -221,8 +223,8 @@ void stateTransition() {
             }
 
             else {
-                for (uint8_t id : temp_ids)
-                    temp_value = XR1_ptr->getNextState(id);
+//                for (uint8_t id : temp_ids)
+//                    temp_value = XR1_ptr->getNextState(id);
 
             }
 
@@ -247,11 +249,15 @@ bool serviceReady(xr1controllerol::askReadinessRequest & req,
 bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
                       xr1controllerol::IKLinearServiceResponse &res) {
 
+
+
     temp_geo_trans = req.TargetTransform;
 
     tf::transformMsgToEigen(temp_geo_trans, itsafine);
 
     uint8_t control_group = req.ControlGroup;
+
+
 
 
     // The default response
@@ -263,9 +269,14 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
         res.inProgress = true;
     } else {
         if (req.NewTarget) {
+//            ROS_INFO("getting request with time [%f]" ,req.Period);
             XR1_ptr->setSubControlMode(control_group, XR1::IKMode);
+            XR1_ptr->setSubControlMode(XR1::LeftHand, XR1::IKMode);
             res.inProgress = false;
+            std::cout << itsafine.matrix() << std::endl;
             if (XR1_ptr->setEndEffectorPosition(control_group, itsafine, req.TargetElbowAngle, req.Period)) {
+                ROS_INFO("doing request" );
+
                 res.isReachable = true;
                 res.isAccepted = true;
 
@@ -412,7 +423,7 @@ void subscribeRightHandPosition(const xr1controllerros::HandMsgs &msg) {
 
 
 int main(int argc, char **argv) {
-    ros::init(argc, argv, "IK_Simulator");
+    ros::init(argc, argv, "OL_Simulator");
 
     ros::NodeHandle nh;
 
@@ -493,6 +504,9 @@ int main(int argc, char **argv) {
 
     QueryAnimationService = nh.advertiseService("/queryAnimation", serviceQueryAnimation);
 
+    ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKLPT", serviceIKPlanner);
+
+    ros::ServiceServer HandGripService = nh.advertiseService("XR1/HGQ", serviceHandGrip);
 
     ROS_INFO("Stuff" );
     // Draw some random stuff every three seconds or so
