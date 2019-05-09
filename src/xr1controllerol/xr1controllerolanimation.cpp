@@ -74,7 +74,7 @@ bool XR1ControllerOL::serviceQueryAnimation(xr1controllerol::AnimationQueryReque
 
     int type_id , ani_id, pro_id;
 
-    if (XRA_ptr->checkProgress(type_id,ani_id , pro_id)){
+    if (XRA_ptr->checkProgress(type_id,ani_id , pro_id) || XR1_ptr->getSubControlMode(XR1::HeadBody) != XR1::AnimationMode){
         res.isIdle = false;
         res.AnimationType = type_id;
         res.AnimationID = ani_id;

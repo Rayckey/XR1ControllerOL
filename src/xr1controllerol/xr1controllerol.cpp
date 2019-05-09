@@ -142,7 +142,7 @@ XR1ControllerOL::XR1ControllerOL() :
     // Omni information Publisher and Subscriber -------------------------------------
 
     OmniSpeedPublisher = nh.advertise<geometry_msgs::Twist>("/OmniWheels/Velocity",1);
-    OmniSpeedSubscriber = nh.subscribe("/cmd_vel" , 10 , &XR1ControllerOL::subscribeOmniCommands ,this);
+    OmniSpeedSubscriber = nh.subscribe("/XR1/cmd_vel" , 10 , &XR1ControllerOL::subscribeOmniCommands ,this);
 
     // -------------------------------------------------------------------------------
 
