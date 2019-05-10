@@ -190,6 +190,7 @@ void XR1ControllerOL::collisionDetectionCallback(){
 //                collision_detection_switch = false;
 
                 XR1_ptr->liftLockdown();
+                XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
 
                 return;
 
@@ -216,6 +217,7 @@ void XR1ControllerOL::collisionDetectionCallback(){
 //                collision_detection_switch = false;
 
                 XR1_ptr->liftLockdown();
+                XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
 
                 return;
 

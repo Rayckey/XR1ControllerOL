@@ -271,7 +271,13 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
         if (req.NewTarget) {
 //            ROS_INFO("getting request with time [%f]" ,req.Period);
             XR1_ptr->setSubControlMode(control_group, XR1::IKMode);
-            XR1_ptr->setSubControlMode(XR1::LeftHand, XR1::IKMode);
+
+
+            if (control_group == XR1::LeftArm)
+                XR1_ptr->setSubControlMode(XR1::LeftHand, XR1::IKMode);
+            else if (control_group == XR1::RightArm)
+                XR1_ptr->setSubControlMode(XR1::RightHand, XR1::IKMode);
+
             res.inProgress = false;
             std::cout << itsafine.matrix() << std::endl;
             if (XR1_ptr->setEndEffectorPosition(control_group, itsafine, req.TargetElbowAngle, req.Period)) {
@@ -509,6 +515,8 @@ int main(int argc, char **argv) {
     ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKLPT", serviceIKPlanner);
 
     ros::ServiceServer HandGripService = nh.advertiseService("XR1/HGQ", serviceHandGrip);
+
+    ros::ServiceServer readyService = nh.advertiseService("XR1/Ready", serviceReady);
 
     ROS_INFO("Stuff" );
     // Draw some random stuff every three seconds or so

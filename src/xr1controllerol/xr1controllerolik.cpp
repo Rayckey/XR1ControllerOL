@@ -171,11 +171,24 @@ bool XR1ControllerOL::serviceHandGrip(xr1controllerol::HandGripQueryRequest & re
         res.inProgress = false;
         int num_of_fingers_not_closed = 0;
 
-        for (int i =  req.ControlGroup ; i < req.ControlGroup+5 ; i++){
-            if (XR1_ptr->getJointPosition(i , true)<0.7 && XR1_ptr->getJointCurrent(i,true)>0.7){
-                num_of_fingers_not_closed++;
+        if (req.ControlGroup == XR1::LeftHand){
+            for (int i =  req.ControlGroup ; i < req.ControlGroup+5 ; i++){
+                if (XR1_ptr->getJointPosition(i , true)<0.7 && XR1_ptr->getJointCurrent(i,true)>0.7){
+                    num_of_fingers_not_closed++;
+                }
             }
         }
+
+        else {
+            for (int i =  XR1::RightHand ; i < XR1::RightHand+5 ; i++){
+                if (XR1_ptr->getJointPosition(i , true)<0.7 && XR1_ptr->getJointCurrent(i,true)>0.7){
+                    num_of_fingers_not_closed++;
+                }
+            }
+        }
+
+
+
 
         if (num_of_fingers_not_closed >= 3)
             res.isGripped = true;
