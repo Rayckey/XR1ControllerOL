@@ -62,6 +62,10 @@ public:
     int distinquishAnimationType(int animation_id);
 
 
+    //Lengthen the single transition period
+    void setSingleTransitionPeriod(int num_of_second);
+
+
     // clear all the states , return to initial state, which will force robot to get into idle
     void clearAll();
 
@@ -121,6 +125,8 @@ private:
     int animation_library_period;
 
     int transition_period;
+
+    int default_transition_period;
 
     double period_s;
 
@@ -233,6 +239,9 @@ private:
     double omni_lnr_filter_val;
     double omni_ang_filter_val;
     // -------------------------------------------------------
+
+
+
 
 };
 

@@ -379,7 +379,7 @@ private:
     std::map<uint8_t, Actuator::ActuatorMode> mode_map;
     std::map<int, int> control_modes;
     bool collision_detection_switch;
-    bool previous_omni_state;
+    int previous_omni_state;
     // -----------------------------------------------------------------
 
 

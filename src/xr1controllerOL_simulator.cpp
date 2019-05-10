@@ -330,6 +330,8 @@ void subscribeStartAnimation(const std_msgs::Bool &msg) {
 
         }
 
+        XRA_ptr->setSingleTransitionPeriod(3);
+
         clearStates();
     }
 

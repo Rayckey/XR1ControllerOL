@@ -13,10 +13,22 @@ void XR1ControllerOL::Omni2Actuator() {
 
         for (uint8_t i = XR1::OmniWheels ; i < XR1::MainBody ; i++) {
             m_pController->setVelocity(i , temp_vec3d(i - XR1::OmniWheels) );
-//            ROS_INFO("LF: [%f] , RF: [%f] , BK: [%f] " , temp_vec3d(0) ,temp_vec3d(1) ,temp_vec3d(2)) ;
+            ROS_INFO("LF: [%f] , RF: [%f] , BK: [%f] " , temp_vec3d(0) ,temp_vec3d(1) ,temp_vec3d(2)) ;
             // simulation call -------------------------------------------------------------
 //            XR1_ptr->updatingCallback(i , XR1::ActualVelocity,temp_vec3d(i-XR1::OmniWheels));
             // -----------------------------------------------------------------------------
+        }
+
+        if (fabs(temp_vec3d(0)) + fabs(temp_vec3d(1)) + fabs(temp_vec3d(2)) < 10){
+            previous_omni_state++;
+        }
+
+        else {
+            previous_omni_state = 0;
+        }
+
+        if (previous_omni_state > 200){
+            setControlMode(XR1::OmniWheels , XR1::DirectMode);
         }
 
     }

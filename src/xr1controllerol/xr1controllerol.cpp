@@ -6,8 +6,8 @@
 XR1ControllerOL::XR1ControllerOL() :
     hand_command_switch(true)
     ,power_reading_counter(30000)
-    ,previous_omni_state(false)
-    ,collision_detection_switch(false)
+    ,previous_omni_state(0)
+    ,collision_detection_switch(true)
     ,RecognizeFinished(false) {
 
     std::vector<double> sit_pos;
@@ -247,7 +247,9 @@ XR1ControllerOL::XR1ControllerOL() :
     temp_vec3d = VectorXd::Zero(3);
     temp_vec4d = VectorXd::Zero(4);
 
-    XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
+    XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
+
+    XRA_ptr->setSingleTransitionPeriod(3);
 
 
 

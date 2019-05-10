@@ -88,6 +88,10 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
                 // high frequency current mode
             else if (temp_mode <= XR1::TeachMode) {
 
+                collision_detection_switch = false;
+
+                ROS_INFO("Collision detection is unable to activate");
+
                 for (uint8_t joint_id : control_group_map[control_group]) {
 
                     if ((int) m_pController->getActuatorAttribute(joint_id, Actuator::INIT_STATE) == Actuator::Initialized)

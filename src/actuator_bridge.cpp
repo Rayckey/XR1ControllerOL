@@ -55,6 +55,7 @@ void subscribeRecordCommand(const std_msgs::Bool& msg) {
 
 
   recorded_positions.push_back(temp_data);
+
 }
 
 
@@ -94,6 +95,7 @@ void subscribeWriteCommand(const std_msgs::Bool& msg) {
 
 
 int main(int argc, char **argv) {
+
   ros::init(argc, argv, "actuator_bridge");
 
   ros::NodeHandle nh;

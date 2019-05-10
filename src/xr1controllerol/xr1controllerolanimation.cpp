@@ -41,6 +41,8 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 
         }
 
+        XRA_ptr->setSingleTransitionPeriod(3);
+
         clearStates();
     }
 
@@ -185,7 +187,9 @@ void XR1ControllerOL::collisionDetectionCallback(){
 
                 CollisionEventPublisher.publish(msg);
 
-                collision_detection_switch = false;
+//                collision_detection_switch = false;
+
+                XR1_ptr->liftLockdown();
 
                 return;
 
@@ -208,12 +212,17 @@ void XR1ControllerOL::collisionDetectionCallback(){
 
                 CollisionEventPublisher.publish(msg);
 
-                collision_detection_switch = false;
+//                collision_detection_switch = false;
+
+                XR1_ptr->liftLockdown();
+
                 return;
 
             }
         }
     }
+
+
 
     // if it is not, turn collision detection off
     else {
