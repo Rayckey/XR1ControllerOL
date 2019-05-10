@@ -27,8 +27,9 @@ void XR1ControllerOL::Omni2Actuator() {
             previous_omni_state = 0;
         }
 
-        if (previous_omni_state > 200){
+        if (previous_omni_state > 1000){
             setControlMode(XR1::OmniWheels , XR1::DirectMode);
+            previous_omni_state = 0;
         }
 
     }

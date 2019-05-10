@@ -207,6 +207,7 @@ void XR1ControllerOL::collisionDetectionCallback(){
                 XR1_ptr->employLockdown();
                 XRA_ptr->clearAll();
 
+
                 std_msgs::Bool msg;
                 msg.data = true;
 
