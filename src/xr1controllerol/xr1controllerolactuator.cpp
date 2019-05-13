@@ -108,6 +108,7 @@ void XR1ControllerOL::readingCallback() {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
 //            m_pController->getCVPValue(i);
             m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
+            m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
         }
     }
 
@@ -139,7 +140,9 @@ void XR1ControllerOL::readingCallback() {
 
         if ((int) m_pController->getActuatorAttribute((uint8_t) XR1::Knee_X, Actuator::INIT_STATE) ==
             Actuator::Initialized) {
-            m_pController->getCVPValue((uint8_t)XR1::Knee_X);
+//            m_pController->getCVPValue((uint8_t)XR1::Knee_X);
+
+            m_pController->regainAttrbute( (uint8_t)XR1::Knee_X, Actuator::ACTUAL_POSITION);
         }
     }
 
