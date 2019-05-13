@@ -8,7 +8,8 @@ XR1ControllerOL::XR1ControllerOL() :
     ,power_reading_counter(30000)
     ,previous_omni_state(0)
     ,collision_detection_switch(true)
-    ,RecognizeFinished(false) {
+    ,RecognizeFinished(false),
+    unlease_counter(0){
 
     std::vector<double> sit_pos;
 
@@ -231,6 +232,8 @@ XR1ControllerOL::XR1ControllerOL() :
     m_joint_state_publisher = nh.advertise<sensor_msgs::JointState>("/ginger/joint_states", 10);
 
     m_joint_state_subscriber = nh.subscribe("/joint_states", 10 , &XR1ControllerOL::subscribeJointStates , this);
+
+    m_special_subscriber = nh.subscribe("/XR1/special_command" , 10 , &XR1ControllerOL::subscribeSpecial , this);
 
 
     // ----------------------------------------------------
@@ -482,15 +485,26 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
     // check all the control modes
     judgeControlGroupModes();
 
-    // calculate all the tf info and dynamics stuff
-    broadcastTransform();
-
-    // send out all the joint information
-    unleaseJointInfo();
 
 
-    // unlease joint states information
-    publishJointStates();
+
+    unlease_counter++;
+
+    if (unlease_counter > 10 ){
+        // calculate all the tf info and dynamics stuff
+        broadcastTransform();
+
+        // send out all the joint information
+        unleaseJointInfo();
+
+
+        // unlease joint states information
+        publishJointStates();
+
+        unlease_counter = 0;
+    }
+
+
 
 
     // collision detection check

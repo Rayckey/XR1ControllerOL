@@ -26,7 +26,7 @@
 
 // Hopps Port messages
 #include <sensor_msgs/JointState.h>
-
+#include <std_msgs/Int8.h>
 
 
 // The IK planner message service
@@ -337,6 +337,7 @@ protected:
 
     void publishJointStates();
 
+    void subscribeSpecial(const std_msgs::Int8 & msg);
     // ------------------------------------------------------------------
 
 
@@ -509,7 +510,12 @@ private:
 
     // -------------------------------------------
 
+    // tempeatury varibles, need to eliminate in the fulture ----------------
 
+    ros::Subscriber m_special_subscriber;
+
+
+    // ----------------------------------------------------------------------
 
 
 
@@ -526,6 +532,7 @@ private:
     xr1controllerros::BodyMsgs temp_bodymsgs;
     xr1controllerros::HeadMsgs temp_headmsgs;
     bool hand_command_switch;
+    int unlease_counter;
     int power_reading_counter;
     Affine3d itsafine;
     tf::StampedTransform transform;

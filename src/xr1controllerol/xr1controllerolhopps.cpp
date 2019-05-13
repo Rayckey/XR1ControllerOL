@@ -161,3 +161,85 @@ void XR1ControllerOL::publishJointStates(){
 
     m_joint_state_publisher.publish(temp_jointstate);
 }
+
+
+
+
+void XR1ControllerOL::subscribeSpecial(const std_msgs::Int8 & msg){
+
+    XR1_ptr->setSubControlMode(XR1::MainBody , XR1::DirectMode);
+    XR1_ptr->setSubControlMode(XR1::HeadBody , XR1::DirectMode);
+    XR1_ptr->setSubControlMode(XR1::LeftArm , XR1::DirectMode);
+    XR1_ptr->setSubControlMode(XR1::RightArm , XR1::DirectMode);
+    XR1_ptr->setSubControlMode(XR1::LeftHand , XR1::DirectMode);
+    XR1_ptr->setSubControlMode(XR1::RightHand , XR1::DirectMode);
+
+    XRA_ptr->clearAll();
+
+    XR1_ptr->clearStates();
+
+    // yo we standing
+    if (msg.data == 1){
+
+        for (uint8_t i = XR1::Knee_X ; i < XR1::Actuator_Total ; i++){
+            XR1_ptr->setState(i, 0, 3);
+        }
+
+    }
+
+
+    else if (msg.data == 2){
+
+
+        XR1_ptr->setState(XR1::Knee_X, -0.609089391237561, 3);
+        XR1_ptr->setState(XR1::Back_Z, 0, 3);
+        XR1_ptr->setState(XR1::Back_X , 0.909627362219072 , 3);
+        XR1_ptr->setState(XR1::Back_Y , 0 , 3);
+
+
+        XR1_ptr->setState(XR1::Neck_Z, 0, 3);
+        XR1_ptr->setState(XR1::Neck_X , 0.5 , 3);
+        XR1_ptr->setState(XR1::Head , 0 , 3);
+
+
+        XR1_ptr->setState(XR1::Left_Elbow_X,0,3);
+        XR1_ptr->setState(XR1::Left_Elbow_Z,0,3);
+        XR1_ptr->setState(XR1::Left_Shoulder_Y,0,3);
+        XR1_ptr->setState(XR1::Left_Shoulder_X,0.3,3);
+        XR1_ptr->setState(XR1::Left_Wrist_X,0,3);
+        XR1_ptr->setState(XR1::Left_Wrist_Y,0,3);
+        XR1_ptr->setState(XR1::Left_Wrist_Z,0,3);
+
+
+        XR1_ptr->setState(XR1::Right_Elbow_X,0,3);
+        XR1_ptr->setState(XR1::Right_Elbow_Z,0,3);
+        XR1_ptr->setState(XR1::Right_Shoulder_Y,0,3);
+        XR1_ptr->setState(XR1::Right_Shoulder_X,0.3,3);
+        XR1_ptr->setState(XR1::Right_Wrist_X,0,3);
+        XR1_ptr->setState(XR1::Right_Wrist_Y,0,3);
+        XR1_ptr->setState(XR1::Right_Wrist_Z,0,3);
+
+        XR1_ptr->setState(XR1::Left_Index ,0 , 3);
+        XR1_ptr->setState(XR1::Left_Thumb ,0 , 3);
+        XR1_ptr->setState(XR1::Left_Middle,0 , 3);
+        XR1_ptr->setState(XR1::Left_Ring  ,0 , 3);
+        XR1_ptr->setState(XR1::Left_Pinky ,0 , 3);
+
+
+        XR1_ptr->setState(XR1::Left_Index ,0 , 3);
+        XR1_ptr->setState(XR1::Left_Thumb ,0 , 3);
+        XR1_ptr->setState(XR1::Left_Middle,0 , 3);
+        XR1_ptr->setState(XR1::Left_Ring  ,0 , 3);
+        XR1_ptr->setState(XR1::Left_Pinky ,0 , 3);
+
+
+    }
+
+
+    else {
+
+    }
+
+
+
+}
