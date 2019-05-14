@@ -5,6 +5,7 @@
 #include <functional>
 #include <vector>
 #include "actuatordefine.h"
+#include <iostream>
 //#include "innfosproxy.h"
 #include "CSignal.hpp"
 #include "gingeraddition.h"
@@ -666,6 +667,8 @@ public:
      */
     void receiveQuaternion(uint64_t nIMUId,double w,double x,double y,double z);
     void receiveAcceleration(uint64_t nIMUId,double x,double y,double z,int precision);
+    void requestLossRatio();
+    void receiveLossRatio(uint64_t nIMUId, uint32_t receive, uint32_t lost);
 #endif
     void requestBatteryStatus(std::string ipStr);
     void receiveBatteryStatus(uint64_t longId,BatteryStatus & bs);
@@ -696,12 +699,17 @@ private:
     void motorAttrChanged(uint64_t longId,uint8_t attrId,double value);
     void startNewChart();
     void chartValueChange(uint8_t channelId,double value);
+    void resultIpChanged(uint64_t id,bool bSuccess);
+    void resultMacChanged(uint64_t id,bool bSuccess);
+    void startLog();
+    void stopLog();
 private:
 
     class GC{
     public:
         ~GC()
         {
+
             if(m_pInstance!=nullptr)
             {
                 delete m_pInstance;
@@ -710,6 +718,7 @@ private:
         }
         static GC gc;
     };
+
 private:
     int m_nLaunchMotorsCnt;
 public:
@@ -750,19 +759,22 @@ public:
 
     CSignal<uint64_t,double> * m_sGloveCharge;
     CSignal<uint64_t,uint16_t> * m_sGloveVersion;
-
+    CSignal<uint64_t,bool> * m_sIpSet;
+    CSignal<uint64_t,bool>  * m_sMacSet;
 #ifdef IMU_ENABLE
     CSignal<uint8_t,double,double,double,double> *m_sQuaternion;
     CSignal<uint64_t,double,double,double,double> *m_sQuaternionL;
     CSignal<uint8_t,double,double,double,int> *m_sAcceleration;
     CSignal<uint64_t,double,double,double,int> *m_sAccelerationL;
     CSignal<uint64_t,Ultrasonic> *m_sUltrasonicStatus;
+    CSignal<uint8_t,uint32_t,uint32_t> * m_sLossRatio;
 #endif
 private:
     static ActuatorController * m_pInstance;
     std::vector<int> *m_lConnectionIds;
     BatteryStatus * m_pBatteryStatus;
 //    Ultrasonic * m_pUltrasonicStatus;
+    int m_nLogPid;
 };
 
 #endif // MOTORSCONTROLLER_H

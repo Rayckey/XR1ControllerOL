@@ -74,6 +74,7 @@ public:
     void requestActualValue();//request value initiatively
 private:
     void setValidValue(const int nProxyId, double value);
+    void initTimeOut();
 //    void saveDataToFile(std::string fileName);
 //    void readDataFromFile(std::string fileName);
 //    void readParams(QXmlStreamReader *reader);
@@ -85,6 +86,7 @@ private:
     int m_nHeartFailCnt;//
     ITimer * m_pHeartTimer;
     ITimer * m_pValueTimer;
+    ITimer * m_pInitTimer;
     std::vector<uint16_t> m_errorHistory;
 
     uint32_t m_nAutoRequestInterval;
@@ -107,6 +109,7 @@ public:
     void setMotorDataAttrByProxy(const uint64_t longId,int proxyId,double value);//data from proxy
     void setMotorDataAttrInBatch(const std::list<uint64_t> idList,const Actuator::ActuatorAttribute attrId,double value,bool bSend=true);
     void AddMotorsData(std::multimap<std::pair<uint8_t, uint32_t>, uint32_t> dataMap);
+    void clearMotorsData();
     std::vector<uint64_t> getLongIdArray()const;
     std::vector<uint64_t> getLongIdGroup(uint64_t longId)const;
     std::vector<uint16_t> motorErrorHistory(const uint64_t longId)const;

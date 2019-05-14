@@ -17,6 +17,7 @@ public:
     void stop();
     void start(uint32_t interval=0);
     void destroy();
+    bool isRunning()const{return m_bIsRunning;}
     ~ITimer();
 protected:
     void waitHandler(const asio::error_code& ec);
@@ -28,6 +29,7 @@ private:
     asio::io_context * m_pIOContext;
     bool m_bSingleShoot;
     std::shared_ptr<ITimer> m_shareTimer;
+    bool m_bIsRunning;
 };
 
 //}

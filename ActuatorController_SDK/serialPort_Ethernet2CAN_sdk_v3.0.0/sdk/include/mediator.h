@@ -55,6 +55,8 @@ public:
     void receiveQuaternion(uint64_t imuId, double w,double x,double y,double z);
     void receiveAcceleration(uint64_t id, double x,double y,double z,int precision);
     void requestQuaternion(uint8_t nCmdId,uint64_t imuId=0);
+    void requestLossRatio();
+    void receiveLossRatio(uint64_t imuId,uint32_t receive,uint32_t lost);
 #endif
 
     std::string versionString()const;
@@ -83,7 +85,9 @@ public:
     void requestUltrasonic(uint64_t longId);
     void receiveUltrasonicStatus(uint64_t longId, Ultrasonic& status);
     void setPanelIp(uint8_t last);
+    void resultIpChanged(uint64_t longId,bool bSuccess);
     void setPanelMac(uint8_t last);
+    void resultMacChanged(uint64_t longId,bool bSuccess);
     void requestGloveInfo(uint64_t longId);
     void receiveGloveInfo(uint64_t longId,double voltage,uint16_t version);
 protected:
@@ -118,9 +122,12 @@ public:
     CSignal<uint64_t,BatteryStatus&> m_sBatteryStatus;
     CSignal<uint64_t,Ultrasonic> m_sUltrasonicStatus;
     CSignal<uint64_t,double,uint16_t> m_sGloveInfo;
+    CSignal<uint64_t,bool> m_sIpSet;
+    CSignal<uint64_t,bool> m_sMacSet;
 #ifdef IMU_ENABLE
     CSignal<uint64_t,double,double,double,double> m_sQuaternion;
     CSignal<uint64_t,double,double,double,int> m_sAcceleration;
+    CSignal<uint64_t,uint32_t,uint32_t> m_sLossRatio;
 #endif
 private:
     VersionNumber * m_pVersionMgr;
