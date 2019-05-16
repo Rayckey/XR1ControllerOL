@@ -10,7 +10,7 @@ void XR1ControllerOL::launchAllMotors() {
 
     m_pController->launchAllActuators();
     if (allActuatorHasLaunched()) {
-        XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
+//        XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
     }
 
 }

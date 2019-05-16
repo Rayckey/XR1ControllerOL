@@ -454,12 +454,14 @@ void XR1ControllerOL::subscribeEStop(const std_msgs::Bool &msg) {
     // set true to lock the robot
     if (msg.data) {
         XR1_ptr->employLockdown();
+        XRA_ptr->clearAll();
         for (uint8_t i = XR1::OmniWheels; i < XR1::Actuator_Total; i++)
             m_pController->activateActuatorMode(i, Actuator::Mode_Pos);
     }
     // set false to unlock the robot
     else {
         XR1_ptr->liftLockdown();
+        XRA_ptr->clearAll();
         setControlMode(XR1::LeftArm, XR1::DirectMode);
         setControlMode(XR1::RightArm, XR1::DirectMode);
         setControlMode(XR1::MainBody, XR1::DirectMode);
@@ -486,6 +488,8 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
     judgeControlGroupModes();
 
 
+    // This function triggers almost all the computation in the library
+    XR1_ptr->triggerCalculation(true);
 
 
     unlease_counter++;
@@ -503,9 +507,6 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
         unlease_counter = 0;
     }
-
-
-
 
     // collision detection check
     collisionDetectionCallback();
@@ -602,8 +603,6 @@ void XR1ControllerOL::unleaseJointInfo(){
 
 void XR1ControllerOL::broadcastTransform() {
 
-    // This function triggers almost all the computation in the library
-    XR1_ptr->triggerCalculation(true);
 
     // Publish the left one
     XR1_ptr->getEndEffectorTransformation(XR1::LeftArm, itsafine);

@@ -45,17 +45,6 @@ void XR1ControllerOL::applyJointsTargets(){
 
             temp_ids = XR1_ptr->getControlGroupIDs(control_group);
 
-            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
-
-            }
-
-            else {
-//                for (uint8_t id : temp_ids)
-//                    temp_value = XR1_ptr->getNextState(id);
-
-            }
-
-
             setControlGroupTarget(control_group);
         }
     }
