@@ -12,7 +12,7 @@ class XR1Controller
 
 public:
 
-    XR1Controller(std::string path , std::vector<double> sittingPosition);
+    XR1Controller(std::string path);
     bool isXR1Okay(); //Error Checks
     uint8_t getErrorCode();
 
@@ -299,7 +299,7 @@ public:
     bool isReady4Teachmotion(int joint_id);
     void insertNextState(std::vector<double> pos , std::vector<double>  vel, std::vector<double> acc);
     void insertNextState(int joint_id , double pos , double vel = 0 , double acc = 0);
-    void setNextState(int joint_id , double pos , double vel = 0, double acc = 0);
+    void setNextState(int joint_id , double pos , double vel = 0, double acc = 0 , int mode_fix = XR1::AnimationMode);
     bool inHighFrequencyControl(int joint_id);
     void setHighFrequencyControl(int joint_id , bool option);
 
@@ -368,12 +368,6 @@ public:
     void liftLockdown();
 
     void employLockdown();
-
-    void setSitingPosition();
-
-    void setZeroPosition();
-
-    void setReadyPosition();
 
     void clearStates();
 

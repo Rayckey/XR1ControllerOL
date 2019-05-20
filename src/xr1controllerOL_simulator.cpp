@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include "xr1controller.h"
 #include "xr1controlleralp.h"
+#include "xr1controllerblc.h"
 #include "xr1controllerolmsgulit.h"
 #include "xr1define.h"
 #include "std_msgs/Bool.h"
@@ -32,6 +33,7 @@
 // Global Varibles
 XR1Controller *XR1_ptr;
 XR1ControllerALP *XRA_ptr;
+XR1ControllerBLC *XRB_ptr;
 std::vector<uint8_t> temp_ids;
 
 tf::TransformBroadcaster *EFF_Broadcaster;
@@ -46,6 +48,7 @@ VectorXd temp_vec5d;
 VectorXd temp_vec7d;
 VectorXd temp_vec4d;
 VectorXd temp_vec3d;
+Vector3d temp_vec3d_fix;
 xr1controllerros::HandMsgs temp_handmsgs;
 xr1controllerros::ArmMsgs temp_armmsgs;
 xr1controllerros::BodyMsgs temp_bodymsgs;
@@ -218,17 +221,6 @@ void stateTransition() {
 
             temp_ids = XR1_ptr->getControlGroupIDs(control_group);
 
-            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
-
-            }
-
-            else {
-//                for (uint8_t id : temp_ids)
-//                    temp_value = XR1_ptr->getNextState(id);
-
-            }
-
-
             setControlGroupTarget(control_group);
         }
     }
@@ -390,6 +382,26 @@ void broadcastTransform(const ros::TimerEvent &event) {
 
 
     stateTransition();
+
+
+
+
+    if (XR1_ptr->getSubControlMode(XR1::OmniWheels) == XR1::RoamMode){
+
+        XR1_ptr->getTargetVelocity(XR1::OmniWheels , temp_vec3d);
+
+        for (uint8_t i = XR1::OmniWheels ; i < XR1::MainBody ; i++) {
+            ROS_INFO("LF: [%f] , RF: [%f] , BK: [%f] " , temp_vec3d(0) ,temp_vec3d(1) ,temp_vec3d(2)) ;
+            // simulation call -------------------------------------------------------------
+            XR1_ptr->updatingCallback(i , XR1::ActualVelocity,temp_vec3d(i-XR1::OmniWheels));
+            // -----------------------------------------------------------------------------
+        }
+
+    }
+
+
+
+
 }
 
 
@@ -397,6 +409,25 @@ void broadcastTransform(const ros::TimerEvent &event) {
 // ----------------------------------------------------------------------------------
 
 
+
+// fukcing wheels lmao--------------------------------------------------------------------------
+void subscribeOmniCommands(const geometry_msgs::Twist & msg){
+
+    if (XR1_ptr->getSubControlMode(XR1::OmniWheels) == XR1::RoamMode){
+        temp_vec3d_fix << msg.angular.x , msg.linear.y , msg.linear.z ;
+
+
+        ROS_INFO(" New Omni Command Received [%f] [%f] [%f]" , temp_vec3d_fix(0) ,temp_vec3d_fix(1) ,temp_vec3d_fix(2)) ;
+
+
+        XRA_ptr->setTargetOmniCmd(temp_vec3d_fix);
+    }
+
+}
+
+
+
+// ----------------------------------------------------------------------------------
 
 // Look man you want the fk you gotta to feed me the angles
 void subscribeLeftArmPosition(const xr1controllerros::ArmMsgs &msg) {
@@ -457,14 +488,11 @@ int main(int argc, char **argv) {
     std::string path = ros::package::getPath("xr1controllerol");
 
 
-    std::vector<double> sit_pos;
+    XR1_ptr = new XR1Controller(path + "/strawberry.xr1para");
 
-    while (sit_pos.size() < XR1::Actuator_Total)
-        sit_pos.push_back(0);
+    XRB_ptr = new XR1ControllerBLC(path + "/BLC" ,path + "/ALP" );
 
-    XR1_ptr = new XR1Controller(path + "/strawberry.xr1para", sit_pos);
-
-    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1);
+    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1 , XRB_ptr);
 
     EFF_Broadcaster = new tf::TransformBroadcaster();
 
@@ -492,6 +520,10 @@ int main(int argc, char **argv) {
     ros::Subscriber setSubControlModeSubscriber = nh.subscribe("/XR1/ChainModeChange" , 3 , subscribeSubControlMode);
 
     ros::Subscriber SetIdleSubscriber = nh.subscribe("setIdle" , 1 , subscribeSetIdle);
+
+    ros::Subscriber OmniSpeedSubscriber = nh.subscribe("/XR1/cmd_vel" , 10 , subscribeOmniCommands);
+
+
 //    ROS_INFO("Stuff" );
     // cough out the target position as the result of ALP
     ros::Publisher LAPP = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/TargetPosition", 1);

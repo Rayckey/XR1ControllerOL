@@ -235,7 +235,7 @@ int main(int argc, char **argv) {
     while (sit_pos.size() < XR1::Actuator_Total)
         sit_pos.push_back(0);
 
-    XR1_ptr = new XR1Controller(path + "/strawberry.xr1para", sit_pos);
+    XR1_ptr = new XR1Controller(path + "/strawberry.xr1para");
 
     XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1);
 

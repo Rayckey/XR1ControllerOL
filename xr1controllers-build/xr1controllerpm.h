@@ -265,19 +265,7 @@ public:
 
 
 
-    //Tilt Control----------------------------------------------------------------
 
-    void TiltCompensation();
-
-//    Vector3d TiltCompensation(Quaterniond BaseRotation , Vector3d BaseAcceleration);
-
-    void tiltCallback(double x , double y , double z);
-
-    void tiltCallback(double w , double x , double y , double z);
-
-    void tiltInit();
-
-    Vector3d getBaseAcc();
 
     //Dynamics Controls-----------------------------------------------------------------
     void updateBaseTransformation();
@@ -308,7 +296,7 @@ public:
     void setState(int joint_id , double goal_position , int period_in_ms , int control_rate = 200);
     void insertNextState(std::vector<double> pos , std::vector<double>  vel, std::vector<double> acc);
     void insertNextState(int joint_id , double pos , double vel = 0, double acc =0);
-    void setNextState(int joint_id , double pos , double vel = 0, double acc =0);
+    void setNextState(int joint_id , double pos , double vel = 0, double acc =0 );
     bool isStateActive();
     bool isStateActive(int joint_id);
     bool isStateReady(int joint_id);
@@ -444,31 +432,6 @@ private:
     double HandCollisionThreshold;
 
 
-//    // tilt control members
-//    std::vector<double> driveCmd;
-//    std::vector<Vector3d> rawAccVec;
-//    Quaterniond rawQua;
-//    Quaterniond initQua;
-//    Vector3d initAcc;
-//    Vector3d tmpAcc;
-//    Vector3d rawAcc;
-//    Vector3d currAcc;
-//    Matrix3d rawTilt;
-//    Matrix3d initTilt;
-//    Matrix3d currTilt;
-//    Matrix3d tempTilt;
-//    Vector3d actuAcc;
-//    Vector3d actuEul;
-//    Vector3d hatAcc;
-//    Vector3d innAcc;
-//    Vector3d noiAcc;
-//    Vector3d no2Acc;
-//    Vector3d kvcAcc;
-//    Vector3d ganAcc;
-//    Vector3d cvcAcc;
-//    void accKalman(double x , double y , double z);
-//    void TiltCalcualtion(Matrix3d & rotation_of_acc);
-//    void assignAcc2Joint();
 
 
 

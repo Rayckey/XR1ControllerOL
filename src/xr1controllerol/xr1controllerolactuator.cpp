@@ -144,6 +144,10 @@ void XR1ControllerOL::readingCallback() {
 
             m_pController->regainAttrbute( (uint8_t)XR1::Knee_X, Actuator::ACTUAL_POSITION);
         }
+
+
+
+
     }
 
 

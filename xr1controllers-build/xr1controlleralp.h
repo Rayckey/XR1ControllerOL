@@ -9,6 +9,7 @@
 #include "xr1controller.h"
 #include "time.h"
 #include "xr1controllerutil.h"
+#include "xr1controllerblc.h"
 #include "xr1alpdefine.h"
 
 
@@ -18,7 +19,7 @@ class XR1ControllerALP
 {
 
 public:
-    XR1ControllerALP(string library_root_path , XR1Controller *pointer_to_xr1controller, int num_of_animation, int num_of_idle, int num_of_teach);
+    XR1ControllerALP(string library_root_path , XR1Controller *pointer_to_xr1controller, int num_of_animation, int num_of_idle, int num_of_teach, XR1ControllerBLC *pointer_to_blc = nullptr);
 
     // switch between animation mode and drive mode
     void switchAnimationMode(int option , double optional_speed_filter = 0.1 , double optional_angular_speed_filter = 0.1);
@@ -73,12 +74,16 @@ private:
 
     // important pointer
     XR1Controller * XR1_ptr;
+    XR1ControllerBLC * XRB_ptr;
 
     // the que that decides what plays next
     std::deque<int> animation_que;
 
     // The option for whether idle animations are played
     bool idle_switch;
+
+
+    std::map<int ,int > control_modes_map;
 
     // internal functions
     void readLibraries(string library_path);
@@ -87,7 +92,7 @@ private:
 
     bool distinquishAnimationProcedure();
 
-
+    void assignModeTransition();
 
     void judgeAnimationRecovery(int control_group);
 
@@ -112,7 +117,7 @@ private:
 
     void propagateStates(uint8_t id, double next_serving);
 
-    void feedPMinfos();
+    void feedPMinfos(int mode_fix = XR1::AnimationMode);
 
     void requestPMTarget();
 

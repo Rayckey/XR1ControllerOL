@@ -21,9 +21,12 @@ XR1ControllerOL::XR1ControllerOL() :
     // Bunch of calculation objects ---------------------------------------
     std::string path = ros::package::getPath("xr1controllerol");
 
-    XR1_ptr = new XR1Controller(path + "/fungus.xr1para", sit_pos);
 
-    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1);
+    XRB_ptr = new XR1ControllerBLC(path + "/BLC" ,path + "/ALP" );
+
+    XR1_ptr = new XR1Controller(path + "/fungus.xr1para");
+
+    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1 , XRB_ptr);
 
     IMU_ptr = new XR1IMUmethods();
 
@@ -258,10 +261,10 @@ XR1ControllerOL::XR1ControllerOL() :
 
     // Legacy ---------------------------------------------------------------------
 
-//    tiltInitSubscriber = nh.subscribe("XR1/tiltInit", 1, &XR1ControllerOL::subscribetiltInit, this);
+    tiltInitSubscriber = nh.subscribe("XR1/tiltInit", 1, &XR1ControllerOL::subscribetiltInit, this);
 //    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
     // m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
-    //    m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
+        m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
     // ----------------------------------------------------------------------------
 
 
@@ -478,6 +481,12 @@ void XR1ControllerOL::subscribeEStop(const std_msgs::Bool &msg) {
 
 
 void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
+
+
+
+    // get the sweet sweet bottom IMU reading
+//    m_pController->requestSingleQuaternion(ActuatorController::toLongId("192.168.1.4" , 6));
+
 
     // Things to do On each loop
 

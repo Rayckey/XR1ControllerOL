@@ -5,6 +5,7 @@
 #include "actuatorcontroller.h"
 #include "xr1controller.h"
 #include "xr1controlleralp.h"
+#include "xr1controllerblc.h"
 #include "xr1define.h"
 #include "XR1IMUmethods.h"
 
@@ -341,18 +342,24 @@ protected:
     // ------------------------------------------------------------------
 
 
+    // tilting and stuff -----------------------------------------------
+    void requestQue();
+    void subscribetiltInit(const std_msgs::Bool &msg);
+    void QuaCallBack(uint64_t id, double w, double x, double y, double z);
+    // -----------------------------------------------------------------
+
     // LEGACY ----------------------------------------------------------------
-//    void subscribetiltInit(const std_msgs::Bool &msg);
+
 //    void subscribeMoCapInit(const std_msgs::Bool &msg);
 //    void accCallBack(uint8_t id , double x , double y , double z , int pres);
 //    void requestAcc(const ros::TimerEvent &);
-//    void requestQue(const ros::TimerEvent &);
+
 //    void stateTransition();
 
 
     //MoCap Information we get from the actuator controller
     //Can be deactivated to save some resources
-//    void QuaCallBack(uint64_t id, double w, double x, double y, double z);
+
     // -----------------------------------------------------------------------
 
 
@@ -367,6 +374,7 @@ private:
 
     XR1Controller *XR1_ptr;
     XR1ControllerALP *XRA_ptr;
+    XR1ControllerBLC *XRB_ptr;
     XR1IMUmethods *IMU_ptr;
     std::vector<uint8_t> temp_ids;
     bool RecognizeFinished;
@@ -454,7 +462,7 @@ private:
 
 
     // LEGACY-------------------------------------
-//    ros::Subscriber tiltInitSubscriber;
+    ros::Subscriber tiltInitSubscriber;
     // -------------------------------------------
 
 

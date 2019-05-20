@@ -82,6 +82,7 @@ catkin_package(
 		 src/${PROJECT_NAME}/xr1controllerolactuator.cpp
 		 src/${PROJECT_NAME}/xr1controllerolomni.cpp
 		 src/${PROJECT_NAME}/xr1controllerolhopps.cpp
+		 src/${PROJECT_NAME}/xr1controlleroltilt.cpp
  )
 
 
@@ -94,6 +95,7 @@ target_link_libraries(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1Controller.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1IMU.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1ControllerALP.so
+		${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1ControllerBLC.so
 )
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)

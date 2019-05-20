@@ -62,12 +62,23 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
             }
 
                 // high frequency position mode
-            else if (temp_mode <= XR1::DriveMode) {
+            else if (temp_mode < XR1::DriveMode) {
 
                 for (uint8_t joint_id : control_group_map[control_group]) {
 
                     if ((int) m_pController->getActuatorAttribute(joint_id, Actuator::INIT_STATE) == Actuator::Initialized)
                         m_pController->activateActuatorMode(joint_id, Actuator::Mode_Pos);
+
+                }
+
+            }
+
+            else if (temp_mode == XR1::DriveMode) {
+
+                for (uint8_t joint_id : control_group_map[control_group]) {
+
+                    if ((int) m_pController->getActuatorAttribute(joint_id, Actuator::INIT_STATE) == Actuator::Initialized)
+                        m_pController->activateActuatorMode(joint_id, Actuator::Mode_Profile_Pos);
 
                 }
 
