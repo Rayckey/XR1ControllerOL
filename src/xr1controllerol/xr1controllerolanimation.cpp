@@ -13,13 +13,13 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 
         for (uint8_t control_group : control_group_flags){
 
-            if (XR1_ptr->getSubControlMode(control_group) <= XR1::MoCapMode){
+//            if (XR1_ptr->getSubControlMode(control_group) != XR1::IKMode){
 
                 setControlMode(control_group , XR1::AnimationMode);
 
                 ROS_INFO("Animation for Control Group [%d] , is now ON",  (int)control_group );
 
-            }
+//            }
 
         }
 
@@ -31,13 +31,13 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 
         for (uint8_t control_group : control_group_flags){
 
-            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
+//            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
 
                 setControlMode(control_group , XR1::DirectMode);
 
                 ROS_INFO("Animation for Control Group [%d] , is now OFF",  (int)control_group );
 
-            }
+//            }
 
         }
 
@@ -178,6 +178,7 @@ void XR1ControllerOL::collisionDetectionCallback(){
                 for (uint8_t control_group : control_group_flags){
                     setControlMode(control_group , XR1::DirectMode);
                 }
+                setControlMode(XR1::OmniWheels , XR1::DirectMode);
 
                 XR1_ptr->employLockdown();
                 XRA_ptr->clearAll();
@@ -191,6 +192,8 @@ void XR1ControllerOL::collisionDetectionCallback(){
 
                 XR1_ptr->liftLockdown();
                 XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
+
+
 
                 return;
 
@@ -204,6 +207,7 @@ void XR1ControllerOL::collisionDetectionCallback(){
                 for (uint8_t control_group : control_group_flags){
                     setControlMode(control_group , XR1::DirectMode);
                 }
+                setControlMode(XR1::OmniWheels , XR1::DirectMode);
 
                 XR1_ptr->employLockdown();
                 XRA_ptr->clearAll();
@@ -218,6 +222,8 @@ void XR1ControllerOL::collisionDetectionCallback(){
 
                 XR1_ptr->liftLockdown();
                 XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
+
+
 
                 return;
 

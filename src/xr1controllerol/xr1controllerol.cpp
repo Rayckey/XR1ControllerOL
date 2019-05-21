@@ -9,7 +9,9 @@ XR1ControllerOL::XR1ControllerOL() :
     ,previous_omni_state(0)
     ,collision_detection_switch(true)
     ,RecognizeFinished(false),
-    unlease_counter(0){
+    unlease_counter(0),
+    low_frequency_threshold(5),
+    low_frequency_counter(0){
 
     std::vector<double> sit_pos;
 
@@ -261,10 +263,10 @@ XR1ControllerOL::XR1ControllerOL() :
 
     // Legacy ---------------------------------------------------------------------
 
-    tiltInitSubscriber = nh.subscribe("XR1/tiltInit", 1, &XR1ControllerOL::subscribetiltInit, this);
+    tiltInitSubscriber = nh.subscribe("/startTilting", 1, &XR1ControllerOL::subscribeTiltStart, this);
 //    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
-    // m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
-        m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
+     m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
+     m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
     // ----------------------------------------------------------------------------
 
 
@@ -484,11 +486,9 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
 
 
-    // get the sweet sweet bottom IMU reading
-//    m_pController->requestSingleQuaternion(ActuatorController::toLongId("192.168.1.4" , 6));
-
-
     // Things to do On each loop
+
+    requestQue();
 
     // request to read all the values
     readingCallback();
@@ -501,9 +501,11 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
     XR1_ptr->triggerCalculation(true);
 
 
-    unlease_counter++;
+    low_frequency_counter++;
 
-    if (unlease_counter > 10 ){
+    if (low_frequency_counter > low_frequency_threshold ) low_frequency_counter = 0;
+
+    if (low_frequency_counter == 0){
         // calculate all the tf info and dynamics stuff
         broadcastTransform();
 
@@ -513,8 +515,6 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
         // unlease joint states information
         publishJointStates();
-
-        unlease_counter = 0;
     }
 
     // collision detection check

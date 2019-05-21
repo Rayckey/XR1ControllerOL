@@ -79,6 +79,9 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
                 setControlMode(XR1::LeftHand, XR1::DirectMode);
                 setControlMode(XR1::RightHand, XR1::DirectMode);
 
+                ROS_INFO("Inited tilting");
+                XRB_ptr->tiltInit();
+
                 ROS_INFO("All Actuators Have Launched");
             }
 

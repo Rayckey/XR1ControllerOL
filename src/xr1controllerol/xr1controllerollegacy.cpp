@@ -51,10 +51,6 @@
 //}
 
 
-// void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
-//  // ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
-// }
-
 
 
 //void XR1ControllerOL::subscribetiltInit(const std_msgs::Bool &msg) {

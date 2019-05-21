@@ -344,14 +344,15 @@ protected:
 
     // tilting and stuff -----------------------------------------------
     void requestQue();
-    void subscribetiltInit(const std_msgs::Bool &msg);
+    void subscribeTiltStart(const std_msgs::Bool &msg);
     void QuaCallBack(uint64_t id, double w, double x, double y, double z);
+    void accCallBack(uint8_t id , double x , double y , double z , int pres);
     // -----------------------------------------------------------------
 
     // LEGACY ----------------------------------------------------------------
 
 //    void subscribeMoCapInit(const std_msgs::Bool &msg);
-//    void accCallBack(uint8_t id , double x , double y , double z , int pres);
+
 //    void requestAcc(const ros::TimerEvent &);
 
 //    void stateTransition();
@@ -378,6 +379,8 @@ private:
     XR1IMUmethods *IMU_ptr;
     std::vector<uint8_t> temp_ids;
     bool RecognizeFinished;
+    int low_frequency_threshold;
+    int low_frequency_counter;
     // -----------------------------------------------------
 
 

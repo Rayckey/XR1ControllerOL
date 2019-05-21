@@ -43,9 +43,15 @@ void XR1ControllerOL::applyJointsTargets(){
 
         if (XR1_ptr->inHighFrequencyControl(control_group) && XR1_ptr->isXR1Okay()){
 
-            temp_ids = XR1_ptr->getControlGroupIDs(control_group);
+//            temp_ids = XR1_ptr->getControlGroupIDs(control_group);
+            if (XR1_ptr->getSubControlMode(control_group) == XR1::DriveMode){
+                if ( low_frequency_counter == 0) setControlGroupTarget(control_group);
+            }
 
-            setControlGroupTarget(control_group);
+            else {
+                setControlGroupTarget(control_group);
+            }
+
         }
     }
 }
