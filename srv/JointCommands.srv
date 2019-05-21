@@ -1,9 +1,0 @@
-int8 ControlGroup
-double[]
----
-bool isIdle
-int64 AnimationType
-int64 AnimationID
-int64 AnimationProgress
-
-
