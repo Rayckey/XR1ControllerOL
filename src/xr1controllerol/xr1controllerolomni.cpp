@@ -19,6 +19,7 @@ void XR1ControllerOL::Omni2Actuator() {
             // -----------------------------------------------------------------------------
         }
 
+        // counting the seoonds you left me standing
         if (fabs(temp_vec3d(0)) + fabs(temp_vec3d(1)) + fabs(temp_vec3d(2)) < 10){
             previous_omni_state++;
         }
@@ -32,6 +33,15 @@ void XR1ControllerOL::Omni2Actuator() {
             previous_omni_state = 0;
         }
 
+
+        // counting the seconds before you pass me by
+        omni_cmd_expire_counter++;
+
+        if (omni_cmd_expire_counter > 1000){
+            temp_omni_cmd << 0,0,0;
+            XRA_ptr->setTargetOmniCmd(temp_omni_cmd);
+        }
+
     }
 
 }
@@ -42,6 +52,7 @@ void XR1ControllerOL::subscribeOmniCommands(const geometry_msgs::Twist & msg){
     if (XR1_ptr->getSubControlMode(XR1::OmniWheels) == XR1::RoamMode){
         temp_omni_cmd << msg.angular.x , msg.linear.y , msg.linear.z ;
 
+        omni_cmd_expire_counter = 0;
 
         ROS_INFO(" New Omni Command Received [%f] [%f] [%f]" , temp_omni_cmd(0) ,temp_omni_cmd(1) ,temp_omni_cmd(2)) ;
 

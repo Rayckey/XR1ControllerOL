@@ -7,6 +7,7 @@ XR1ControllerOL::XR1ControllerOL() :
     hand_command_switch(true)
     ,power_reading_counter(30000)
     ,previous_omni_state(0)
+    ,omni_cmd_expire_counter(0)
     ,collision_detection_switch(true)
     ,RecognizeFinished(false),
     unlease_counter(0),

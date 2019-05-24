@@ -395,6 +395,7 @@ private:
     std::map<int, int> control_modes;
     bool collision_detection_switch;
     int previous_omni_state;
+    int omni_cmd_expire_counter;
     // -----------------------------------------------------------------
 
 
@@ -527,7 +528,6 @@ private:
     // tempeatury varibles, need to eliminate in the fulture ----------------
 
     ros::Subscriber m_special_subscriber;
-
 
     // ----------------------------------------------------------------------
 
