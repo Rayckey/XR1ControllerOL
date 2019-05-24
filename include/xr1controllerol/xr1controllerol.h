@@ -62,6 +62,9 @@ using namespace Eigen;
 class XR1ControllerOL {
 
 public:
+
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     XR1ControllerOL();
 
     ~XR1ControllerOL();

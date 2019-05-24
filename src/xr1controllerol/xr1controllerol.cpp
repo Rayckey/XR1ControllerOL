@@ -13,18 +13,16 @@ XR1ControllerOL::XR1ControllerOL() :
     low_frequency_threshold(5),
     low_frequency_counter(0){
 
-    std::vector<double> sit_pos;
-
-    while (sit_pos.size() < XR1::Actuator_Total)
-        sit_pos.push_back(0);
-
-
 
     // Bunch of calculation objects ---------------------------------------
     std::string path = ros::package::getPath("xr1controllerol");
 
 
     XRB_ptr = new XR1ControllerBLC(path + "/BLC" ,path + "/ALP" );
+
+    XRB_ptr->setIdle(true);
+    XRB_ptr->setActive(true);
+    XRB_ptr->setPassive(true);
 
     XR1_ptr = new XR1Controller(path + "/fungus.xr1para");
 

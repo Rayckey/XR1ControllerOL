@@ -12,6 +12,8 @@ class XR1Controller
 
 public:
 
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     XR1Controller(std::string path);
     bool isXR1Okay(); //Error Checks
     uint8_t getErrorCode();

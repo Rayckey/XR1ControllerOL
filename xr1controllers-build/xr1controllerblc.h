@@ -15,10 +15,12 @@ class XR1ControllerBLC
 {
 
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     XR1ControllerBLC(std::string blc_library_path, std::string alp_library_path);
 
     // set unfiltered velocities
-    void setTargetOmniCmd(Vector3d & joy_cmd);
+    void setTargetOmniCmd(double angular_x , double linear_y , double linear_z);
 
 
     // get next state immediately
@@ -37,9 +39,17 @@ public:
 
     // ---------------------------------------------------------------------------
 
+    void setIdle(bool option);
+
+    void setActive(bool option);
+
+    void setPassive(bool option);
+
     double getTargetBalanceAngle(uint8_t joint_id);
 
 private:
+
+
 
     // internal functions
     void readLibraries(std::string blc_library_path, std::string alp_library_path);
@@ -72,6 +82,11 @@ private:
     double period_s;
 
     int period_ms;
+
+    // some option varibles
+    bool idle_switch;
+    bool active_switch;
+    bool passive_switch;
 
 
 

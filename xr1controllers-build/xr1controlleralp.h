@@ -19,6 +19,10 @@ class XR1ControllerALP
 {
 
 public:
+
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+
     XR1ControllerALP(string library_root_path , XR1Controller *pointer_to_xr1controller, int num_of_animation, int num_of_idle, int num_of_teach, XR1ControllerBLC *pointer_to_blc = nullptr);
 
     // switch between animation mode and drive mode
