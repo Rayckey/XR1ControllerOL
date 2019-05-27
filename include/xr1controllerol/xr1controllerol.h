@@ -393,6 +393,7 @@ private:
     std::map<uint8_t, uint8_t> attribute_map;
     std::map<uint8_t, Actuator::ActuatorMode> mode_map;
     std::map<int, int> control_modes;
+    std::vector<bool> actuator_ready_4_cvp;
     bool collision_detection_switch;
     int previous_omni_state;
     int omni_cmd_expire_counter;

@@ -198,7 +198,13 @@ XR1ControllerOL::XR1ControllerOL() :
     // --------------------------------------------------
 
 
+
+
     //Actuators Update Callback --------------------------------
+
+    while (actuator_ready_4_cvp.size() < XR1::Actuator_Total)
+        actuator_ready_4_cvp.push_back(false);
+
     m_pController->m_sActuatorAttrChanged->connect_member(this, &XR1ControllerOL::updatingCallback);
 
     m_pController->m_sOperationFinished->connect_member(this, &XR1ControllerOL::actuatorOperation);
