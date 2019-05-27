@@ -38,6 +38,7 @@ void XR1ControllerOL::Omni2Actuator() {
         omni_cmd_expire_counter++;
 
         if (omni_cmd_expire_counter > 1000){
+            omni_cmd_expire_counter = 0;
             temp_omni_cmd << 0,0,0;
             XRA_ptr->setTargetOmniCmd(temp_omni_cmd);
         }
