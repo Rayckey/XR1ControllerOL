@@ -78,9 +78,10 @@ public:
     void requestBatteryStatus(uint64_t longId);
     void readCircuitCurrent(uint64_t longId, uint8_t channelId);
     void receiveCircuitCurrent(uint64_t longId, uint8_t channelId,double value);
-    void readCircuitSwitch(uint64_t longId, uint8_t channelId);
+    uint8_t readCircuitSwitch(uint64_t longId, uint8_t channelId);
     void receiveCircuitSwitch(uint64_t longId, uint8_t channelId,uint8_t value);
-    void setCircuitSwitch(uint64_t longId , uint8_t channelId,uint8_t value);
+    bool setCircuitSwitch(uint64_t longId , uint8_t channelId,uint8_t value);
+    void setCircuitSwitchCallback(uint64_t longId, uint8_t channelId,uint8_t value);
     void receiveBatteryStatus(uint64_t longId, BatteryStatus& status);
     void requestUltrasonic(uint64_t longId);
     void receiveUltrasonicStatus(uint64_t longId, Ultrasonic& status);
@@ -138,6 +139,19 @@ private:
     bool m_bStop;
     std::mutex m_ioMutex;
     std::stringstream logStr;
+    template<class T>
+    struct waitStruct{
+        bool hasResponse;
+        T value;
+        waitStruct():
+        hasResponse(false)
+        {}
+        void reset(){hasResponse = false;}
+    };
+    using doubleWait = waitStruct<double>;
+    using byteWait = waitStruct<uint8_t>;
+    doubleWait circuitCurrent;
+    byteWait circuitState;
 };
 
 #endif // MEDIATOR_H

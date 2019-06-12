@@ -692,6 +692,8 @@ public:
     void setLastMacNumber(uint8_t last);
     void requestGloveInfo(uint64_t gloveId);
     void receiveGloveInfo(uint64_t gloveId,double charge,uint16_t version);
+    bool setBrakeStatus(bool bOpen);
+    bool brakeIsOpen();
 private:
     void finishRecognizeCallback();
     void onRequestCallback(uint64_t longId, uint8_t nProxyId,double value);
