@@ -105,8 +105,6 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
 
 void XR1ControllerOL::readingCallback() {
 
-    // ROS_INFO(" the current time is [%f]" , (float)this_event.current_real);
-
     for (uint8_t i = XR1::LeftArm; i < XR1::LeftHand; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
 
@@ -121,7 +119,7 @@ void XR1ControllerOL::readingCallback() {
     }
 
 
-    for (uint8_t i = XR1::Back_Z; i < XR1::HeadBody; ++i) {
+    for (uint8_t i = XR1::MainBody; i < XR1::LeftArm; ++i) {
         if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
 
             if (actuator_ready_4_cvp[i])
@@ -129,24 +127,25 @@ void XR1ControllerOL::readingCallback() {
             else {
                 m_pController->regainAttrbute(i,Actuator::ACTUAL_POSITION);
                 m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+//                m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
+
             }
         }
     }
 
 
-    for (uint8_t i = XR1::HeadBody; i < XR1::LeftArm; ++i) {
-        if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
+    for (uint8_t i = XR1::OmniWheels; i < XR1::MainBody; ++i)
+    {
+        if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
+        {
 
             if (actuator_ready_4_cvp[i])
                 m_pController->getCVPValue(i);
             else {
-                m_pController->regainAttrbute(i,Actuator::ACTUAL_POSITION);
+                m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
             }
         }
     }
-
-
-
 
     if (hand_command_switch) {
 
@@ -157,33 +156,10 @@ void XR1ControllerOL::readingCallback() {
             }
         }
 
-
-        for (uint8_t i = XR1::OmniWheels; i < XR1::MainBody; ++i)
-        {
-            if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized)
-            {
-
-                if (actuator_ready_4_cvp[i])
-                    m_pController->getCVPValue(i);
-                else {
-                    m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
-                }
-
-            }
-        }
-
-
-        if ((int) m_pController->getActuatorAttribute((uint8_t)XR1::Knee_X, Actuator::INIT_STATE) == Actuator::Initialized)
-        {
-
-            if (actuator_ready_4_cvp[(uint8_t)XR1::Knee_X])
-                m_pController->getCVPValue((uint8_t)XR1::Knee_X);
-            else {
-                m_pController->regainAttrbute((uint8_t)XR1::Knee_X,Actuator::ACTUAL_POSITION);
-//                m_pController->regainAttrbute((uint8_t)XR1::Knee_X, Actuator::ACTUAL_VELOCITY);
-            }
-
-        }
+//        if ((int) m_pController->getActuatorAttribute((uint8_t)XR1::Knee_X, Actuator::INIT_STATE) == Actuator::Initialized) {
+//            m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
+//            m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
+//        }
 
     }
 
