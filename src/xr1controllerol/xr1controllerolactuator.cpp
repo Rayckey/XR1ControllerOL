@@ -28,6 +28,15 @@ bool XR1ControllerOL::allActuatorHasLaunched() {
 
 void XR1ControllerOL::stopAllMotors() {
 
+    control_modes[XR1::OmniWheels] = 0;
+    control_modes[XR1::MainBody] = 0;
+    control_modes[XR1::LeftArm] = 0;
+    control_modes[XR1::RightArm] = 0;
+    control_modes[XR1::LeftHand] = 0;
+    control_modes[XR1::RightHand] = 0;
+    control_modes[XR1::HeadBody] = 0;
+
+
     std::vector<uint8_t> IDArray = m_pController->getActuatorIdArray();
 
     for (int i = 0; i < IDArray.size(); i++) {
@@ -95,6 +104,8 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
                 XRB_ptr->tiltInit();
 
                 ROS_INFO("All Actuators Have Launched");
+
+                m_pController->setBrakeStatus( true );
             }
 
             break;

@@ -76,6 +76,6 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
 }
 
  void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
-   ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
+//   ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
  }
 

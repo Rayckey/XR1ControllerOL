@@ -10,6 +10,9 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 
     if (msg.data){
 
+        XRA_ptr->setSingleTransitionPeriod(3);
+
+        clearStates();
 
         for (uint8_t control_group : control_group_flags){
 
