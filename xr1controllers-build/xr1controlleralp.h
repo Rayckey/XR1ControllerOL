@@ -44,7 +44,10 @@ public:
 
 
     // set Idle stuff on or off
-    void setIdleOption(bool option);
+    void setIdleOption(bool isOn);
+
+    // set Idle stuff on or off
+    void setDefaultOption(bool isOn);
 
 
     // set this pose for face tracking or marker tracking
@@ -85,6 +88,9 @@ private:
 
     // The option for whether idle animations are played
     bool idle_switch;
+
+    // The option for whether idle animations are played
+    bool default_switch;
 
 
     std::map<int ,int > control_modes_map;

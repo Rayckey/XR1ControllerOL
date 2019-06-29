@@ -74,6 +74,10 @@ void XR1ControllerOL::subscribeSetIdle(const std_msgs::Bool &msg) {
     XRA_ptr->setIdleOption(msg.data);
 }
 
+void XR1ControllerOL::subscribeSetDefault(const std_msgs::Bool &msg){
+    XRA_ptr->setDefaultOption(msg.data);
+}
+
 bool XR1ControllerOL::serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
                                             xr1controllerol::AnimationQueryResponse &res){
 

@@ -165,6 +165,10 @@ public:
     // will determine if an idle animation will be played when default runs out
     void subscribeSetIdle(const std_msgs::Bool &msg);
 
+    // receive idle on/off optionIdle
+    // will determine if an idle animation will be played when default runs out
+    void subscribeSetDefault(const std_msgs::Bool &msg);
+
     // ------------------------------------------------------------------
 
 
@@ -493,7 +497,7 @@ private:
     ros::Subscriber AnimationSwitchSubscriber;
     ros::Subscriber AnimationSetSubscriber;
     ros::Subscriber IdleSwitchSubscriber;
-
+    ros::Subscriber DefaultSwitchSubscriber;
     // --------------------------------------------
 
 

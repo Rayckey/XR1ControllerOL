@@ -346,6 +346,10 @@ void subscribeSetIdle(const std_msgs::Bool &msg) {
 }
 
 
+void subscribeSetDefault(const std_msgs::Bool &msg){
+    XRA_ptr->setDefaultOption(msg.data);
+}
+
 //-----------------------------------------------------------------------------
 
 void broadcastTransform(const ros::TimerEvent &event) {
@@ -519,7 +523,9 @@ int main(int argc, char **argv) {
 
     ros::Subscriber setSubControlModeSubscriber = nh.subscribe("/XR1/ChainModeChange" , 3 , subscribeSubControlMode);
 
-    ros::Subscriber SetIdleSubscriber = nh.subscribe("setIdle" , 1 , subscribeSetIdle);
+    ros::Subscriber SetIdleSubscriber = nh.subscribe("setIdleAnimations" , 1 , subscribeSetIdle);
+
+    ros::Subscriber SetDefaultSubscriber = nh.subscribe("setDefaultAnimation" , 1 , subscribeSetDefault);
 
     ros::Subscriber OmniSpeedSubscriber = nh.subscribe("/XR1/cmd_vel" , 10 , subscribeOmniCommands);
 
