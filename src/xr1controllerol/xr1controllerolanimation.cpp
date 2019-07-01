@@ -10,7 +10,7 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 
     if (msg.data){
 
-        XRA_ptr->setSingleTransitionPeriod(3);
+//        XRA_ptr->setSingleTransitionPeriod(2);
 
         clearStates();
 
@@ -44,7 +44,7 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 
         }
 
-        XRA_ptr->setSingleTransitionPeriod(3);
+//        XRA_ptr->setSingleTransitionPeriod(3);
 
         clearStates();
     }
@@ -99,6 +99,7 @@ bool XR1ControllerOL::serviceQueryAnimation(xr1controllerol::AnimationQueryReque
                 res.inDefault = true;
             }
         }
+        res.AnimationProgress = 0;
     }
 
 

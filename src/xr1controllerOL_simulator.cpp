@@ -26,6 +26,7 @@
 
 #include "xr1controllerol/IKLinearService.h"
 #include "xr1controllerol/HandGripQuery.h"
+#include "xr1controllerol/RobotStateQuery.h"
 #include "xr1controllerol/askReadiness.h"
 #include "xr1controllerol/AnimationQuery.h"
 
@@ -176,12 +177,53 @@ bool serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
                 res.inDefault = true;
             }
         }
+        res.AnimationProgress = 0;
     }
 
 
 
     return true;
 
+}
+
+
+
+
+
+
+bool serviceState(xr1controllerol::RobotStateQueryRequest & req,
+                                   xr1controllerol::RobotStateQueryResponse & res){
+
+    res.isOkay = false;
+    res.RobotState = false;
+    res.CollisionSwitch = false;
+    res.HeadBodyMode = 0;
+    res.MainBodyMode = 0;
+    res.LeftArmMode = 0;
+    res.RightArmMode = 0;
+    res.LeftHandMode = 0;
+    res.RightHandMode = 0;
+
+
+
+    if (req.isQuery){
+
+        res.isOkay = XR1_ptr->isXR1Okay();
+
+        res.RobotState = XR1_ptr->getErrorCode();
+
+        res.HeadBodyMode = XR1_ptr->getSubControlMode(XR1::HeadBody);
+        res.MainBodyMode = XR1_ptr->getSubControlMode(XR1::MainBody);
+        res.LeftArmMode  = XR1_ptr->getSubControlMode(XR1::LeftArm);
+        res.RightArmMode = XR1_ptr->getSubControlMode(XR1::RightArm);
+        res.LeftHandMode = XR1_ptr->getSubControlMode(XR1::LeftHand);
+        res.RightHandMode= XR1_ptr->getSubControlMode(XR1::RightHand);
+
+    }
+
+
+
+    return true;
 }
 // --------------------------------------------------------------------------------------
 
@@ -335,7 +377,7 @@ void subscribeStartAnimation(const std_msgs::Bool &msg) {
 
         }
 
-        XRA_ptr->setSingleTransitionPeriod(3);
+//        XRA_ptr->setSingleTransitionPeriod(3);
 
         clearStates();
     }
@@ -557,11 +599,14 @@ int main(int argc, char **argv) {
 
     QueryAnimationService = nh.advertiseService("/queryAnimation", serviceQueryAnimation);
 
+    ros::ServiceServer RobotStateService = nh.advertiseService("XR1/State" , serviceState);
+
     ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKLPT", serviceIKPlanner);
 
     ros::ServiceServer HandGripService = nh.advertiseService("XR1/HGQ", serviceHandGrip);
 
     ros::ServiceServer readyService = nh.advertiseService("XR1/Ready", serviceReady);
+
 
     ROS_INFO("Stuff" );
     // Draw some random stuff every three seconds or so
