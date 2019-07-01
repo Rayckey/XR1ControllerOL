@@ -52,6 +52,7 @@ add_service_files(
 		HandGripQuery.srv
 		askReadiness.srv
 		AnimationQuery.srv
+		AnimationOverwrite.srv
 		RobotStateQuery.srv
 )
 

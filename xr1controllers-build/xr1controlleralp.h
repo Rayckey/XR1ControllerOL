@@ -42,6 +42,9 @@ public:
     // set this animation into que
     void setAnimation(int animation_type , int animation_id);
 
+    // set this animation into que
+    void overwriteAnimation(int animation_type , int animation_id , std::deque<std::vector<double>> animation_data);
+
 
     // set Idle stuff on or off
     void setIdleOption(bool isOn);

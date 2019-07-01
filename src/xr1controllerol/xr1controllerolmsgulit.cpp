@@ -287,3 +287,23 @@ void ConvertHeadMsgs(Eigen::VectorXd & input , xr1controllerros::HeadMsgs & msg)
     msg.Head = input(2);
 
 }
+
+
+void MultiArray2DequeVector(const std_msgs::Float64MultiArray & input_msg , std::deque<std::vector<double>> & output_data){
+
+    std::vector<double> temp_vec;
+
+    output_data.clear();
+
+    int num_of_row = input_msg.layout.dim[0].size;
+    int num_of_joints = input_msg.layout.dim[1].size;
+
+    for (int i = 0 ; i < num_of_row ; i++){
+        temp_vec.clear();
+        for (int j = 0 ; j < num_of_joints ; j ++) {
+            temp_vec.push_back(input_msg.data[i*input_msg.layout.dim[0].stride + j]);
+        }
+        output_data.push_back(temp_vec);
+    }
+
+}

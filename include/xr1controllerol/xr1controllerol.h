@@ -40,6 +40,7 @@
 // The animation message type
 #include "xr1controllerol/AnimationMsgs.h"
 #include "xr1controllerol/AnimationQuery.h"
+#include "xr1controllerol/AnimationOverwrite.h"
 
 
 
@@ -169,6 +170,14 @@ public:
     // will determine if an idle animation will be played when default runs out
     void subscribeSetDefault(const std_msgs::Bool &msg);
 
+
+    // inquire the current animation information
+    bool serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
+                               xr1controllerol::AnimationQueryResponse &res);
+
+    // Overwrite a certain animation
+    bool serviceOverwriteAnimation(xr1controllerol::AnimationOverwriteRequest & req,
+            xr1controllerol::AnimationOverwriteResponse &res);
     // ------------------------------------------------------------------
 
 
@@ -315,8 +324,6 @@ protected:
     bool serviceHandGrip(xr1controllerol::HandGripQueryRequest &req,
                          xr1controllerol::HandGripQueryResponse &res);
 
-    bool serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
-                               xr1controllerol::AnimationQueryResponse &res);
     // ------------------------------------------------------------------------------
 
 
@@ -462,7 +469,6 @@ private:
     ros::ServiceServer IKPlannerService;
     ros::ServiceServer IKTrackingService;
     ros::ServiceServer HandGripService;
-    ros::ServiceServer QueryAnimationService;
     // --------------------------------------------
 
 
@@ -498,6 +504,8 @@ private:
     ros::Subscriber AnimationSetSubscriber;
     ros::Subscriber IdleSwitchSubscriber;
     ros::Subscriber DefaultSwitchSubscriber;
+    ros::ServiceServer QueryAnimationService;
+    ros::ServiceServer OverwriteAnimationService;
     // --------------------------------------------
 
 

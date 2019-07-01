@@ -89,6 +89,7 @@ XR1ControllerOL::XR1ControllerOL() :
     IdleSwitchSubscriber = nh.subscribe("/setIdleAnimations", 1, &XR1ControllerOL::subscribeSetIdle, this);
     DefaultSwitchSubscriber = nh.subscribe("/setDefaultAnimation", 1, &XR1ControllerOL::subscribeSetDefault, this);
     QueryAnimationService = nh.advertiseService("/queryAnimation", &XR1ControllerOL::serviceQueryAnimation, this);
+    OverwriteAnimationService = nh.advertiseService("/overwriteAnimation", &XR1ControllerOL::serviceOverwriteAnimation, this);
     // ---------------------------------------------------------------------------
 
 

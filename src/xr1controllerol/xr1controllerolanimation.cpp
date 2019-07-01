@@ -101,6 +101,35 @@ bool XR1ControllerOL::serviceQueryAnimation(xr1controllerol::AnimationQueryReque
 }
 
 
+bool XR1ControllerOL::serviceOverwriteAnimation(xr1controllerol::AnimationOverwriteRequest & req,
+                               xr1controllerol::AnimationOverwriteResponse &res){
+
+    std::deque<std::vector<double>> temp_que;
+
+    if (req.AnimationType == XR1ALP::Animation){
+        if (req.AnimationData.layout.dim[1].size > 35 || req.AnimationData.layout.dim[1].size < 34){
+            res.isLoaded = false;
+            return true;
+        }
+    }
+
+    if (req.AnimationType == XR1ALP::Teach){
+        if (req.AnimationData.layout.dim[1].size != 19){
+            res.isLoaded = false;
+            return true;
+        }
+    }
+
+     MultiArray2DequeVector(req.AnimationData , temp_que );
+
+     XRA_ptr->overwriteAnimation(req.AnimationType , req.AnimationID , temp_que);
+
+     res.isLoaded = true;
+
+    return true;
+}
+
+
 void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg){
 
 

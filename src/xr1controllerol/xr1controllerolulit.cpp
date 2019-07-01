@@ -23,7 +23,7 @@ void XR1ControllerOL::subscribeLeftArmVelocity(const xr1controllerros::ArmMsgs &
 
     }
 
-    else if (XR1_ptr->getSubControlMode(XR1::LeftArm) == XR1::DirectMode){
+    else {
         ArmMsgs2VectorXd(msg , temp_vec7d);
         XR1_ptr->setJointVelocity(XR1::LeftArm, temp_vec7d);
         setControlGroupTarget(XR1::LeftArm);
@@ -36,7 +36,7 @@ void XR1ControllerOL::subscribeLeftArmCurrent(const xr1controllerros::ArmMsgs &m
 
     }
 
-    else if (XR1_ptr->getSubControlMode(XR1::LeftArm) == XR1::DirectMode){
+    else {
         ArmMsgs2VectorXd(msg , temp_vec7d);
         XR1_ptr->setJointCurrent(XR1::LeftArm, temp_vec7d);
         setControlGroupTarget(XR1::LeftArm);
@@ -62,7 +62,7 @@ void XR1ControllerOL::subscribeRightArmVelocity(const xr1controllerros::ArmMsgs 
 
     }
 
-    else if (XR1_ptr->getSubControlMode(XR1::RightArm) == XR1::DirectMode){
+    else {
         ArmMsgs2VectorXd(msg , temp_vec7d);
         XR1_ptr->setJointVelocity(XR1::RightArm, temp_vec7d);
         setControlGroupTarget(XR1::RightArm);
@@ -74,7 +74,7 @@ void XR1ControllerOL::subscribeRightArmCurrent(const xr1controllerros::ArmMsgs &
 
     }
 
-    else if (XR1_ptr->getSubControlMode(XR1::RightArm) == XR1::DirectMode){
+    else {
         ArmMsgs2VectorXd(msg , temp_vec7d);
         XR1_ptr->setJointCurrent(XR1::RightArm, temp_vec7d);
         setControlGroupTarget(XR1::RightArm);
@@ -100,7 +100,7 @@ void XR1ControllerOL::subscribeMainBodyCurrent(const xr1controllerros::BodyMsgs 
 
     }
 
-    else if (XR1_ptr->getSubControlMode(XR1::MainBody) == XR1::DirectMode){
+    else {
         BodyMsgs2VectorXd(msg , temp_vec4d);
         XR1_ptr->setJointCurrent(XR1::MainBody, temp_vec4d);
         setControlGroupTarget(XR1::MainBody);
@@ -140,7 +140,7 @@ void XR1ControllerOL::subscribeLeftHandCurrent(const xr1controllerros::HandMsgs 
 
     }
 
-    else if (XR1_ptr->getSubControlMode(XR1::LeftHand) == XR1::DirectMode) {
+    else {
         HandsMsgs2VectorXd(msg , temp_vec5d);
         XR1_ptr->setJointCurrent(XR1::LeftHand, temp_vec5d);
         setControlGroupTarget(XR1::LeftHand);
@@ -165,7 +165,7 @@ void XR1ControllerOL::subscribeRightHandCurrent(const xr1controllerros::HandMsgs
 
     }
 
-    else if (XR1_ptr->getSubControlMode(XR1::RightHand) == XR1::DirectMode){
+    else {
         HandsMsgs2VectorXd(msg , temp_vec5d);
         XR1_ptr->setJointCurrent(XR1::RightHand, temp_vec5d);
         setControlGroupTarget(XR1::RightHand);

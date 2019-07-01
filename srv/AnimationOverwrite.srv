@@ -1,0 +1,5 @@
+int32 AnimationType
+int64 AnimationID
+std_msgs/Float64MultiArray AnimationData
+---
+bool isLoaded

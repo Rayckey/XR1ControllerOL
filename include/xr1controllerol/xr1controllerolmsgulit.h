@@ -6,11 +6,14 @@
 
 #include "Eigen/Dense"
 
+#include <deque>
+#include <vector>
 #include "xr1controllerros/ArmMsgs.h"
 #include "xr1controllerros/BodyMsgs.h"
 #include "xr1controllerros/HandMsgs.h"
 #include "xr1controllerros/JointAttributeMsgs.h"
 #include "xr1controllerros/HeadMsgs.h"
+#include "std_msgs/Float64MultiArray.h"
 
 #include <eigen_conversions/eigen_msg.h>
 
@@ -69,6 +72,10 @@ void  ConvertBodyMsgs(Eigen::VectorXd & input , xr1controllerros::BodyMsgs & msg
 void  ConvertHeadMsgs(std::vector<double> input , xr1controllerros::HeadMsgs & msg);
 
 void  ConvertHeadMsgs(Eigen::VectorXd & input , xr1controllerros::HeadMsgs & msg);
+
+
+
+void MultiArray2DequeVector(const std_msgs::Float64MultiArray & input_msg , std::deque<std::vector<double>> & output_data);
 
 
 
