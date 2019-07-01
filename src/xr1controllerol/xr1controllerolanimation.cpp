@@ -84,14 +84,21 @@ bool XR1ControllerOL::serviceQueryAnimation(xr1controllerol::AnimationQueryReque
     int type_id , ani_id, pro_id;
 
     if (XRA_ptr->checkProgress(type_id,ani_id , pro_id) ){
-        res.isIdle = false;
+        res.isPlaying = true;
+        res.inDefault = false;
         res.AnimationType = type_id;
         res.AnimationID = ani_id;
         res.AnimationProgress = pro_id;
     }
 
     else {
-        res.isIdle = true;
+        res.isPlaying = false;
+        res.inDefault = false;
+        for (uint8_t control_group : control_group_flags){
+            if (control_modes[control_group] == XR1::AnimationMode){
+                res.inDefault = true;
+            }
+        }
     }
 
 
