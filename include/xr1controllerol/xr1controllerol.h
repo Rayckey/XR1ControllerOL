@@ -218,7 +218,7 @@ public:
     // Main High frequency control call back ------------------------------
 
     // Main Loop, trigger most of other callbacks
-    void unleaseCallback(const ros::TimerEvent &);
+    void unleaseCallback();
 
     // Call back to publish all the dame joint information and tf
     void unleaseJointInfo();

@@ -19,6 +19,8 @@
 #include "xr1controllerros/HandMsgs.h"
 #include "xr1controllerol/AnimationMsgs.h"
 #include <ros/package.h>
+#include <functional>
+#include "crosstimer.h"
 
 
 #include <map>
@@ -401,7 +403,7 @@ void subscribeSetDefault(const std_msgs::Bool &msg){
 
 //-----------------------------------------------------------------------------
 
-void broadcastTransform(const ros::TimerEvent &event) {
+void broadcastTransform() {
 
     // This function triggers almost all the computation in the library
     XR1_ptr->triggerCalculation(true);
@@ -610,7 +612,10 @@ int main(int argc, char **argv) {
 
     ROS_INFO("Stuff" );
     // Draw some random stuff every three seconds or so
-    ros::Timer timer = nh.createTimer(ros::Duration(0.005), broadcastTransform);
+//    ros::Timer timer = nh.createTimer(ros::Duration(0.005), broadcastTransform);
+
+    CrossTimer * timer = new CrossTimer();
+    timer->start(5 , [=]{broadcastTransform();});
 
     ros::spin();
 

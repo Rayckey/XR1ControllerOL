@@ -1,6 +1,8 @@
 #include "xr1controllerol.h"
 #include "actuatorcontroller.h"
 #include <ros/package.h>
+#include "crosstimer.h"
+#include <functional>
 
 XR1ControllerOL * XR1_ptr;
 std::vector<std::vector<double> > recorded_positions;
@@ -114,11 +116,19 @@ int main(int argc, char **argv) {
 //  XR1_ptr->launchAllMotors(); // startSimulation()
 
 
-  ros::Timer timer1 = nh.createTimer(ros::Duration(0.005), actuator_event_callback);
+//  ros::Timer timer1 = nh.createTimer(ros::Duration(0.005), actuator_event_callback);
+
+
+    CrossTimer * timer1 = new CrossTimer();
+    timer1->start(2 , [=]{ActuatorController::processEvents();});
+
 
 //  ros::Timer timer2 = nh.createTimer(ros::Duration(0.005), &XR1ControllerOL::readingCallback , XR1_ptr);
 
-  ros::Timer timer3 = nh.createTimer(ros::Duration(0.005), &XR1ControllerOL::unleaseCallback , XR1_ptr);
+//  ros::Timer timer3 = nh.createTimer(ros::Duration(0.005), &XR1ControllerOL::unleaseCallback , XR1_ptr);
+
+    CrossTimer * timer2 = new CrossTimer();
+    timer2->start(5 , std::bind(&XR1ControllerOL::unleaseCallback, XR1_ptr));
 
 //  ros::Timer timer4 = nh.createTimer(ros::Duration(0.03), &XR1ControllerOL::requestQue , XR1_ptr);
 

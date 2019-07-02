@@ -490,7 +490,7 @@ void XR1ControllerOL::subscribeEStop(const std_msgs::Bool &msg) {
 
 
 
-void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
+void XR1ControllerOL::unleaseCallback() {
 
 
 

@@ -97,6 +97,7 @@ target_link_libraries(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1IMU.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1ControllerALP.so
 		${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1ControllerBLC.so
+		${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libCrossTimer.so
 )
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
