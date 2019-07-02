@@ -3,11 +3,13 @@
 //
 
 #include "xr1controllerol.h"
-
+#include <mutex>
 
 
 void XR1ControllerOL::subscribeRobotMode(const xr1controllerros::ChainModeChange &msg) {
-    setControlMode(msg.ChainID , msg.Mode);
+
+    
+    XR1_ptr->setSubControlMode(msg.ChainID , msg.Mode);
 }
 
 

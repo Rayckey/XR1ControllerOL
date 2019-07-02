@@ -37,7 +37,7 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
 
 //            if (XR1_ptr->getSubControlMode(control_group) != XR1::IKMode){
 
-            setControlMode(control_group , XR1::DriveMode);
+            XR1_ptr->setSubControlMode(control_group , XR1::DriveMode);
 
             ROS_INFO("Drive  for Control Group [%d] , is now ON",  (int)control_group );
 
@@ -45,7 +45,7 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
 
         }
 
-        setControlMode(XR1::OmniWheels , XR1::RoamMode);
+        XR1_ptr->setControlMode(XR1::OmniWheels , XR1::RoamMode);
 
     }
 
@@ -57,7 +57,7 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
 
 //            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
 
-            setControlMode(control_group , XR1::DirectMode);
+            XR1_ptr->setSubControlMode(control_group , XR1::DirectMode);
 
             ROS_INFO("Drive for Control Group [%d] , is now OFF",  (int)control_group );
 
@@ -65,7 +65,7 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
 
         }
 
-        setControlMode(XR1::OmniWheels , XR1::DirectMode);
+        XR1_ptr->setSubControlMode(XR1::OmniWheels , XR1::DirectMode);
 
         clearStates();
     }
