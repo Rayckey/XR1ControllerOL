@@ -11,7 +11,7 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
     if (msg.data){
 
 //        XRA_ptr->setSingleTransitionPeriod(2);
-
+        xr1controller_mutex.lock();
         clearStates();
 
         for (uint8_t control_group : control_group_flags){
@@ -25,13 +25,14 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 //            }
 
         }
+        xr1controller_mutex.unlock();
 
     }
 
 
     else {
 
-
+        xr1controller_mutex.lock();
         for (uint8_t control_group : control_group_flags){
 
 //            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
@@ -47,6 +48,8 @@ void XR1ControllerOL::subscribeStartAnimation(const std_msgs::Bool& msg){
 //        XRA_ptr->setSingleTransitionPeriod(3);
 
         clearStates();
+
+        xr1controller_mutex.unlock();
     }
 
 }
@@ -61,8 +64,15 @@ void XR1ControllerOL::clearStates() {
 // receive an animation order
 void XR1ControllerOL::subscribeSetAnimation(const xr1controllerol::AnimationMsgs& msg){
 
-    if (msg.AnimationType)
+
+    if (msg.AnimationType){
+
+        xr1controller_mutex.lock();
         XRA_ptr->setAnimation(msg.AnimationType , msg.AnimationID);
+        xr1controller_mutex.unlock();
+
+    }
+
 
     else {
 //        ROS_INFO("Number of Animation Left: %d " , XRA_ptr->popAnimation());
@@ -83,6 +93,8 @@ bool XR1ControllerOL::serviceQueryAnimation(xr1controllerol::AnimationQueryReque
 
     int type_id , ani_id, pro_id;
 
+    xr1controller_mutex.lock();
+
     if (XRA_ptr->checkProgress(type_id,ani_id , pro_id) ){
         res.isPlaying = true;
         res.inDefault = false;
@@ -102,7 +114,7 @@ bool XR1ControllerOL::serviceQueryAnimation(xr1controllerol::AnimationQueryReque
         res.AnimationProgress = 0;
     }
 
-
+    xr1controller_mutex.unlock();
 
     return true;
 
@@ -113,6 +125,8 @@ bool XR1ControllerOL::serviceOverwriteAnimation(xr1controllerol::AnimationOverwr
                                xr1controllerol::AnimationOverwriteResponse &res){
 
     std::deque<std::vector<double>> temp_que;
+
+    xr1controller_mutex.lock();
 
     if (req.AnimationType == XR1ALP::Animation){
         if (req.AnimationData.layout.dim[1].size > 35 || req.AnimationData.layout.dim[1].size < 34){
@@ -134,6 +148,8 @@ bool XR1ControllerOL::serviceOverwriteAnimation(xr1controllerol::AnimationOverwr
 
      res.isLoaded = true;
 
+    xr1controller_mutex.unlock();
+
     return true;
 }
 
@@ -145,7 +161,7 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
     // we want to turn it on
     if (msg.data){
 
-
+        xr1controller_mutex.lock();
 
         for (uint8_t control_group : control_group_flags){
             if (XR1_ptr->getSubControlMode(control_group) >= XR1::TeachMode){
@@ -161,13 +177,19 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
         collision_detection_switch = msg.data;
 
         XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
+
+        xr1controller_mutex.unlock();
     }
 
     // we want to turn it off
     else{
+
+        xr1controller_mutex.lock();
         collision_detection_switch = msg.data;
         ROS_INFO("Set collision detection to OFF");
         XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
+
+        xr1controller_mutex.unlock();
     }
 
 
@@ -183,8 +205,10 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
 
         else {
 
+            xr1controller_mutex.lock();
             // lift the curse on thy princess eh?
             XR1_ptr->liftLockdown();
+            xr1controller_mutex.unlock();
 
         }
     }

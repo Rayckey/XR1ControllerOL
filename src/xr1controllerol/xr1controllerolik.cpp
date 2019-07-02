@@ -36,11 +36,12 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
     else {
         if (req.NewTarget){
 
-            setControlMode(control_group , XR1::IKMode);
+            xr1controller_mutex.lock();
+            XR1_ptr->setSubControlMode(control_group , XR1::IKMode);
             if (control_group == XR1::LeftArm)
-                setControlMode(XR1::LeftHand , XR1::IKMode);
+                XR1_ptr->setSubControlMode(XR1::LeftHand , XR1::IKMode);
             else if (control_group == XR1::RightArm)
-                setControlMode(XR1::RightHand , XR1::IKMode);
+                XR1_ptr->setSubControlMode(XR1::RightHand , XR1::IKMode);
 
             res.inProgress = false;
             if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
@@ -49,6 +50,8 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
 
                 XR1_ptr->setGrippingSwitch( control_group , req.Grip);
             }
+
+            xr1controller_mutex.unlock();
         }
         res.inProgress = false;
 
@@ -71,6 +74,11 @@ bool XR1ControllerOL::serviceIKTracking(xr1controllerol::IKTrackingServiceReques
     res.isAccepted = false;
 
     uint8_t control_group = req.ControlGroup;
+
+
+
+    xr1controller_mutex.lock();
+
 
     if (control_group == XR1::HeadBody){
 
@@ -144,7 +152,7 @@ bool XR1ControllerOL::serviceIKTracking(xr1controllerol::IKTrackingServiceReques
 
     }
 
-
+    xr1controller_mutex.unlock();
 
     return true;
 
@@ -168,6 +176,7 @@ bool XR1ControllerOL::serviceHandGrip(xr1controllerol::HandGripQueryRequest & re
 
     }else {
 
+        xr1controller_mutex.lock();
         res.inProgress = false;
         int num_of_fingers_not_closed = 0;
 
@@ -187,7 +196,7 @@ bool XR1ControllerOL::serviceHandGrip(xr1controllerol::HandGripQueryRequest & re
             }
         }
 
-
+        xr1controller_mutex.unlock();
 
 
         if (num_of_fingers_not_closed >= 3)

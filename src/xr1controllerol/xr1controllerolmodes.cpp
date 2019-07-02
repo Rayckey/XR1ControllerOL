@@ -8,8 +8,9 @@
 
 void XR1ControllerOL::subscribeRobotMode(const xr1controllerros::ChainModeChange &msg) {
 
-    
+    xr1controller_mutex.lock();
     XR1_ptr->setSubControlMode(msg.ChainID , msg.Mode);
+    xr1controller_mutex.unlock();
 }
 
 

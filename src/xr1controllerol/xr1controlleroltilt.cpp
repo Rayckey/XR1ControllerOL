@@ -32,7 +32,7 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
 
     if (msg.data){
 
-
+        xr1controller_mutex.lock();
         for (uint8_t control_group : control_group_flags){
 
 //            if (XR1_ptr->getSubControlMode(control_group) != XR1::IKMode){
@@ -45,14 +45,14 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
 
         }
 
-        XR1_ptr->setControlMode(XR1::OmniWheels , XR1::RoamMode);
-
+        XR1_ptr->setSubControlMode(XR1::OmniWheels , XR1::RoamMode);
+        xr1controller_mutex.unlock();
     }
 
 
     else {
 
-
+        xr1controller_mutex.lock();
         for (uint8_t control_group : control_group_flags){
 
 //            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
@@ -68,6 +68,7 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
         XR1_ptr->setSubControlMode(XR1::OmniWheels , XR1::DirectMode);
 
         clearStates();
+        xr1controller_mutex.unlock();
     }
 
 

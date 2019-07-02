@@ -24,6 +24,7 @@
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/Int32.h>
+#include "std_srvs/SetBool.h"
 
 // Hopps Port messages
 #include <sensor_msgs/JointState.h>
@@ -55,7 +56,7 @@
 // std stuff
 #include <map>
 #include <string>
-#include "std_srvs/SetBool.h"
+#include <mutex>
 
 using namespace Eigen;
 
@@ -566,6 +567,11 @@ private:
     geometry_msgs::Transform temp_geo_trans;
     double temp_value;
     // ---------------------------------------------
+
+
+    // mutex stuff ----------------------------------
+    std::mutex xr1controller_mutex;
+    // ----------------------------------------------
 
 
 }; //class
