@@ -278,6 +278,7 @@ public:
     Vector3d getOmniWheelsVelocity();
     Vector3d getOmniWheelsPosition();
     void getOmniWheelsVelocity(Vector3d & ref);
+    void getTargetOmniWheelsVelocity(Vector3d & ref);
     void getOmniWheelsPosition(Vector3d & ref);
     void getBaseTransformation(uint8_t control_group ,  Affine3d & output);
     void resetOdometry();

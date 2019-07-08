@@ -21,9 +21,9 @@ XR1ControllerOL::XR1ControllerOL() :
 
     XRB_ptr = new XR1ControllerBLC(path + "/BLC" ,path + "/ALP" );
 
-    XRB_ptr->setIdle(true);
-    XRB_ptr->setActive(true);
-    XRB_ptr->setPassive(true);
+    XRB_ptr->setIdle(false);
+    XRB_ptr->setActive(false);
+    XRB_ptr->setPassive(false);
 
     XR1_ptr = new XR1Controller(path + "/fungus.xr1para");
 
@@ -151,6 +151,10 @@ XR1ControllerOL::XR1ControllerOL() :
     OmniSpeedPublisher = nh.advertise<geometry_msgs::Twist>("/OmniWheels/Velocity",1);
     OmniSpeedSubscriber = nh.subscribe("/XR1/cmd_vel" , 10 , &XR1ControllerOL::subscribeOmniCommands ,this);
 
+    slamIdleSubscriber =  nh.subscribe("/BLC/setIdle" , 10 , &XR1ControllerOL::subscribeBLCIdle ,this);
+    slamActiveSubscriber =  nh.subscribe("/BLC/setActive" , 10 , &XR1ControllerOL::subscribeBLCActive ,this);
+    slamPassiveSubscriber =  nh.subscribe("/BLC/setPassive" , 10 , &XR1ControllerOL::subscribeBLCPassive ,this);
+
     // -------------------------------------------------------------------------------
 
 
@@ -270,7 +274,8 @@ XR1ControllerOL::XR1ControllerOL() :
 
     // Legacy ---------------------------------------------------------------------
 
-    tiltInitSubscriber = nh.subscribe("/startTilting", 1, &XR1ControllerOL::subscribeTiltStart, this);
+    tiltStartSubscriber = nh.subscribe("/startTilting", 1, &XR1ControllerOL::subscribeTiltStart, this);
+    slamStartSubscriber = nh.subscribe("/startSLAMing", 1, &XR1ControllerOL::subscribeSLAMStart, this);
 //    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
      m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
      m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);

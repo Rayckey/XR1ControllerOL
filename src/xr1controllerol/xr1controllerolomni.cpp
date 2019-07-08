@@ -7,6 +7,8 @@
 
 void XR1ControllerOL::Omni2Actuator() {
 
+
+    // if we're using ALP's profile velocity
     if (XR1_ptr->getSubControlMode(XR1::OmniWheels) == XR1::RoamMode){
 
         XR1_ptr->getTargetVelocity(XR1::OmniWheels , temp_vec3d);
@@ -45,6 +47,21 @@ void XR1ControllerOL::Omni2Actuator() {
 
     }
 
+
+    // if we're using brute velocity mode
+    else if (XR1_ptr->getSubControlMode(XR1::OmniWheels) == XR1::VelocityMode){
+
+        XR1_ptr->getTargetVelocity(XR1::OmniWheels , temp_vec3d);
+
+        // simulation call -------------------------------------------------------------
+        ROS_INFO("LF: [%f] , RF: [%f] , BK: [%f] " , temp_vec3d(0) ,temp_vec3d(1) ,temp_vec3d(2)) ;
+        // -----------------------------------------------------------------------------
+
+        for (uint8_t i = XR1::OmniWheels ; i < XR1::MainBody ; i++) {
+            m_pController->setVelocity(i , temp_vec3d(i - XR1::OmniWheels) );
+        }
+    }
+
 }
 
 
@@ -59,6 +76,12 @@ void XR1ControllerOL::subscribeOmniCommands(const geometry_msgs::Twist & msg){
 
 
         XRA_ptr->setTargetOmniCmd(temp_omni_cmd);
+    }
+
+    else{
+        temp_omni_cmd << msg.angular.x , msg.linear.y , msg.linear.z ;
+        ROS_INFO(" New Omni Command Received [%f] [%f] [%f]" , temp_omni_cmd(0) ,temp_omni_cmd(1) ,temp_omni_cmd(2)) ;
+        XR1_ptr->SetOmniWheelsVelocity(temp_omni_cmd);
     }
 
 }

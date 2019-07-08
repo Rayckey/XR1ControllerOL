@@ -75,7 +75,64 @@ void XR1ControllerOL::subscribeTiltStart(const std_msgs::Bool &msg) {
 
 }
 
+
+
+void XR1ControllerOL::subscribeSLAMStart(const std_msgs::Bool &msg){
+
+    if (msg.data){
+
+
+        for (uint8_t control_group : control_group_flags){
+
+//            if (XR1_ptr->getSubControlMode(control_group) != XR1::IKMode){
+
+            setControlMode(control_group , XR1::DriveMode);
+
+            ROS_INFO("Drive  for Control Group [%d] , is now ON",  (int)control_group );
+
+//            }
+
+        }
+
+        setControlMode(XR1::OmniWheels , XR1::VelocityMode);
+
+    }
+
+
+    else {
+
+
+        for (uint8_t control_group : control_group_flags){
+
+//            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
+
+            setControlMode(control_group , XR1::DirectMode);
+
+            ROS_INFO("Drive for Control Group [%d] , is now OFF",  (int)control_group );
+
+//            }
+
+        }
+
+        setControlMode(XR1::OmniWheels , XR1::DirectMode);
+
+        clearStates();
+    }
+
+
+}
+
  void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
 //   ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
  }
 
+
+void XR1ControllerOL::subscribeBLCIdle(const std_msgs::Bool &msg){
+    XRB_ptr->setIdle(msg.data);
+}
+void XR1ControllerOL::subscribeBLCActive(const std_msgs::Bool &msg){
+    XRB_ptr->setActive(msg.data);
+}
+void XR1ControllerOL::subscribeBLCPassive(const std_msgs::Bool &msg){
+    XRB_ptr->setPassive(msg.data);
+}

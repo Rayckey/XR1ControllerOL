@@ -350,6 +350,7 @@ public:
     Vector3d getOmniWheelsVelocity();
     Vector3d getOmniWheelsPosition();
 
+    void getOmniWheelsTargetVelocity(Vector3d & ref);
     void getOmniWheelsVelocity(Vector3d & ref);
     void getOmniWheelsPosition(Vector3d & ref);
 

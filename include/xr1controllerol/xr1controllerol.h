@@ -359,8 +359,12 @@ protected:
     // tilting and stuff -----------------------------------------------
     void requestQue();
     void subscribeTiltStart(const std_msgs::Bool &msg);
+    void subscribeSLAMStart(const std_msgs::Bool &msg);
     void QuaCallBack(uint64_t id, double w, double x, double y, double z);
     void accCallBack(uint8_t id , double x , double y , double z , int pres);
+    void subscribeBLCIdle(const std_msgs::Bool &msg);
+    void subscribeBLCActive(const std_msgs::Bool &msg);
+    void subscribeBLCPassive(const std_msgs::Bool &msg);
     // -----------------------------------------------------------------
 
     // LEGACY ----------------------------------------------------------------
@@ -480,7 +484,11 @@ private:
 
 
     // LEGACY-------------------------------------
-    ros::Subscriber tiltInitSubscriber;
+    ros::Subscriber tiltStartSubscriber;
+    ros::Subscriber slamStartSubscriber;
+    ros::Subscriber slamIdleSubscriber;
+    ros::Subscriber slamActiveSubscriber;
+    ros::Subscriber slamPassiveSubscriber;
     // -------------------------------------------
 
 

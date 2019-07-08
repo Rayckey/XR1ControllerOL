@@ -50,8 +50,21 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
 
             uint8_t temp_mode = XR1_ptr->getSubControlMode(control_group);
 
+
+            if (temp_mode == XR1::VelocityMode && control_group == XR1::OmniWheels){ // only for omni wheels , set profile velociy mode
+
+                for (uint8_t joint_id : control_group_map[control_group]) {
+
+                    if ((int) m_pController->getActuatorAttribute(joint_id, Actuator::INIT_STATE) == Actuator::Initialized)
+                        m_pController->activateActuatorMode(joint_id, Actuator::Mode_Vel);
+
+                }
+
+            }
+
+
             // low profile position mode
-            if (temp_mode < XR1::IKMode) {
+            else if (temp_mode < XR1::IKMode) {
 
                 for (uint8_t joint_id : control_group_map[control_group]) {
 
