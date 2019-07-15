@@ -13,6 +13,18 @@ add_compile_options(-DIMU_ENABLE)
 add_compile_options(-O3)
 
 
+MESSAGE("CMAKE_SYSTEM_PROCESSOR:   ${CMAKE_SYSTEM_PROCESSOR}")
+
+
+if( "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+	set(BUILD_PLATFORM
+		X86)
+else()
+	set(BUILD_PLATFORM
+		TX2)
+endif()
+
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -92,12 +104,12 @@ catkin_package(
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
    ${catkin_LIBRARIES}
-   ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/lib/$ENV{BUILD_PLATFORM}/libActuatorController.so
-   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1ControllerPM.so
-   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1Controller.so
-   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1IMU.so
-   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1ControllerALP.so
-		${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/$ENV{BUILD_PLATFORM}/libXR1ControllerBLC.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/lib/${BUILD_PLATFORM}/libActuatorController.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerPM.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1Controller.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1IMU.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerALP.so
+		${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerBLC.so
 )
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
