@@ -1,0 +1,7 @@
+bool isQuery
+---
+bool inBLCMode
+bool hasIdle
+bool hasPassive
+bool hasActive
+

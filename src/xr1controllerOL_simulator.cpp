@@ -161,9 +161,23 @@ bool serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
 
     int type_id , ani_id, pro_id;
 
+    bool hasIdle, hasDefault;
+
+    XRA_ptr->checkOptions(hasIdle , hasDefault);
+
+    res.hasIdle = hasIdle;
+
+    res.hasDefault = hasDefault;
+
+    res.inAnimationMode = false;
+    for (uint8_t control_group : control_group_flags){
+        if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
+            res.inAnimationMode = true;
+        }
+    }
+
     if (XRA_ptr->checkProgress(type_id,ani_id , pro_id) ){
         res.isPlaying = true;
-        res.inDefault = false;
         res.AnimationType = type_id;
         res.AnimationID = ani_id;
         res.AnimationProgress = pro_id;
@@ -171,23 +185,14 @@ bool serviceQueryAnimation(xr1controllerol::AnimationQueryRequest &req,
 
     else {
         res.isPlaying = false;
-        res.inDefault = false;
-        for (uint8_t control_group : control_group_flags){
-            if (XR1_ptr->getSubControlMode(control_group) == XR1::AnimationMode){
-                res.inDefault = true;
-            }
-        }
+        res.AnimationType = 0;
+        res.AnimationID = 0;
         res.AnimationProgress = 0;
     }
 
 
-
     return true;
-
 }
-
-
-
 
 
 

@@ -41,7 +41,7 @@
 #include "xr1controllerol/AnimationMsgs.h"
 #include "xr1controllerol/AnimationQuery.h"
 #include "xr1controllerol/AnimationOverwrite.h"
-
+#include "xr1controllerol/BalanceQuery.h"
 
 
 // Ultility stuff
@@ -189,6 +189,8 @@ public:
 
     // apply velocity commands to Omniwheels
     void Omni2Actuator();
+
+    void publishOmni();
     // --------------------------------------------------------------
 
 
@@ -365,6 +367,8 @@ protected:
     void subscribeBLCIdle(const std_msgs::Bool &msg);
     void subscribeBLCActive(const std_msgs::Bool &msg);
     void subscribeBLCPassive(const std_msgs::Bool &msg);
+    bool serviceQueryBalance(xr1controllerol::BalanceQueryRequest &req,
+                             xr1controllerol::BalanceQueryResponse &res);
     // -----------------------------------------------------------------
 
     // LEGACY ----------------------------------------------------------------
@@ -483,12 +487,13 @@ private:
 
 
 
-    // LEGACY-------------------------------------
+    // Tilting related stuff-------------------------------------
     ros::Subscriber tiltStartSubscriber;
     ros::Subscriber slamStartSubscriber;
     ros::Subscriber slamIdleSubscriber;
     ros::Subscriber slamActiveSubscriber;
     ros::Subscriber slamPassiveSubscriber;
+    ros::ServiceServer QueryBalanceService;
     // -------------------------------------------
 
 
@@ -559,6 +564,7 @@ private:
     VectorXd temp_vec5d;
     VectorXd temp_vec7d;
     VectorXd temp_vec3d;
+    Vector3d temp_vec;
     VectorXd temp_vec4d;
     Vector3d temp_omni_cmd;
     Matrix4d temp_4d;

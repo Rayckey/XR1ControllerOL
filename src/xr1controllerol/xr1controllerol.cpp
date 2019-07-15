@@ -276,6 +276,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     tiltStartSubscriber = nh.subscribe("/startTilting", 1, &XR1ControllerOL::subscribeTiltStart, this);
     slamStartSubscriber = nh.subscribe("/startSLAMing", 1, &XR1ControllerOL::subscribeSLAMStart, this);
+    QueryBalanceService = nh.advertiseService("/queryBalance", &XR1ControllerOL::serviceQueryBalance, this);
 //    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
      m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
      m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
@@ -288,37 +289,37 @@ XR1ControllerOL::XR1ControllerOL() :
 bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
                   xr1controllerol::askReadinessResponse & res){
 
-//    if (req.isAsking){
-//
-//        ROS_INFO("Oh shit them asking");
-//
-//
-//        std::vector<uint8_t> unava_act;
-//
-//        for (int i = XR1::OmniWheels ; i < XR1::Actuator_Total ; i++){
-//
-//            if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized){
-//
-//            }
-//
-//            else {
-//                unava_act.push_back((uint8_t)i);
-//            }
-//
-//        }
-//
-//
-//        for (uint8_t ids : unava_act){
-//            m_pController->closeActuator( ids );
-//        }
-//
-//        ros::Duration(0.5).sleep();
-//
-//        for (uint8_t ids : unava_act){
-//            m_pController->launchActuator( ids);
-//        }
-//
-//    }
+    if (req.isAsking){
+
+        ROS_INFO("Oh shit them asking");
+
+
+        std::vector<uint8_t> unava_act;
+
+        for (int i = XR1::OmniWheels ; i < XR1::Actuator_Total ; i++){
+
+            if ((int)m_pController->getActuatorAttribute((uint8_t)i, Actuator::INIT_STATE) == Actuator::Initialized){
+
+            }
+
+            else {
+                unava_act.push_back((uint8_t)i);
+            }
+
+        }
+
+
+        for (uint8_t ids : unava_act){
+            m_pController->closeActuator( ids );
+        }
+
+        ros::Duration(0.5).sleep();
+
+        for (uint8_t ids : unava_act){
+            m_pController->launchActuator( ids);
+        }
+
+    }
 
 
     for (int i = XR1::MainBody ; i < XR1::Actuator_Total ; i++){
@@ -528,6 +529,9 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
         // unlease joint states information
         publishJointStates();
+
+
+        publishOmni();
     }
 
     // collision detection check

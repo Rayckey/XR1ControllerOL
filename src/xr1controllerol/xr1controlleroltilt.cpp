@@ -122,7 +122,33 @@ void XR1ControllerOL::subscribeSLAMStart(const std_msgs::Bool &msg){
 
 }
 
- void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
+
+
+bool XR1ControllerOL::serviceQueryBalance(xr1controllerol::BalanceQueryRequest &req,
+                         xr1controllerol::BalanceQueryResponse &res){
+
+
+    if (req.isQuery){
+        bool hasIdle, hasActive, hasPassive;
+
+        XRB_ptr->getOptions(hasIdle , hasActive , hasPassive);
+
+        res.hasIdle = hasIdle;
+
+        res.hasActive = hasActive;
+
+        res.hasPassive = hasPassive;
+    }
+
+
+    return true;
+}
+
+
+
+
+
+void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
 //   ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
  }
 

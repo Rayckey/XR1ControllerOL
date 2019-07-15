@@ -45,6 +45,8 @@ public:
 
     void setPassive(bool option);
 
+    void getOptions(bool & hasIdle , bool & hasActive , bool & hasPassive);
+
     double getTargetBalanceAngle(uint8_t joint_id);
 
 private:

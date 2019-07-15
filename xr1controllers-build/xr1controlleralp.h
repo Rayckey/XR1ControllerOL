@@ -65,6 +65,8 @@ public:
     // check if the animation is in idle
     bool checkProgress ( int&  animation_type ,  int & animation_id , int & animation_progress);
 
+    // Check the options
+    void checkOptions(bool & hasIdle , bool & hasDefault);
 
     // get the propoer ID
     int getAnimationID(int long_id);

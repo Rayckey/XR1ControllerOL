@@ -86,3 +86,32 @@ void XR1ControllerOL::subscribeOmniCommands(const geometry_msgs::Twist & msg){
 
 }
 
+void XR1ControllerOL::publishOmni() {
+
+    // Publish the current Omni wheels velocity
+    if (XR1_ptr->getSubControlMode(XR1::OmniWheels) > XR1::DirectMode){
+
+        XR1_ptr->getOmniWheelsVelocity(temp_vec);
+
+        geometry_msgs::Twist temp_twist;
+
+        temp_twist.linear.y = temp_vec(1);
+
+        temp_twist.linear.z = temp_vec(2);
+
+        temp_twist.angular.x = temp_vec(0);
+
+
+        OmniSpeedPublisher.publish(temp_twist);
+    }
+
+
+//    // broadcast the current omni position
+//    XR1_ptr->getOmniWheelsPosition(temp_vec);
+//
+//    transform.setRotation(tf::Quaternion(temp_vec(0),0,0));
+//
+//    transform.setOrigin(tf::Vector3(0,temp_vec(1),temp_vec(2)));
+//
+//    EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Omni", "/Knee"));
+}

@@ -1,9 +1,9 @@
 bool isQuery
 ---
+bool inAnimationMode
 bool isPlaying
-bool inDefault
+bool hasDefault
+bool hasIdle
 int64 AnimationType
 int64 AnimationID
 int64 AnimationProgress
-
-
