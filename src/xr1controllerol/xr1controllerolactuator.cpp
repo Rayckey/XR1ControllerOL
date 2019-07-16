@@ -174,14 +174,18 @@ void XR1ControllerOL::readingCallback() {
 
     }
 
+    ++power_reading_counter;
+    if (power_reading_counter > (200*5)){
 
-//    if (power_reading_counter > (200*5)){
-//
-//        power_reading_counter = 0;
-//
-//        if ((int) m_pController->getActuatorAttribute((uint8_t)XR1::Back_Y, Actuator::INIT_STATE) == Actuator::Initialized)
-//            m_pController->regainAttrbute((uint8_t)XR1::Back_Y , Actuator::VOLTAGE);
-//    }
+        power_reading_counter = 0;
+
+        if ((int) m_pController->getActuatorAttribute((uint8_t)XR1::Back_Y, Actuator::INIT_STATE) == Actuator::Initialized)
+            m_pController->regainAttrbute((uint8_t)XR1::Back_Y , Actuator::VOLTAGE);
+
+        std_msgs::Float32 temp;
+        temp.data = m_pController->getActuatorAttribute((uint8_t)XR1::Back_Y,Actuator::VOLTAGE);
+        voltagePub.publish(temp);
+    }
 
     hand_command_switch = !hand_command_switch;
 

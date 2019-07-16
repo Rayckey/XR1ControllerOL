@@ -2,7 +2,6 @@
 #include <ros/package.h>
 #include <iostream>
 
-
 XR1ControllerOL::XR1ControllerOL() :
     hand_command_switch(true)
     ,power_reading_counter(30000)
@@ -144,7 +143,7 @@ XR1ControllerOL::XR1ControllerOL() :
     LeftHandCurrentPublisher = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/Current", 1);
     RightHandCurrentPublisher = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Current", 1);
     // -------------------------------------------------------------------------------
-
+    voltagePub = nh.advertise<std_msgs::Float32>("ginger_actuator/voltage",1);
 
     // Omni information Publisher and Subscriber -------------------------------------
 
