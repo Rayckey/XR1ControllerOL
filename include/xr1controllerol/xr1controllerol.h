@@ -28,7 +28,7 @@
 // Hopps Port messages
 #include <sensor_msgs/JointState.h>
 #include <std_msgs/Int8.h>
-
+#include <std_msgs/Float32.h>
 
 // The IK planner message service
 #include "xr1controllerol/IKLinearService.h"
@@ -580,7 +580,7 @@ private:
     geometry_msgs::Transform temp_geo_trans;
     double temp_value;
     // ---------------------------------------------
-
+    ros::Publisher voltagePub;
 
 }; //class
 
