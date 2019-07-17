@@ -136,10 +136,11 @@ void XR1ControllerOL::readingCallback() {
             if (actuator_ready_4_cvp[i])
                 m_pController->getCVPValue(i);
             else {
-                m_pController->regainAttrbute(i,Actuator::ACTUAL_POSITION);
-                m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+                if (hand_command_switch){
+                    m_pController->regainAttrbute(i,Actuator::ACTUAL_POSITION);
+                    m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
 //                m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
-
+                }
             }
         }
     }
@@ -153,7 +154,9 @@ void XR1ControllerOL::readingCallback() {
             if (actuator_ready_4_cvp[i])
                 m_pController->getCVPValue(i);
             else {
-                m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+                if (hand_command_switch) {
+                    m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+                }
             }
         }
     }
