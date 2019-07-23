@@ -37,17 +37,46 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
         if (req.NewTarget){
 
             setControlMode(control_group , XR1::IKMode);
-            if (control_group == XR1::LeftArm)
-                setControlMode(XR1::LeftHand , XR1::IKMode);
-            else if (control_group == XR1::RightArm)
-                setControlMode(XR1::RightHand , XR1::IKMode);
+//            if (control_group == XR1::LeftArm)
+//                setControlMode(XR1::LeftHand , XR1::IKMode);
+//            else if (control_group == XR1::RightArm)
+//                setControlMode(XR1::RightHand , XR1::IKMode);
 
             res.inProgress = false;
             if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
                 res.isReachable = true;
                 res.isAccepted = true;
 
-                XR1_ptr->setGrippingSwitch( control_group , req.Grip);
+//                XR1_ptr->setGrippingSwitch( control_group , req.Grip);
+
+
+                if (control_group == XR1::LeftArm){
+                    if ( req.Grip){
+                        temp_vec5d << 1,1,1,1,1;
+                        XR1_ptr->setJointPosition(XR1::LeftHand , temp_vec5d);
+                    }
+                    else {
+                        temp_vec5d << 0,0,0,0,0;
+                        XR1_ptr->setJointPosition(XR1::LeftHand, temp_vec5d);
+                    }
+
+                    setControlGroupTarget(XR1::LeftHand);
+                }
+
+                else {
+
+                    if (req.Grip){
+                        temp_vec5d << 1,1,1,1,1;
+                        XR1_ptr->setJointPosition(XR1::RightHand, temp_vec5d);
+                    }
+                    else {
+                        temp_vec5d << 0,0,0,0,0;
+                        XR1_ptr->setJointPosition(XR1::RightHand , temp_vec5d);
+
+                    }
+                    setControlGroupTarget(XR1::RightHand);
+                }
+
             }
         }
         res.inProgress = false;
