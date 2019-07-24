@@ -126,7 +126,7 @@ void XR1ControllerOL::subscribeJointStates(const sensor_msgs::JointState & msg){
         }
 
         else {
-            ROS_INFO( "Joint State set Joint [%d] to [%f]" , (int) temp_id.back() , XR1_ptr->getTargetJointPosition(temp_id.back()) );
+//            ROS_INFO( "Joint State set Joint [%d] to [%f]" , (int) temp_id.back() , XR1_ptr->getTargetJointPosition(temp_id.back()) );
 
             // Uncomment this to go to town ----------------------------------------
             m_pController->setPosition(temp_id.back() , XR1_ptr->getTargetJointPosition(temp_id.back()));

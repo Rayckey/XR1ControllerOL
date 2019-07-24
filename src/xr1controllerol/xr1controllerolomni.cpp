@@ -54,7 +54,7 @@ void XR1ControllerOL::Omni2Actuator() {
         XR1_ptr->getTargetVelocity(XR1::OmniWheels , temp_vec3d);
 
         // simulation call -------------------------------------------------------------
-        ROS_INFO("LF: [%f] , RF: [%f] , BK: [%f] " , temp_vec3d(0) ,temp_vec3d(1) ,temp_vec3d(2)) ;
+//        ROS_INFO("LF: [%f] , RF: [%f] , BK: [%f] " , temp_vec3d(0) ,temp_vec3d(1) ,temp_vec3d(2)) ;
         // -----------------------------------------------------------------------------
 
         for (uint8_t i = XR1::OmniWheels ; i < XR1::MainBody ; i++) {
@@ -72,7 +72,7 @@ void XR1ControllerOL::subscribeOmniCommands(const geometry_msgs::Twist & msg){
 
         omni_cmd_expire_counter = 0;
 
-        ROS_INFO(" New Omni Command Received [%f] [%f] [%f]" , temp_omni_cmd(0) ,temp_omni_cmd(1) ,temp_omni_cmd(2)) ;
+//        ROS_INFO(" New Omni Command Received [%f] [%f] [%f]" , temp_omni_cmd(0) ,temp_omni_cmd(1) ,temp_omni_cmd(2)) ;
 
 
         XRA_ptr->setTargetOmniCmd(temp_omni_cmd);
@@ -80,7 +80,7 @@ void XR1ControllerOL::subscribeOmniCommands(const geometry_msgs::Twist & msg){
 
     else{
         temp_omni_cmd << msg.angular.x , msg.linear.y , msg.linear.z ;
-        ROS_INFO(" New Omni Command Received [%f] [%f] [%f]" , temp_omni_cmd(0) ,temp_omni_cmd(1) ,temp_omni_cmd(2)) ;
+//        ROS_INFO(" New Omni Command Received [%f] [%f] [%f]" , temp_omni_cmd(0) ,temp_omni_cmd(1) ,temp_omni_cmd(2)) ;
         XR1_ptr->SetOmniWheelsVelocity(temp_omni_cmd);
     }
 
