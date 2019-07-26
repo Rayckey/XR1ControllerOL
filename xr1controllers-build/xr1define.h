@@ -53,7 +53,7 @@ enum ActuatorID {
 	Actuator_Total = 35,
 };
 
-enum ChainOperationMode {
+enum JointOperationMode {
 	PositionMode = 1,
 	VelocityMode = 2,
 	ForceMode = 3,
@@ -69,6 +69,8 @@ enum SubOperationMode {
 	DriveMode = 9,
 	RoamMode = 10,
 	TeachMode = 11,
+	SDMode = 12,
+	ESDMode = 13,
 };
 
 enum XR1State {
@@ -79,16 +81,21 @@ enum XR1State {
 	LOCKED = 204,
 };
 
-
 enum ValuesOptions {
 	ActualPosition,
 	ActualVelocity,
 	ActualAcceleration,
-	ActualCurrent,
+	ActualEffort,
 	TargetPosition,
 	TargetVelocity,
 	TargetAcceleration,
-	TargetCurrent,
+	TargetEffort,
+};
+
+enum FrameReference{
+    SpatialFrame = 40,
+    EndEffectorFrame = 41,
+    ToolFrame = 42,
 };
 
 enum AttributeIDs {
@@ -97,19 +104,10 @@ enum AttributeIDs {
 	Derivative = 52,
 };
 
-// enum PathPlaningMethods{
-//     RRT = 100,
-//     EST = 101,
-//     KPIECE = 102,
-//     PDST = 103,
-// };
-
-
 enum HandGripActions {
 	HandGrip = 401,
 	HandRelease = 402,
 };
-
 
 enum InverseDynamicsOptions {
 	None = 0,

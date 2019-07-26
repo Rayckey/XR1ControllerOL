@@ -326,7 +326,7 @@ bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
 
             res.inProgress = false;
             std::cout << itsafine.matrix() << std::endl;
-            if (XR1_ptr->setEndEffectorPosition(control_group, itsafine, req.TargetElbowAngle, req.Period)) {
+            if (XR1_ptr->setEndEffectorTransformation(control_group, itsafine, req.TargetElbowAngle, req.Period)) {
                 ROS_INFO("doing request" );
 
                 res.isReachable = true;
@@ -413,28 +413,33 @@ void broadcastTransform(const ros::TimerEvent &event) {
 
     // Publish the left one
     XR1_ptr->getEndEffectorTransformation(XR1::LeftArm, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, temp_transform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(temp_transform, ros::Time::now(), "/Back_Y", "/LeftEndEffector"));
 
 
     // Publish the right one
     XR1_ptr->getEndEffectorTransformation(XR1::RightArm, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     // std::cout << itsafine.matrix() << std::endl;
     tf::transformEigenToTF(itsafine, temp_transform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(temp_transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
 
     XR1_ptr->getEndEffectorTransformation(XR1::HeadBody, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, temp_transform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(temp_transform, ros::Time::now(), "/Back_Y", "/Head"));
 
 
     XR1_ptr->getBaseTransformation(XR1::OmniWheels, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, temp_transform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(temp_transform, ros::Time::now(), "/Odom", "/Base"));
 
 
     XR1_ptr->getBaseTransformation(XR1::MainBody, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, temp_transform);
     EFF_Broadcaster->sendTransform(tf::StampedTransform(temp_transform, ros::Time::now(), "/Base", "/Back_Y"));
 
@@ -546,7 +551,7 @@ int main(int argc, char **argv) {
     std::string path = ros::package::getPath("xr1controllerol");
 
 
-    XR1_ptr = new XR1Controller(path + "/strawberry.xr1para");
+    XR1_ptr = new XR1Controller(path + "/xr1para.xr1para");
 
     XRB_ptr = new XR1ControllerBLC(path + "/BLC" ,path + "/ALP" );
 

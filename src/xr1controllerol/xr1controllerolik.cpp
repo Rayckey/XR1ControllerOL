@@ -43,7 +43,7 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
 //                setControlMode(XR1::RightHand , XR1::IKMode);
 
             res.inProgress = false;
-            if (XR1_ptr->setEndEffectorPosition(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
+            if (XR1_ptr->setEndEffectorTransformation(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
                 res.isReachable = true;
                 res.isAccepted = true;
 
@@ -202,7 +202,7 @@ bool XR1ControllerOL::serviceHandGrip(xr1controllerol::HandGripQueryRequest & re
 
         if (req.ControlGroup == XR1::LeftHand){
             for (int i =  req.ControlGroup ; i < req.ControlGroup+5 ; i++){
-                if (XR1_ptr->getJointPosition(i , true)<0.7 && XR1_ptr->getJointCurrent(i,true)>0.7){
+                if (XR1_ptr->getJointPosition(i , true)<0.7 && XR1_ptr->getJointEffort(i,true)>0.7){
                     num_of_fingers_not_closed++;
                 }
             }
@@ -210,7 +210,7 @@ bool XR1ControllerOL::serviceHandGrip(xr1controllerol::HandGripQueryRequest & re
 
         else {
             for (int i =  XR1::RightHand ; i < XR1::RightHand+5 ; i++){
-                if (XR1_ptr->getJointPosition(i , true)<0.7 && XR1_ptr->getJointCurrent(i,true)>0.7){
+                if (XR1_ptr->getJointPosition(i , true)<0.7 && XR1_ptr->getJointEffort(i,true)>0.7){
                     num_of_fingers_not_closed++;
                 }
             }

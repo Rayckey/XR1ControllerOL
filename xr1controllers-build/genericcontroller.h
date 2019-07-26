@@ -4,6 +4,7 @@
 #include <vector>
 #include "xr1define.h"
 #include "xr1controllerutil.h"
+#include "xr1controllercommon.h"
 #include <iostream>
 
 using namespace Eigen;
@@ -13,157 +14,166 @@ public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     GenericController(uint8_t id , int num_joint);
 
-    virtual void updateValue(VectorXd & JointValue , uint8_t value_type);
 
+
+    // Update the current values
+    virtual void updateValue(VectorXd & JointValue , uint8_t value_type);
     virtual void updateValue(double JointValue, uint8_t JointID , uint8_t value_type);
 
-    //Retrive Current Values from each group
-    virtual VectorXd getJointAngles();
-    virtual void getJointAngles(VectorXd & output_ref);
 
-    virtual std::vector<double> getJointAnglesStd();
+    //Retrive Buffered Values from each group
+    virtual VectorXd getJointPositions();
+    virtual void getJointPositions(VectorXd & output_ref);
+    virtual std::vector<double> getJointPositionsStd();
 
     virtual VectorXd getJointVelocities();
     virtual void getJointVelocities(VectorXd & output_ref);
-
     virtual std::vector<double> getJointVelocitiesStd();
 
-    virtual VectorXd getJointCurrents();
-    virtual void getJointCurrents(VectorXd & output_ref);
-
-    virtual std::vector<double> getJointCurrentsStd();
+    virtual VectorXd getJointEfforts();
+    virtual void getJointEfforts(VectorXd & output_ref);
+    virtual std::vector<double> getJointEffortsStd();
 
 
 
     //Retrive Target Values from each group
-    virtual VectorXd getTargetJointAngles();
-    virtual void getTargetJointAngles(VectorXd & output_ref);
-
-    virtual VectorXd getIKJointAngles();
-    virtual void getIKJointAngles(VectorXd & output_ref);
-
-    virtual void    overwriteIKJointAngles();
-
-    virtual std::vector<double> getTargetJointAnglesStd();
+    virtual VectorXd getTargetJointPositions();
+    virtual void getTargetJointPositions(VectorXd & output_ref);
+    virtual std::vector<double> getTargetJointPositionsStd();
 
     virtual VectorXd getTargetJointVelocities();
     virtual void getTargetJointVelocities(VectorXd & output_ref);
-
     virtual std::vector<double> getTargetJointVelocitiesStd();
 
     virtual VectorXd getTargetJointAccelerations();
     virtual void getTargetJointAccelerations(VectorXd & output_ref);
-
     virtual std::vector<double> getTargetJointAccelerationsStd();
 
-    virtual VectorXd getTargetJointCurrents();
-    virtual void getTargetJointCurrents(VectorXd & output_ref);
+    virtual VectorXd getTargetJointEfforts();
+    virtual void getTargetJointEfforts(VectorXd & output_ref);
+    virtual std::vector<double> getTargetJointEffortsStd();
 
-    virtual std::vector<double> getTargetJointCurrentsStd();
+    // IK excluesive ports
+    virtual VectorXd getIKJointPositions();
+    virtual void getIKJointPositions(VectorXd & output_ref);
+    virtual void    overwriteIKJointPositions();
 
 
 
-    //For each finger
-    virtual double getJointAngle(uint8_t joint_id);
-
+    //Retrive buffered values for each joint
+    virtual double getJointPosition(uint8_t joint_id);
     virtual double getJointVelocity(uint8_t joint_id);
-
     virtual double getJointAcceleration(uint8_t joint_id);
-
-    virtual double getJointCurrent(uint8_t joint_id);
-
-
-    //Get Target Values
-    virtual double getTargetJointAngle(uint8_t joint_id);
-
-    virtual double getIKJointAngle(uint8_t joint_id);
+    virtual double getJointEffort(uint8_t joint_id);
 
 
+    //Get Target Values for each joint
+    virtual double getTargetJointPosition(uint8_t joint_id);
     virtual double getTargetJointVelocity(uint8_t joint_id);
+    virtual double getTargetJointAcceleration(uint8_t joint_id);
+    virtual double getTargetJointEffort(uint8_t joint_id);
 
-    virtual double getTargetJointCurrent(uint8_t joint_id);
+    // Again, IK is seperated
+    virtual double getIKJointPosition(uint8_t joint_id);
 
 
-    //Transform 3d vector into Skew Matrix
-
-
-
+    // Set the update interval
     virtual void setPeriod(double reading_interval_in_second);
 
 
 		
 
+    //get End Effector information
+    virtual VectorXd getEndEffectorVelocity(uint8_t frame_reference);
 
+    virtual void getEndEffectorVelocity(VectorXd &output_ref , uint8_t frame_reference);
 
-    //Dumb empty virtual functions
-    virtual VectorXd getEFFVelocity();
+    virtual void getKinematics(uint8_t joint_id , Affine3d & output_ref);
 
-    virtual VectorXd getEFFPosition();
+    virtual void getTransformation(uint8_t joint_id , Affine3d & output_ref);
 
-    virtual MatrixXd getEFFPositionMatrix();
+    virtual Affine3d getTransformation(uint8_t JointID);
 
     virtual void getEndEffectorTransformation(Affine3d & transformationReference);
 
     virtual double getElbowAngle();
 
-//    virtual void getBaseTransformation(Affine3d & input);
+    virtual double getTargetElbowAngle();
 
-    // Update the the base
-//    void updateBaseTransformation(Matrix3d BaseT);
 
     // Returns the last calculated Jacobian matrix
-    virtual MatrixXd getJacobian(uint8_t id);
+    virtual MatrixXd getJacobian(uint8_t id, uint8_t reference_frame);
 
-    // Return the last calculated end effector Transformation
-    virtual MatrixXd getTransformation(uint8_t JointID);
-
-
-    virtual void setEFFIncrement(const Vector3d& Linear , const Vector3d& Angular);
-
-    virtual void setEFFVelocity(const Vector3d& Linear , const Vector3d& Angular);
-
-    virtual void setEFFCurrent(const Vector3d& Force , const Vector3d& Torque);
-
-    virtual void setEFFIncrement(const VectorXd& twist);
-
-    virtual void setEFFVelocity(const VectorXd& twist);
-
-    virtual void setEFFCurrent(const VectorXd& twist);
-
-//    virtual bool setEFFPosition(const VectorXd& twist , const double &elbow_lift_angle);
-
-    virtual bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , const double elbow_lift_angle);
-
-    virtual bool setEFFPosition(const Affine3d &transformation, double elbow_lift_angle);
+    virtual void getJacobian(uint8_t id, MatrixXd & output_ref , uint8_t reference_frame = XR1::SpatialFrame);
 
 
+    // get end effector target, will over write previous target
+    virtual void setEndEffectorIncrement(const Vector3d& Linear , const Vector3d& Angular , uint8_t frame_reference = XR1::SpatialFrame);
+
+    virtual void setEndEffectorVelocity(const Vector3d& Linear , const Vector3d& Angular , uint8_t frame_reference = XR1::SpatialFrame);
+
+    virtual void setEndEffectorEffort(const Vector3d& Force , const Vector3d& Torque , uint8_t frame_reference = XR1::SpatialFrame);
+
+    virtual void setEndEffectorIncrement(const VectorXd& twist , uint8_t frame_reference = XR1::SpatialFrame);
+
+    virtual void setEndEffectorVelocity(const VectorXd& twist , uint8_t frame_reference = XR1::SpatialFrame);
+
+    virtual void setEndEffectorEffort(const VectorXd& twist, uint8_t frame_reference = XR1::SpatialFrame);
+
+    // End effector target but with target
+
+    virtual bool setEndEffectorTransformation(const Affine3d &transformation, double optional_1 );
+
+
+    // Sometimes the base will have transformation as well
+//    virtual void initializeBaseTransformation();
+
+    virtual void setBaseTransformation(Affine3d & transformationReference);
+
+    virtual void getBaseTransformation(Affine3d & transformationReference);
+
+    //trigger during mode change
     virtual void modeChange();
 
-    // Free for grabbing values
-    VectorXd Joint_Angles;
+    // Buffered values
+    VectorXd Joint_Positions;
     VectorXd Joint_Velocities;
     VectorXd Joint_Acceleration;
-    VectorXd Joint_Currents;
-    VectorXd Target_Joint_Angles;
+    VectorXd Joint_Efforts;
+    VectorXd Target_Joint_Positions;
     VectorXd Target_Joint_Velocities;
     VectorXd Target_Joint_Acceleration;
+    VectorXd Target_Joint_Efforts;
 
-    VectorXd IK_Joint_Angles;
+    // IK values are seperated
+    VectorXd IK_Joint_Positions;
     VectorXd IK_Joint_Velocities;
     VectorXd IK_Joint_Acceleration;
 
     uint8_t DynamicsOption;
-    double ElbowAngle;
+
+
+    //Kinematics stuff
+    std::vector<Affine3d> m_Kinematics;
+    std::vector<Affine3d> m_Transformations;
+    Affine3d BaseTransformation;
+    Affine3d ToolTransformation;
+    Affine3d TargetTransformation;
+
+
+    // temp variables
+    Matrix3d temp_rot;
+    Vector3d temp_vec;
+    Matrix3d temp_hat;
+    Affine3d temp_afn;
+
 
 protected:
 
+    // important control group infomrations
     uint8_t Begin_ID;
     int NUM_OF_JOINTS;
     double period;
-
-    VectorXd Target_Joint_Currents;
-
-
 
 
 };

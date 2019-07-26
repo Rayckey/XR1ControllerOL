@@ -73,14 +73,14 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Target Current
     //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t control_group , VectorXd & JC);
+    void setJointEffort(uint8_t control_group , VectorXd & JC);
 
 
     //Set the Target Joint Currents for a single joint, i.e. LeftShoulderX , RightWristZ
     //Used in the XR1Controller
     //Argu: Control Group ID , Angular Velocity contained in std::vector<double>
     //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t joint_idx ,   double JC);
+    void setJointEffort(uint8_t joint_idx ,   double JC);
 
 
     //Get the Current Joint Angles for an entire control group, i.e. LeftARM , RightHand
@@ -117,15 +117,15 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID
     //Reutrns : Joint Currents contained in Eigen::VectorXd
-    VectorXd getJointCurrents(uint8_t control_group , bool vanilla = false);
-    void getJointCurrents(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);
+    VectorXd getJointEfforts(uint8_t control_group , bool vanilla = false);
+    void getJointEfforts(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);
 
 
     //Get the Current Joint Currents for an entire control group, i.e. LeftARM , RightHand
     //Used in the XR1Controller
     //Argu: Control Group ID
     //Reutrns : Joint Currents contained in std::vector
-    std::vector<double> getJointCurrentsStd(uint8_t control_group);
+    std::vector<double> getJointEffortsStd(uint8_t control_group);
 
 
 
@@ -133,13 +133,13 @@ public:
 
     double getTargetJointVelocity(uint8_t joint_id , bool vanilla = false);
 
-    double getTargetJointCurrent(uint8_t joint_id , bool vanilla = false);
+    double getTargetJointEffort(uint8_t joint_id , bool vanilla = false);
 
     double getJointPosition(uint8_t joint_id , bool vanilla = false);
 
     double getJointVelocity(uint8_t joint_id , bool vanilla = false);
 
-    double getJointCurrent(uint8_t joint_id , bool vanilla = false);
+    double getJointEffort(uint8_t joint_id , bool vanilla = false);
 
     //Set the Control Method for an entire Control Group , i.e. LeftARM , RightHand
     //Used in the XR1Controller
@@ -174,7 +174,7 @@ public:
 
     void setGrippingSwitch(uint8_t control_group, bool tof);  
 
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period , uint8_t base_group = XR1::Back_Y);
+    bool setEndEffectorTransformation(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period , uint8_t base_group = XR1::Back_Y);
 
     void stabilizeEndEffector(uint8_t control_group , uint8_t base_id );
 
@@ -326,8 +326,8 @@ public:
     void getTargetVelocity(uint8_t control_group , VectorXd & output_ref, bool vanilla = false);
 
     //Get Target Current for Arms or Body
-    VectorXd getTargetCurrent(uint8_t control_group , bool vanilla = false);
-    void getTargetCurrent(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);
+    VectorXd getTargetEffort(uint8_t control_group , bool vanilla = false);
+    void getTargetEffort(uint8_t control_group , VectorXd & output_ref , bool vanilla = false);
 
 
     // Trigger the Calcualtions

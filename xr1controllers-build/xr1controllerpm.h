@@ -61,7 +61,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Target Current
     //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t control_group , VectorXd & JC);
+    void setJointEffort(uint8_t control_group , VectorXd & JC);
 
 
     //Set the Target Joint Positions for a single joint, i.e. LeftShoulderX , RightWristZ
@@ -87,7 +87,7 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID , Angular Velocity contained in std::vector<double>
     //Reutrns : void , may add error message in the fulture
-    void setJointCurrent(uint8_t JointID ,double JC);
+    void setJointEffort(uint8_t JointID ,double JC);
 
     //Get the Current Joint Angles for an entire control group, i.e. LeftARM , RightHand
     //Used in the XR1Controller
@@ -119,28 +119,28 @@ public:
     //Used in the XR1Controller
     //Argu: Control Group ID
     //Reutrns : Joint Currents contained in Eigen::VectorXd
-    VectorXd getJointCurrents(uint8_t control_group);
-    void getJointCurrents(uint8_t control_group , VectorXd & output_ref);
+    VectorXd getJointEfforts(uint8_t control_group);
+    void getJointEfforts(uint8_t control_group , VectorXd & output_ref);
 
     //Get the Current Joint Currents for an entire control group, i.e. LeftARM , RightHand
     //Used in the XR1Controller
     //Argu: Control Group ID
     //Reutrns : Joint Currents contained in std::vector
-    std::vector<double> getJointCurrentsStd(uint8_t control_group);
+    std::vector<double> getJointEffortsStd(uint8_t control_group);
 
 
     //For each joint
-    double getJointAngle(uint8_t joint_id);
+    double getJointPosition(uint8_t joint_id);
 
     double getJointVelocity(uint8_t joint_id);
 
-    double getJointCurrent(uint8_t joint_id);
+    double getJointEffort(uint8_t joint_id);
 
     double getTargetJointPosition(uint8_t joint_id , uint8_t mode_fixed = 0);
 
     double getTargetJointVelocity(uint8_t joint_id);
 
-    double getTargetJointCurrent(uint8_t joint_id);
+    double getTargetJointEffort(uint8_t joint_id);
 
     //---------------------------------------------------------------------------------
     //Get Target Position for Arms or Body
@@ -152,8 +152,8 @@ public:
     void getTargetVelocity(uint8_t control_group, VectorXd & output_ref);
 
     //Get Target Current for Arms or Body
-    VectorXd getTargetCurrent(uint8_t control_group);
-    void getTargetCurrent(uint8_t control_group, VectorXd & output_ref );
+    VectorXd getTargetEffort(uint8_t control_group);
+    void getTargetEffort(uint8_t control_group, VectorXd & output_ref );
 
     //Zero all the values
     void Zero();
@@ -214,7 +214,8 @@ public:
 
     void setGrippingSwitch(uint8_t control_group, bool tof);
 
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period, uint8_t base_group = XR1::Back_Y);
+    bool setEndEffectorTransformation(uint8_t control_group , const Affine3d &transformation, double optional_1 = 777 , double optional_2 = 0, uint8_t base_group = XR1::Back_Y);
+
 
     void stabilizeEndEffector(uint8_t control_group , uint8_t base_id);
 
@@ -233,7 +234,7 @@ public:
     void setLeftArmVelocity(const Vector3d& Linear , const Vector3d& Angular);
     void setRightArmVelocity(const Vector3d& Linear , const Vector3d& Angular);
 
-    void setEndEffectorForce(uint8_t control_group , const Vector3d& Linear , const Vector3d& Torque);
+    void setEndEffectorEffort(uint8_t control_group , const Vector3d& Linear , const Vector3d& Torque);
     void setLeftArmForce(const Vector3d& Force , const Vector3d& Torque);
     void setRightArmForce(const Vector3d& Force , const Vector3d& Torque);
 
@@ -251,17 +252,13 @@ public:
 
     VectorXd getLeftArmVelocity();
 
-    VectorXd getLeftArmPosition();
-
-    MatrixXd getLeftArmPositionMatrix();
 
     VectorXd getRightArmForce();
 
     VectorXd getRightArmVelocity();
 
-    VectorXd getRightArmPosition();
 
-    MatrixXd getRightArmPositionMatrix();
+
 
 
 
@@ -325,13 +322,10 @@ public:
 
 private:
 
+    // internal functions
     // two functions to read parameters
     void readParameters(string parameters_path);
-    std::vector<std::vector<double> > readParameter(std::string parameter_path);
-
-    // internal functions
-    bool setEndEffectorPosition(uint8_t control_group , const Matrix3d &rotation , const Vector3d &position , const double &elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle , uint8_t base_group = XR1::Back_Y);
+    std::deque<std::vector<double> > readParameter(std::string parameter_path);
 
 
     // Pointers to all the controllers
@@ -417,26 +411,17 @@ private:
     double breakAcceleration(double velocity , double period);
     double breakMotion(double x0 , double v0 , double a, double t);
     bool GripDetection(uint8_t joint_id);
-    bool CollisionThresholding(VectorXd && ActualCurrent , VectorXd && ExpectedCurrent, std::vector<double> Thresholds, std::vector<double> StaticThreshold);
+    bool CollisionThresholding(VectorXd && ActualCurrent , VectorXd && ExpectedCurrent, std::vector<double> Thresholds);
     bool ReleaseThresholding(VectorXd ActualPosition, VectorXd TargetPosition, VectorXd Thresholds);
     bool CollisionThresholding(double ActualCurrent , double ExpectedCurrent, double Threshold);
     bool ReleaseThresholding(double ActualPosition, double TargetPosition, double Threshold);
 
-    std::vector<double> LeftArmCollisionThreshold;
-    std::vector<double> RightArmCollisionThreshold;
-    std::vector<double> LeftArmStaticThreshold ;
-    std::vector<double> RightArmStaticThreshold;
+    std::vector<double> CollisionThreshold;
     double LeftArmCollisionCounter;
     double RightArmCollisionCounter;
-    double LeftArmCollisionCounterLimit;
-    double RightArmCollisionCounterLimit;
+    int CollisionCounterLimit;
     double HandCollisionThreshold;
 
-
-
-
-
-    void PlaybackCallback();
 
 
 

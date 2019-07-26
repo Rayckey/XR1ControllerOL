@@ -154,7 +154,7 @@ void XR1ControllerOL::publishJointStates(){
 
         temp_jointstate.velocity[fake_joint_id - 1] = XR1_ptr->getJointVelocity(fake_joint_id , true);
 
-        temp_jointstate.effort[fake_joint_id - 1] = XR1_ptr->getJointCurrent(fake_joint_id , true);
+        temp_jointstate.effort[fake_joint_id - 1] = XR1_ptr->getJointEffort(fake_joint_id , true);
 
     }
 

@@ -16,6 +16,8 @@ public:
 
     void setVelocity(Vector3d & input);
 
+    void getTargetVelocity(Vector3d & input);
+
     Vector3d getVelocity();
 
     void getVelocity(Vector3d & ref);

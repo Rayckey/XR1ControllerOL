@@ -95,7 +95,7 @@ private:
     VectorXd temp_b; //body velocity
     VectorXd temp_s; //spacial velocity
     MatrixXd temp_adj; // b->a adjoint
-    MatrixXd temp_jac; // body jacobians;
+    MatrixXd temp_jac; // body m_Jacobians;
     VectorXd temp_target; // target twist
 
 
@@ -106,7 +106,7 @@ public:
 EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     IKplanner(ChainController * point2leftarm , ChainController * point2rightarm );
 
-    bool setEndEffectorPosition(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
+    bool setEndEffectorTransformation(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
 
     void assignNextCommand();
 

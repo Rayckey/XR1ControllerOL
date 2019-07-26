@@ -5,8 +5,9 @@
 #include "Eigen/Dense"
 #include "xr1define.h"
 #include <vector>
-#include "IKsolver.h"
+#include "wrappedarmiksolver.h"
 #include <iostream>
+#include "dlib/optimization.h"
 
 using namespace Eigen;
 
@@ -14,61 +15,59 @@ class ChainController: public GenericController
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ChainController(MatrixXd DH_input, uint8_t id , int num_joint );
+    ChainController(MatrixXd mdh_input, uint8_t group_id, uint8_t num_joint,  double a1 , double a2 , double a3, double arm_angle, double upper_limit, double lower_limit);
 
-    void triggerCalculationPass();
+    typedef dlib::matrix<double, 0, 1> column_vector;
+
+
+
+    void triggerCalculation();
 
     //Over load some functions
-    VectorXd getTargetJointCurrents();
-    void getTargetJointCurrents(VectorXd & output_ref);
-    std::vector<double> getTargetJointCurrentsStd();
-    double getTargetJointCurrent(uint8_t joint_id);
+    VectorXd getTargetJointEfforts();
+    void getTargetJointEfforts(VectorXd & output_ref);
+    std::vector<double> getTargetJointEffortsStd();
+    double getTargetJointEffort(uint8_t joint_id);
 
 
     // End Effector Controls
-    void setEFFIncrement(const Vector3d& Linear , const Vector3d& Angular);
-    void setEFFVelocity(const Vector3d& Linear , const Vector3d& Angular);
-    void setEFFCurrent(const Vector3d& Force , const Vector3d& Torque);
-    void setEFFIncrement(const VectorXd& twist);
-    void setEFFVelocity(const VectorXd& twist);
-    void setEFFCurrent(const VectorXd& twist);
-    VectorXd getEFFVelocity();
-    VectorXd getEFFPosition();
-    MatrixXd getEFFPositionMatrix();
-    void getEndEffectorTransformation(Affine3d & transformationReference);
+    void setEndEffectorIncrement(const Vector3d& Linear , const Vector3d& Angular , uint8_t frame_reference = XR1::SpatialFrame);
+
+    void setEndEffectorVelocity(const Vector3d& Linear , const Vector3d& Angular , uint8_t frame_reference = XR1::SpatialFrame);
+
+    void setEndEffectorEffort(const Vector3d& Force , const Vector3d& Torque , uint8_t frame_reference = XR1::SpatialFrame);
+
+    void setEndEffectorIncrement(const VectorXd& twist , uint8_t frame_reference = XR1::SpatialFrame);
+
+    void setEndEffectorVelocity(const VectorXd& twist , uint8_t frame_reference = XR1::SpatialFrame);
+
+    void setEndEffectorEffort(const VectorXd& twist, uint8_t frame_reference = XR1::SpatialFrame);
+
+
     double getElbowAngle();
-    void getBaseTransformation(Affine3d &transformationReference);
+    double getTargetElbowAngle();
+
+    VectorXd getEndEffectorVelocity(uint8_t frame_reference = XR1::SpatialFrame);
+
+    void getEndEffectorVelocity(VectorXd & output_ref , uint8_t frame_reference = XR1::SpatialFrame);
+
 
     // Use this for points that are VERY CLOSE! it sets the target position straight up;
-    bool setEFFPosition(const Matrix3d &rotation , const Vector3d &position , double elbow_lift_angle);
-    bool setEFFPosition(const Affine3d &transformation, double elbow_lift_angle);
+    bool setEndEffectorTransformation(const Affine3d &target_transformation, double target_elbow_angle = 777 );
+
     void correctIKJointAngles();
 
+    double  computeElbowCost(const column_vector &target_elbow_angle);
 
     // Update the the base
 //    void updateBaseTransformation(Matrix3d BaseT);
 
     // Returns the last calculated Jacobian matrix
-    MatrixXd getJacobian(uint8_t id = 0);
-    void getJacobian(MatrixXd & jac);
-
-    // Return the last calculated end effector Transformation
-    MatrixXd getTransformation(uint8_t JointID);
+    MatrixXd getJacobian(uint8_t id , uint8_t reference_frame = XR1::SpatialFrame);
+    void getJacobian(uint8_t id , MatrixXd & jac , uint8_t reference_frame = XR1::SpatialFrame);
 
 
 
-    // DH and MDH methods
-    void T_DH(double d , double offset , double alpha , double ad , double theta);
-    void T_MDH(MatrixXd &temp_trans, double alpha , double ad , double d , double offset , double theta);
-
-
-    // Saves Jacobian mastix with MDH
-    void Jacobeam();
-
-    // get adjoint from transformation
-    void Adjoint(MatrixXd & adj);
-    MatrixXd invAdjoint(MatrixXd & T);
-    MatrixXd EFF2BaseForceAdjoint(MatrixXd & T);
 
 
 
@@ -77,86 +76,42 @@ public:
 
 
     VectorXd Dynamic_Compensation;
-    uint8_t Begin_ID;
+    double ElbowAngle;
+    double TargetElbowAngle;
+
 
 
 private:
-    // Saves Jacobian matrix as a the member variable
-    void Jacobeans();
-
-    // Saves individual transformation in the transformation collection
-    void Transformation();
-
 
 
     //pointer to ik solver
-    IKsolver * scott_the_solver;
+    WrappedArmIKSolver * WrappedIKSolver_ptr;
 
-    // DH paramters
-    double shoulder_angle_offset;
-    double la1;
-    double la2;
-    double la3;
-    double la4;
-    double la5;
-    MatrixXd DH_parameters;
-    VectorXd d ;
-    VectorXd ad ;
-    VectorXd alpha ;
-    VectorXd offset;
+
+    MatrixXd m_MDHParameters;
+
+    VectorXd m_gamma ;
+    VectorXd m_b     ;
+    VectorXd m_alpha ;
+    VectorXd m_d     ;
+    VectorXd m_r     ;
 
     //Buffer values
-    std::vector<MatrixXd> Jacobians;
-    std::vector<MatrixXd> m_T_array;
-    std::vector<MatrixXd> m_Ti_array;
+    std::vector<MatrixXd> m_BodyJacobians;
+    std::vector<MatrixXd> m_SpatialJacobians;
 
 
-
-    Affine3d BaseTransformation;
-
-
-
-    //regular consts
-    int NUM_PARA;
-    Vector3d grav;
-    double g;
-
-
-
-protected:
+    column_vector UpperLimit;
+    column_vector LowerLimit;
 
 
     // Temp values
-
-    // For Transforms
-    double costheta;
-    double sintheta;
-    double sinalpha;
-    double cosalpha;
-
-
-    // Jacobeans
-    Vector3d v;
-    Vector3d w_j;
-    Vector3d z;
-
-    Vector3d temp_v_1;
-    Vector3d temp_v_2;
-
-
-    //Transformation
-    MatrixXd Trans;
-    MatrixXd Temp_Trans;
-
     Affine3d ArmPit;
-    Affine3d TransferedGoal;
-    Affine3d tempAffine;
+    Affine3d tempAffineA;
+    Affine3d tempAffineB;
 
-    //Adjoint
-    Matrix3d temp_rot;
-    Vector3d temp_vec;
-    Matrix3d temp_hat;
-    Affine3d temp_afn;
+
+
 };
 
 #endif // CHAINCONTROLLER_H

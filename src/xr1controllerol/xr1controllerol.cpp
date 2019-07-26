@@ -24,7 +24,7 @@ XR1ControllerOL::XR1ControllerOL() :
     XRB_ptr->setActive(false);
     XRB_ptr->setPassive(false);
 
-    XR1_ptr = new XR1Controller(path + "/fungus.xr1para");
+    XR1_ptr = new XR1Controller(path + "/xr1para.xr1para");
 
     XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1 , XRB_ptr);
 
@@ -216,7 +216,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     attribute_map[Actuator::ACTUAL_POSITION] = XR1::ActualPosition;
     attribute_map[Actuator::ACTUAL_VELOCITY] = XR1::ActualVelocity;
-    attribute_map[Actuator::ACTUAL_CURRENT] = XR1::ActualCurrent;
+    attribute_map[Actuator::ACTUAL_CURRENT] = XR1::ActualEffort;
 
     // -----------------------------------------------
 
@@ -563,7 +563,7 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyVelocityPublisher.publish(temp_bodymsgs);
 
-    XR1_ptr->getJointCurrents(XR1::MainBody, temp_vec7d , true);
+    XR1_ptr->getJointEfforts(XR1::MainBody, temp_vec7d , true);
     ConvertBodyMsgs(temp_vec7d , temp_bodymsgs);
     MainBodyCurrentPublisher.publish(temp_bodymsgs);
 
@@ -576,7 +576,7 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertHeadMsgs(temp_vec7d , temp_headmsgs);
     HeadBodyPositionPublisher.publish(temp_headmsgs);
 
-    XR1_ptr->getJointCurrents(XR1::HeadBody, temp_vec7d , true);
+    XR1_ptr->getJointEfforts(XR1::HeadBody, temp_vec7d , true);
     ConvertHeadMsgs(temp_vec7d , temp_headmsgs);
     HeadBodyPositionPublisher.publish(temp_headmsgs);
 
@@ -589,7 +589,7 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertArmMsgs(temp_vec7d , temp_armmsgs);
     LeftArmVelocityPublisher.publish(temp_armmsgs);
 
-    XR1_ptr->getJointCurrents(XR1::LeftArm, temp_vec7d , true);
+    XR1_ptr->getJointEfforts(XR1::LeftArm, temp_vec7d , true);
     ConvertArmMsgs(temp_vec7d , temp_armmsgs);
     LeftArmCurrentPublisher.publish(temp_armmsgs);
 
@@ -601,7 +601,7 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertArmMsgs(temp_vec7d , temp_armmsgs);
     RightArmVelocityPublisher.publish(temp_armmsgs);
 
-    XR1_ptr->getJointCurrents(XR1::RightArm, temp_vec7d , true);
+    XR1_ptr->getJointEfforts(XR1::RightArm, temp_vec7d , true);
     ConvertArmMsgs(temp_vec7d , temp_armmsgs);
     RightArmCurrentPublisher.publish(temp_armmsgs);
 
@@ -613,11 +613,11 @@ void XR1ControllerOL::unleaseJointInfo(){
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     RightHandPositionPublisher.publish(temp_handmsgs);
 
-    XR1_ptr->getJointCurrents(XR1::LeftHand, temp_vec5d, true);
+    XR1_ptr->getJointEfforts(XR1::LeftHand, temp_vec5d, true);
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     LeftHandCurrentPublisher.publish(temp_handmsgs);
 
-    XR1_ptr->getJointCurrents(XR1::RightHand, temp_vec5d , true);
+    XR1_ptr->getJointEfforts(XR1::RightHand, temp_vec5d , true);
     ConvertHandMsgs(temp_vec5d , temp_handmsgs);
     RightHandCurrentPublisher.publish(temp_handmsgs);
 
@@ -631,28 +631,33 @@ void XR1ControllerOL::broadcastTransform() {
 
     // Publish the left one
     XR1_ptr->getEndEffectorTransformation(XR1::LeftArm, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/LeftEndEffector"));
 
 
     // Publish the right one
     XR1_ptr->getEndEffectorTransformation(XR1::RightArm, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/RightEndEffector"));
 
 
     // Publish the head
     XR1_ptr->getEndEffectorTransformation(XR1::HeadBody, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Back_Y", "/Head"));
 
 
     XR1_ptr->getBaseTransformation(XR1::OmniWheels, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Odom", "/Base"));
 
 
     XR1_ptr->getBaseTransformation(XR1::MainBody, itsafine);
+//    std::cout << itsafine.matrix() <<std::endl;
     tf::transformEigenToTF(itsafine, transform);
     EFF_Broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/Base", "/Back_Y"));
 

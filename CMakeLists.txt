@@ -122,9 +122,9 @@ add_dependencies(actuator_bridge ${PROJECT_NAME} ${catkin_LIBRARIES})
 #target_link_libraries(tilt_test ${catkin_LIBRARIES} ${PROJECT_NAME})
 #add_dependencies(tilt_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(xr1controllerIK_simulator src/xr1controllerIK_simulator.cpp)
-target_link_libraries(xr1controllerIK_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(xr1controllerIK_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
+#add_executable(xr1controllerIK_simulator src/xr1controllerIK_simulator.cpp)
+#target_link_libraries(xr1controllerIK_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(xr1controllerIK_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
 add_executable(xr1controllerOL_simulator src/xr1controllerOL_simulator.cpp)
@@ -151,9 +151,9 @@ add_dependencies(xr1controllerOL_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
 #add_dependencies(xr1controllerIK_varify ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
-add_executable(xr1controllerALP_simulator src/xr1controllerALP_simulator.cpp)
-target_link_libraries(xr1controllerALP_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(xr1controllerALP_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
+#add_executable(xr1controllerALP_simulator src/xr1controllerALP_simulator.cpp)
+#target_link_libraries(xr1controllerALP_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
+#add_dependencies(xr1controllerALP_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
 

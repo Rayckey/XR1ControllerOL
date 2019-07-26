@@ -38,7 +38,7 @@ void XR1ControllerOL::subscribeLeftArmCurrent(const xr1controllerros::ArmMsgs &m
 
     else {
         ArmMsgs2VectorXd(msg , temp_vec7d);
-        XR1_ptr->setJointCurrent(XR1::LeftArm, temp_vec7d);
+        XR1_ptr->setJointEffort(XR1::LeftArm, temp_vec7d);
         setControlGroupTarget(XR1::LeftArm);
     }
 }
@@ -76,7 +76,7 @@ void XR1ControllerOL::subscribeRightArmCurrent(const xr1controllerros::ArmMsgs &
 
     else {
         ArmMsgs2VectorXd(msg , temp_vec7d);
-        XR1_ptr->setJointCurrent(XR1::RightArm, temp_vec7d);
+        XR1_ptr->setJointEffort(XR1::RightArm, temp_vec7d);
         setControlGroupTarget(XR1::RightArm);
     }
 }
@@ -102,7 +102,7 @@ void XR1ControllerOL::subscribeMainBodyCurrent(const xr1controllerros::BodyMsgs 
 
     else {
         BodyMsgs2VectorXd(msg , temp_vec4d);
-        XR1_ptr->setJointCurrent(XR1::MainBody, temp_vec4d);
+        XR1_ptr->setJointEffort(XR1::MainBody, temp_vec4d);
         setControlGroupTarget(XR1::MainBody);
     }
 }
@@ -142,7 +142,7 @@ void XR1ControllerOL::subscribeLeftHandCurrent(const xr1controllerros::HandMsgs 
 
     else {
         HandsMsgs2VectorXd(msg , temp_vec5d);
-        XR1_ptr->setJointCurrent(XR1::LeftHand, temp_vec5d);
+        XR1_ptr->setJointEffort(XR1::LeftHand, temp_vec5d);
         setControlGroupTarget(XR1::LeftHand);
     }
 }
@@ -167,7 +167,7 @@ void XR1ControllerOL::subscribeRightHandCurrent(const xr1controllerros::HandMsgs
 
     else {
         HandsMsgs2VectorXd(msg , temp_vec5d);
-        XR1_ptr->setJointCurrent(XR1::RightHand, temp_vec5d);
+        XR1_ptr->setJointEffort(XR1::RightHand, temp_vec5d);
         setControlGroupTarget(XR1::RightHand);
     }
 }
