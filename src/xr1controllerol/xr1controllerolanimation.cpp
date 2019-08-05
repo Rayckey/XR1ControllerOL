@@ -150,11 +150,8 @@ bool XR1ControllerOL::serviceOverwriteAnimation(xr1controllerol::AnimationOverwr
 void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg){
 
 
-
     // we want to turn it on
     if (msg.data){
-
-
 
         for (uint8_t control_group : control_group_flags){
             if (XR1_ptr->getSubControlMode(control_group) >= XR1::TeachMode){
@@ -169,7 +166,7 @@ void XR1ControllerOL::subscribeSetCollisionDetection(const std_msgs::Bool & msg)
 
         collision_detection_switch = msg.data;
 
-        XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
+        XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics);
     }
 
     // we want to turn it off
@@ -205,90 +202,65 @@ void XR1ControllerOL::animationCallback(){
 
         XRA_ptr->getNextState();
 
-//        if (previous_omni_state != XRA_ptr->isOmniWheelsMoving()){
-//            previous_omni_state = XRA_ptr->isOmniWheelsMoving();
-//            activateOmni();
-//        }
-//
-//
-//        if (previous_omni_state){
-//            Omni2Actuator();
-//        }
-
 }
 
 
 void XR1ControllerOL::collisionDetectionCallback(){
 
     // MAKE SURE THE COLLISION DETECTION IS ON
-    if (XR1_ptr->getInverseDynamicsOption() >= XR1::FullDynamics){
+    if (XR1_ptr->getInverseDynamicsOption() >= XR1::FullDynamics) {
 
         if (collision_detection_switch) {
-            if (XR1_ptr->CollisionDetection(XR1::LeftArm) ) {
 
-                ROS_INFO("Collision Occured");
 
-                for (uint8_t control_group : control_group_flags){
-                    setControlMode(control_group , XR1::DirectMode);
+            for (uint8_t control_group : control_group_flags) {
+
+                if (XR1_ptr->checkCollision(control_group)) {
+
+                    ROS_INFO("Collision Occured");
+
+
+                    for (uint8_t control_group2 : control_group_flags) {
+                        setControlMode(control_group2, XR1::DirectMode);
+                    }
+
+                    XR1_ptr->employLockdown();
+                    XRA_ptr->clearAll();
+
+                    setControlMode(XR1::OmniWheels, XR1::DirectMode);
+
+
+                    std_msgs::Bool msg;
+                    msg.data = true;
+
+                    CollisionEventPublisher.publish(msg);
+
+
+                    XR1_ptr->liftLockdown();
+                    XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
+
+                    return;
                 }
-                setControlMode(XR1::OmniWheels , XR1::DirectMode);
-
-                XR1_ptr->employLockdown();
-                XRA_ptr->clearAll();
-
-                std_msgs::Bool msg;
-                msg.data = true;
-
-                CollisionEventPublisher.publish(msg);
-
-//                collision_detection_switch = false;
-
-                XR1_ptr->liftLockdown();
-                XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
-
-
-
-                return;
-
             }
 
-
-            if (XR1_ptr->CollisionDetection(XR1::RightArm)){
-
-                ROS_INFO("Collision Occured");
-
-                for (uint8_t control_group : control_group_flags){
-                    setControlMode(control_group , XR1::DirectMode);
-                }
-                setControlMode(XR1::OmniWheels , XR1::DirectMode);
-
-                XR1_ptr->employLockdown();
-                XRA_ptr->clearAll();
-
-
-                std_msgs::Bool msg;
-                msg.data = true;
-
-                CollisionEventPublisher.publish(msg);
-
-//                collision_detection_switch = false;
-
-                XR1_ptr->liftLockdown();
-                XR1_ptr->setInverseDynamicsOption(XR1::FullDynamics_PASSIVE);
-
-
-
-                return;
-
-            }
         }
     }
-
-
-
     // if it is not, turn collision detection off
     else {
         collision_detection_switch = false;
     }
+
+}
+
+
+
+void XR1ControllerOL::signalAnimationFinished(int animation_type , int animation_id , bool isFinished){
+
+    xr1controllerol::AnimationMsgs temp_ani_msg;
+
+    temp_ani_msg.AnimationID = animation_id;
+    temp_ani_msg.AnimationType = animation_type;
+
+    AnimationResultPublisher.publish(temp_ani_msg);
 
 }

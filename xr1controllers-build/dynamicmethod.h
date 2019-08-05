@@ -2,21 +2,21 @@
 #define DYNAMICMETHOD_H
 #include "Eigen/Dense"
 #include <vector>
+#include <map>
 #include "chaincontroller.h"
 #include "backcontroller.h"
 #include "headcontroller.h"
 #include "xr1define.h"
+#include "xr1controllerutil.h"
 
 using namespace Eigen;
 class DynamicMethod
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    DynamicMethod(BackController * Body_ptr ,  HeadController* Head_ptr, ChainController * LeftArm_ptr , ChainController * RightArm_ptr ,  std::vector<double> InertiaParameters , std::vector<double> GravityParameters);
+    DynamicMethod(BackController * Body_ptr ,  HeadController* Head_ptr, ChainController * LeftArm_ptr , ChainController * RightArm_ptr ,  std::vector<double> InertiaParameters , std::vector<double> GravityParameters, std::vector<double> EffortThreshold, int CounterThreshold);
 
     void NewtonEuler();
-
-    void dualNewtonEuler();
 
     void triggerCalculation();
 
@@ -32,10 +32,17 @@ public:
 
     void ClearResults();
 
+    bool checkCollision(uint8_t control_group);
 
-private:
+    bool checkCollision();
 
-    double sign(double input);
+    bool thresholdEffort(uint8_t joint_id, double joint_value, double joint_ideal);
+
+    bool thresholdCounter(uint8_t control_group);
+
+    void clearCounters();
+
+    void clearCounters(uint8_t control_group);
 
 
 protected:
@@ -52,6 +59,11 @@ protected:
     double Target_Acceleration[20];
     double Target_Currents[20];
 
+    //collision counting
+    std::map<uint8_t, int> m_collision_counter;
+    int m_counter_threshold;
+    std::vector<double> m_effort_threshold;
+
 
 
 
@@ -59,11 +71,12 @@ protected:
     int End_ID;
 
     int NUM_OF_JOINTS;
-
-
-
-
     int NUM_PARA;
+
+    int MAIN_OFFSET;
+    int HEAD_OFFSET;
+    int LEFT_OFFSET;
+    int RIGHT_OFFSET;
 
     int NUM_IDPD_COL;
 

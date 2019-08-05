@@ -75,6 +75,9 @@ double solveTri(double pt_s, double pt_e, double period);
 double circleJudge(double input);
 
 
+void Bezier3Curve(Vector3d & point_s , Vector3d & point_1 , Vector3d & point_2 , Vector3d & point_e , double point_t , Vector3d & res);
+
+
 #endif
 
 

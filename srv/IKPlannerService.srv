@@ -2,7 +2,10 @@ bool NewTarget
 int32 ControlGroup
 int32 BaseGroup
 float64 Period
+int32 PlannerMethod
 geometry_msgs/Transform TargetTransform
+geometry_msgs/Transform Reference1
+geometry_msgs/Transform Reference2
 float64 TargetElbowAngle
 bool Grip
 ---

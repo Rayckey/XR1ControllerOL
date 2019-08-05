@@ -23,11 +23,6 @@ public:
 
     void triggerCalculation();
 
-    //Over load some functions
-    VectorXd getTargetJointEfforts();
-    void getTargetJointEfforts(VectorXd & output_ref);
-    std::vector<double> getTargetJointEffortsStd();
-    double getTargetJointEffort(uint8_t joint_id);
 
 
     // End Effector Controls
@@ -67,15 +62,6 @@ public:
     void getJacobian(uint8_t id , MatrixXd & jac , uint8_t reference_frame = XR1::SpatialFrame);
 
 
-
-
-
-
-
-    void clearResults();
-
-
-    VectorXd Dynamic_Compensation;
     double ElbowAngle;
     double TargetElbowAngle;
 

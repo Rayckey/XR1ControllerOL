@@ -17,19 +17,11 @@ public:
 
     void triggerCalculation();
 
-    //Over load some functions
-    VectorXd getTargetJointEfforts();
-    void getTargetJointEfforts(VectorXd & output_ref);
-    std::vector<double> getTargetJointEffortsStd();
-    double getTargetJointEffort(uint8_t joint_id);
-
 
     // End Effector Controls
     bool setEndEffectorTransformation(Affine3d &transformationReference , double optional_1);
 
-    void clearResults();
 
-    VectorXd Dynamic_Compensation;
     uint8_t Begin_ID;
 
 

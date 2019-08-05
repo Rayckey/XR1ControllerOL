@@ -17,16 +17,7 @@ public:
 
     void triggerCalculation();
 
-    //Over load some functions
-    VectorXd getTargetJointEfforts();
-    void getTargetJointEfforts(VectorXd & output_ref);
-    std::vector<double> getTargetJointEffortsStd();
-    double getTargetJointEffort(uint8_t joint_id);
 
-
-    void clearResults();
-
-    VectorXd Dynamic_Compensation;
 
 
 private:

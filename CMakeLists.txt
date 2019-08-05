@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(xr1controllerol)
 
 
 
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++14)
 add_compile_options(-fPIC)
 add_compile_options(-DQT_NO_VERSION_TAGGING)
 add_compile_options(-pthread)
@@ -59,7 +59,7 @@ include_directories(
 
 add_service_files(
 		FILES
-		IKLinearService.srv
+		IKPlannerService.srv
 		IKTrackingService.srv
 		HandGripQuery.srv
 		askReadiness.srv
@@ -97,6 +97,7 @@ catkin_package(
 		 src/${PROJECT_NAME}/xr1controllerolomni.cpp
 		 src/${PROJECT_NAME}/xr1controllerolhopps.cpp
 		 src/${PROJECT_NAME}/xr1controlleroltilt.cpp
+		 src/${PROJECT_NAME}/xr1controllerollegacy.cpp
  )
 
 

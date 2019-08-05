@@ -135,11 +135,15 @@ public:
 
     double getTargetJointEffort(uint8_t joint_id , bool vanilla = false);
 
+    double getTargetJointAcceleration(uint8_t joint_id);
+
     double getJointPosition(uint8_t joint_id , bool vanilla = false);
 
     double getJointVelocity(uint8_t joint_id , bool vanilla = false);
 
     double getJointEffort(uint8_t joint_id , bool vanilla = false);
+
+    double getJointAcceleration(uint8_t joint_id);
 
     //Set the Control Method for an entire Control Group , i.e. LeftARM , RightHand
     //Used in the XR1Controller
@@ -175,6 +179,8 @@ public:
     void setGrippingSwitch(uint8_t control_group, bool tof);  
 
     bool setEndEffectorTransformation(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period , uint8_t base_group = XR1::Back_Y);
+
+    bool setEndEffectorTransformation(uint8_t control_group , const Vector3d & position_1 , const Vector3d & position_2 , const Affine3d &transformation_target, double optional_1 = 777 , double optional_2 = 1);
 
     void stabilizeEndEffector(uint8_t control_group , uint8_t base_id );
 
@@ -342,9 +348,12 @@ public:
 
     double getActuatorRatio(uint8_t id);
 
-    bool CollisionDetection(uint8_t control_group);
 
-//    void enterDriveMode(int period_in_ms = 1000, int control_rate = 20 );
+    // Check Collision Detections
+    bool checkCollision();
+    bool checkCollision(uint8_t control_group);
+
+
 
     void SetOmniWheelsVelocity(Vector3d input);
     Vector3d getOmniWheelsVelocity();
@@ -386,18 +395,34 @@ private:
 
     double Current2Actuator(uint8_t id , double value);
 
+    double Current2Efforts(uint8_t id ,double value);
+
+    double Efforts2Currents(uint8_t id ,double value);
+
+
     double Actuator2Position(uint8_t id , double value);
 
     double Actuator2Velocity(uint8_t id , double value);
 
-    double Actuator2Current(uint8_t id , double value);
+//    double Actuator2Current(uint8_t id , double value);
 
 
+
+    // wrist stuff ---------------------------------------------------------------------------
     void WristReadingHelper(uint8_t mode);
 
     void WristCommandHelper(uint8_t mode ,  VectorXd& input);
 
     void WristCommandHelper(uint8_t mode ,  double & wrist_x_input , double & wrist_y_input);
+
+    void Wrist2Virtual(double & wrist_x_input , double & wrist_y_input);
+
+    void Virtual2Wrist(double & wrist_x_input , double & wrist_y_input);
+
+    void Wrist2Virtual(VectorXd& input);
+
+    void Virtual2Wrist(VectorXd& input);
+    // ---------------------------------------------------------------------------------------
 
     std::map<uint8_t , double> WristPositions;
 
@@ -410,6 +435,20 @@ private:
     std::map<uint8_t , bool> WristVelocitySwitch;
 
     std::map<uint8_t , bool> WristCurrentSwitch;
+
+    std::map<uint8_t , bool> ActuatorType;
+
+
+
+    // quick control group lookup
+    std::map<uint8_t, std::vector<uint8_t> > control_group_map;
+    std::vector<uint8_t> control_group_flags;
+    std::map<uint8_t , uint8_t> m_control_group_lookup;
+
+    // actuator current to toruqe variables
+    std::vector<double> P1s;
+    std::vector<double> P2s;
+    std::vector<double> P3s;
 
 //    std::vector<double> driveCmd;
 

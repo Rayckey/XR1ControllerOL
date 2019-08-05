@@ -5,9 +5,11 @@
 #include <map>
 #include <vector>
 #include <list>
+
 #include "xr1define.h"
 #include "xr1controller.h"
-#include "time.h"
+#include "RSignal.hpp"
+
 #include "xr1controllerutil.h"
 #include "xr1controllerblc.h"
 #include "xr1alpdefine.h"
@@ -81,6 +83,11 @@ public:
 
     // clear all the states , return to initial state, which will force robot to get into idle
     void clearAll();
+
+
+    // R message for animation finished signal
+    RSignal<int ,int , bool> m_sAnimationFinished;
+
 
 private:
 

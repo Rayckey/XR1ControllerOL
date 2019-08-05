@@ -118,8 +118,14 @@ void XR1ControllerOL::setControlMode(uint8_t control_group, uint8_t option) {
 
                 for (uint8_t joint_id : control_group_map[control_group]) {
 
-                    if ((int) m_pController->getActuatorAttribute(joint_id, Actuator::INIT_STATE) == Actuator::Initialized)
+                    if ((int) m_pController->getActuatorAttribute(joint_id, Actuator::INIT_STATE) == Actuator::Initialized){
+
+                        if (joint_id == XR1::Knee_X)
+                            continue;
+
                         m_pController->activateActuatorMode(joint_id, Actuator::Mode_Cur);
+                    }
+
 
                 }
 

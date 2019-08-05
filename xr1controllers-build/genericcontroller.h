@@ -52,6 +52,7 @@ public:
     virtual VectorXd getTargetJointEfforts();
     virtual void getTargetJointEfforts(VectorXd & output_ref);
     virtual std::vector<double> getTargetJointEffortsStd();
+    virtual void clearDynamicResults();
 
     // IK excluesive ports
     virtual VectorXd getIKJointPositions();
@@ -144,6 +145,7 @@ public:
     VectorXd Target_Joint_Velocities;
     VectorXd Target_Joint_Acceleration;
     VectorXd Target_Joint_Efforts;
+    VectorXd Dynamic_Compensation;
 
     // IK values are seperated
     VectorXd IK_Joint_Positions;
@@ -166,9 +168,6 @@ public:
     Vector3d temp_vec;
     Matrix3d temp_hat;
     Affine3d temp_afn;
-
-
-protected:
 
     // important control group infomrations
     uint8_t Begin_ID;

@@ -11,6 +11,9 @@
 
 using namespace Eigen;
 
+
+
+
 class XR1IMUmethods
 {
 public:
@@ -24,6 +27,18 @@ public:
     void quaternioncallback(uint8_t id , double w, double x, double y , double z );
 
     std::vector<uint8_t> checkModules();
+
+
+    struct MoCapReport{
+        bool state;
+        std::vector<int> badIDs;
+    };
+
+    XR1IMUmethods::MoCapReport checkMoCapStand();
+    XR1IMUmethods::MoCapReport checkMoCapTpose();
+    XR1IMUmethods::MoCapReport checkMoCapMantis();
+    XR1IMUmethods::MoCapReport checkMoCapBowpose();
+
 
 
 
@@ -112,5 +127,10 @@ private:
     std::vector<uint8_t> Lost_Ids;
 
 };
+
+
+
+
+
 
 #endif // XR1IMUMETHODS_H

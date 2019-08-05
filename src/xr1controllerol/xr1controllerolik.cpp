@@ -7,8 +7,8 @@
 
 
 
-bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest & req ,
-                                       xr1controllerol::IKLinearServiceResponse & res){
+bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest & req ,
+                                       xr1controllerol::IKPlannerServiceResponse & res){
 
     temp_geo_trans = req.TargetTransform;
 
@@ -37,17 +37,15 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &
         if (req.NewTarget){
 
             setControlMode(control_group , XR1::IKMode);
-//            if (control_group == XR1::LeftArm)
-//                setControlMode(XR1::LeftHand , XR1::IKMode);
-//            else if (control_group == XR1::RightArm)
-//                setControlMode(XR1::RightHand , XR1::IKMode);
+
 
             res.inProgress = false;
+
+
+
             if (XR1_ptr->setEndEffectorTransformation(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
                 res.isReachable = true;
                 res.isAccepted = true;
-
-//                XR1_ptr->setGrippingSwitch( control_group , req.Grip);
 
 
                 if (control_group == XR1::LeftArm){

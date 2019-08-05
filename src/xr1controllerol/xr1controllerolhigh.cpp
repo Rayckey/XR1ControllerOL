@@ -24,8 +24,8 @@ void XR1ControllerOL::setJointTarget(uint8_t joint_id){
 
         case XR1::ForceMode:
 
-//            ROS_INFO("The Current for joint [%d] is [%f]", joint_id, XR1_ptr->getTargetJointCurrent(joint_id));
-            m_pController->setCurrent(joint_id , XR1_ptr->getTargetJointEffort(joint_id));
+            ROS_INFO("The Current for joint [%d] is [%f]", joint_id, XR1_ptr->getTargetJointEffort(joint_id));
+//            m_pController->setCurrent(joint_id , XR1_ptr->getTargetJointEffort(joint_id));
 
             break;
 

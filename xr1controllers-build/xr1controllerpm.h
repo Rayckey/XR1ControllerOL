@@ -136,11 +136,15 @@ public:
 
     double getJointEffort(uint8_t joint_id);
 
+    double getJointAcceleration(uint8_t joint_id);
+
     double getTargetJointPosition(uint8_t joint_id , uint8_t mode_fixed = 0);
 
     double getTargetJointVelocity(uint8_t joint_id);
 
     double getTargetJointEffort(uint8_t joint_id);
+
+    double getTargetJointAcceleration(uint8_t joint_id);
 
     //---------------------------------------------------------------------------------
     //Get Target Position for Arms or Body
@@ -216,6 +220,8 @@ public:
 
     bool setEndEffectorTransformation(uint8_t control_group , const Affine3d &transformation, double optional_1 = 777 , double optional_2 = 0, uint8_t base_group = XR1::Back_Y);
 
+    bool setEndEffectorTransformation(uint8_t control_group , const Vector3d & position_1 , const Vector3d & position_2 , const Affine3d &transformation_target, double optional_1 = 777 , double optional_2 = 1);
+
 
     void stabilizeEndEffector(uint8_t control_group , uint8_t base_id);
 
@@ -266,7 +272,8 @@ public:
 
     //Dynamics Controls-----------------------------------------------------------------
     void updateBaseTransformation();
-    bool CollisionDetection(uint8_t control_group);
+    bool checkCollision();
+    bool checkCollision(uint8_t control_group);
     void setPeriod(uint8_t control_group, double reading_interval_in_second);
 
 
@@ -381,6 +388,14 @@ private:
     void tinyTriVel(double &value, double & qmin , int &pi , int &pn , double &pd , double &pps);
     void tinyTriAcc(double &value, double & qmin , int &pi, int &pn, double &pd, double &pps);
 
+
+
+    // regarding collision detection
+    void copyCurrent2Target();
+    void passiveLockdown();
+
+
+
     // private members for calcualting states
     uint8_t XR1_State;
     std::vector<double> Qmin;
@@ -405,22 +420,6 @@ private:
     double poly_double;
     double grip_current;
 
-    // regarding collision detection
-    void copyCurrent2Target();
-    void passiveLockdown();
-    double breakAcceleration(double velocity , double period);
-    double breakMotion(double x0 , double v0 , double a, double t);
-    bool GripDetection(uint8_t joint_id);
-    bool CollisionThresholding(VectorXd && ActualCurrent , VectorXd && ExpectedCurrent, std::vector<double> Thresholds);
-    bool ReleaseThresholding(VectorXd ActualPosition, VectorXd TargetPosition, VectorXd Thresholds);
-    bool CollisionThresholding(double ActualCurrent , double ExpectedCurrent, double Threshold);
-    bool ReleaseThresholding(double ActualPosition, double TargetPosition, double Threshold);
-
-    std::vector<double> CollisionThreshold;
-    double LeftArmCollisionCounter;
-    double RightArmCollisionCounter;
-    int CollisionCounterLimit;
-    double HandCollisionThreshold;
 
 
 
@@ -453,6 +452,18 @@ private:
     VectorXd temp_vec7d;
     VectorXd temp_vec4d;
     VectorXd temp_vec3d3;
+
+
+
+
+    // Legacy
+//    double breakAcceleration(double velocity , double period);
+//    double breakMotion(double x0 , double v0 , double a, double t);
+//    bool GripDetection(uint8_t joint_id);
+//    bool CollisionThresholding(VectorXd && ActualCurrent , VectorXd && ExpectedCurrent, std::vector<double> Thresholds);
+//    bool ReleaseThresholding(VectorXd ActualPosition, VectorXd TargetPosition, VectorXd Thresholds);
+//    bool CollisionThresholding(double ActualCurrent , double ExpectedCurrent, double Threshold);
+//    bool ReleaseThresholding(double ActualPosition, double TargetPosition, double Threshold);
 
 };
 

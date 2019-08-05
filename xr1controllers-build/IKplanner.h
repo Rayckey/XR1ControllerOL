@@ -32,6 +32,10 @@ private:
 	ChainController * LA_ptr;
 	ChainController * RA_ptr;
 
+    // determine the current method
+    int m_PlannerMethod;
+
+
 	//private varibles
 
 
@@ -60,11 +64,14 @@ private:
 
 
 
+    // bezier method exclusives
+    std::map<uint8_t, std::vector<Vector3d> > BezierDisMap; // linear distance
 
 
     // private members for calcualting states
     uint8_t XR1_State;
     bool hand_tracking_switch;
+    int path_planning_methods;
     std::map<uint8_t , bool > hand_griping_switch;
     std::vector<double> Qmin;
 
@@ -107,6 +114,8 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     IKplanner(ChainController * point2leftarm , ChainController * point2rightarm );
 
     bool setEndEffectorTransformation(uint8_t control_group , const Affine3d & transformation, double elbow_angle, double period);
+
+    bool setEndEffectorTransformation(uint8_t control_group , const Affine3d & transformation_start, const Vector3d & position_1 , const Vector3d &position_2 , const Affine3d & transformation_end , double elbow_angle, double period);
 
     void assignNextCommand();
 

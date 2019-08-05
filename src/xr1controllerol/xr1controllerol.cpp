@@ -11,7 +11,8 @@ XR1ControllerOL::XR1ControllerOL() :
     ,RecognizeFinished(false),
     unlease_counter(0),
     low_frequency_threshold(5),
-    low_frequency_counter(0){
+    low_frequency_counter(0)
+    ,debug_switch(false){
 
 
     // Bunch of calculation objects ---------------------------------------
@@ -24,7 +25,7 @@ XR1ControllerOL::XR1ControllerOL() :
     XRB_ptr->setActive(false);
     XRB_ptr->setPassive(false);
 
-    XR1_ptr = new XR1Controller(path + "/xr1para.xr1para");
+    XR1_ptr = new XR1Controller(path + "/xr1paras/CrimsonCurrant.xr1para");
 
     XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1 , XRB_ptr);
 
@@ -83,6 +84,9 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
     // Animation callbacks -------------------------------------------------------
+
+    XRA_ptr->m_sAnimationFinished.subscribeSignal(this, &XR1ControllerOL::signalAnimationFinished);
+    AnimationResultPublisher = nh.advertise<xr1controllerol::AnimationMsgs>("/AnimationResult" , 1 );
     AnimationSwitchSubscriber = nh.subscribe("/startAnimation", 1, &XR1ControllerOL::subscribeStartAnimation, this);
     AnimationSetSubscriber = nh.subscribe("/setAnimation", 1, &XR1ControllerOL::subscribeSetAnimation, this);
     IdleSwitchSubscriber = nh.subscribe("/setIdleAnimations", 1, &XR1ControllerOL::subscribeSetIdle, this);
@@ -104,7 +108,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
     // Inverse Kinematics callbacks ----------------------------------------------
-    IKPlannerService = nh.advertiseService("XR1/IKLPT", &XR1ControllerOL::serviceIKPlanner, this);
+    IKPlannerService = nh.advertiseService("XR1/IKPlanner", &XR1ControllerOL::serviceIKPlanner, this);
     IKTrackingService = nh.advertiseService("XR1/IKTT", &XR1ControllerOL::serviceIKTracking, this);
     HandGripService = nh.advertiseService("XR1/HGQ", &XR1ControllerOL::serviceHandGrip, this);
 
@@ -279,6 +283,18 @@ XR1ControllerOL::XR1ControllerOL() :
 //    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
      m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
      m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
+    // ----------------------------------------------------------------------------
+
+
+
+
+
+    // temp debug -----------------------------------------------------------------
+
+    RecordCommandSubscriber    = nh.subscribe("/XR1/RecordDebug" , 1, &XR1ControllerOL::subscribeRecordCommand,this);
+
+    WriteCommandSubscriber     = nh.subscribe("/XR1/WriteDebug" , 1, &XR1ControllerOL::subscribeWriteCommand,this);
+
     // ----------------------------------------------------------------------------
 
 
@@ -544,6 +560,9 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
     // send out omni commands if they are in the right modes
     Omni2Actuator();
+
+
+    recorderDebug();
 
 }
 

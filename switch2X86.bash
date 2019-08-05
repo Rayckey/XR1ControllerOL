@@ -1,1 +1,0 @@
-export BUILD_PLATFORM=X86

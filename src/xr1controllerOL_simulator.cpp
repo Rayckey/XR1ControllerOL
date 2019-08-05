@@ -24,7 +24,7 @@
 #include <map>
 #include <vector>
 
-#include "xr1controllerol/IKLinearService.h"
+#include "xr1controllerol/IKPlannerService.h"
 #include "xr1controllerol/HandGripQuery.h"
 #include "xr1controllerol/RobotStateQuery.h"
 #include "xr1controllerol/askReadiness.h"
@@ -292,8 +292,8 @@ bool serviceReady(xr1controllerol::askReadinessRequest & req,
 }
 
 // Fake IK stuff
-bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
-                      xr1controllerol::IKLinearServiceResponse &res) {
+bool serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest &req,
+                      xr1controllerol::IKPlannerServiceResponse &res) {
 
 
 
@@ -551,11 +551,11 @@ int main(int argc, char **argv) {
     std::string path = ros::package::getPath("xr1controllerol");
 
 
-    XR1_ptr = new XR1Controller(path + "/xr1para.xr1para");
+    XR1_ptr = new XR1Controller(path + "/xr1paras/CrimsonCurrant.xr1para");
 
     XRB_ptr = new XR1ControllerBLC(path + "/BLC" ,path + "/ALP" );
 
-    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 170, 10, 1 , XRB_ptr);
+    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 171, 10, 1 , XRB_ptr);
 
     EFF_Broadcaster = new tf::TransformBroadcaster();
 
@@ -611,7 +611,7 @@ int main(int argc, char **argv) {
 
     ros::ServiceServer RobotStateService = nh.advertiseService("XR1/State" , serviceState);
 
-    ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKLPT", serviceIKPlanner);
+    ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKPlanner", serviceIKPlanner);
 
     ros::ServiceServer HandGripService = nh.advertiseService("XR1/HGQ", serviceHandGrip);
 

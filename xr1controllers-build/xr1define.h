@@ -109,6 +109,11 @@ enum HandGripActions {
 	HandRelease = 402,
 };
 
+enum PathPlanningMethods {
+    Linear = 91,
+    Bezier3 = 92,
+};
+
 enum InverseDynamicsOptions {
 	None = 0,
 	SpringDamper = 100,

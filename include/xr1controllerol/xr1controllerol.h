@@ -31,7 +31,7 @@
 #include <std_msgs/Float32.h>
 
 // The IK planner message service
-#include "xr1controllerol/IKLinearService.h"
+#include "xr1controllerol/IKPlannerService.h"
 #include "xr1controllerol/IKTrackingService.h"
 #include "xr1controllerol/HandGripQuery.h"
 #include "xr1controllerol/askReadiness.h"
@@ -152,6 +152,10 @@ public:
 
 
     // Animation Library Player Messages and Services -------------------
+
+    // receive R signal for animation finishing
+    void signalAnimationFinished(int animation_type , int animation_id , bool isFinished);
+
 
     // receive animation start signal
     // WILL ALSO CHANGE ALL THE SUB CONTROL MODES
@@ -317,8 +321,8 @@ protected:
 
 
     // IK related message and services ---------------------------------------------
-    bool serviceIKPlanner(xr1controllerol::IKLinearServiceRequest &req,
-                          xr1controllerol::IKLinearServiceResponse &res);
+    bool serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest &req,
+                          xr1controllerol::IKPlannerServiceResponse &res);
 
     bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest &req,
                            xr1controllerol::IKTrackingServiceResponse &res);
@@ -512,7 +516,8 @@ private:
     // --------------------------------------------------
 
 
-    // Animation subscriber -----------------------
+    // Animation related -----------------------
+    ros::Publisher AnimationResultPublisher;
     ros::Subscriber AnimationSwitchSubscriber;
     ros::Subscriber AnimationSetSubscriber;
     ros::Subscriber IdleSwitchSubscriber;
@@ -555,6 +560,27 @@ private:
 
     ros::Subscriber m_special_subscriber;
 
+    ros::Subscriber RecordCommandSubscriber ;
+
+    ros::Subscriber WriteCommandSubscriber  ;
+
+    void subscribeRecordCommand(const std_msgs::Bool & msg);
+
+    void subscribeWriteCommand(const std_msgs::Bool & msg);
+
+    void recorderDebug();
+
+    void writeDebug(std::vector<std::vector<double>> debug_data , std::string file_name);
+
+    bool debug_switch;
+    std::vector<std::vector<double>> debug_pos;
+    std::vector<std::vector<double>> debug_vel;
+    std::vector<std::vector<double>> debug_acc;
+    std::vector<std::vector<double>> debug_cur;
+    std::vector<std::vector<double>> debug_tar_pos;
+    std::vector<std::vector<double>> debug_tar_vel;
+    std::vector<std::vector<double>> debug_tar_acc;
+    std::vector<std::vector<double>> debug_tar_cur;
     // ----------------------------------------------------------------------
 
 
