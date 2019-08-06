@@ -688,12 +688,13 @@ public:
     double batteryCellTemperature(uint8_t index);
     bool setCircuitState(uint64_t longId,uint8_t channelId,bool bSwitch);
     uint8_t readCircuitState(uint64_t longId,uint8_t channelId);
-    void setLastIpNumber(uint8_t last);
-    void setLastMacNumber(uint8_t last);
+    void setLastIpNumber(uint64_t longId,uint8_t last);
+    void setLastMacNumber(uint64_t longId,uint8_t last);
     void requestGloveInfo(uint64_t gloveId);
     void receiveGloveInfo(uint64_t gloveId,double charge,uint16_t version);
     bool setBrakeStatus(bool bOpen);
     bool brakeIsOpen();
+    void requestAllCVP();
 private:
     void finishRecognizeCallback();
     void onRequestCallback(uint64_t longId, uint8_t nProxyId,double value);

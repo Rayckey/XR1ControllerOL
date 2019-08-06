@@ -43,7 +43,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     MainBodyPositionSubscriber = nh.subscribe("/MainBody/TargetPosition", 100,
                                               &XR1ControllerOL::subscribeMainBodyPosition, this);
-    MainBodyCurrentSubscriber = nh.subscribe("/MainBody/TargetCurrent", 100, &XR1ControllerOL::subscribeMainBodyCurrent,
+    MainBodyCurrentSubscriber = nh.subscribe("/MainBody/TargetEffort", 100, &XR1ControllerOL::subscribeMainBodyCurrent,
                                              this);
 
     HeadBodyPositionSubscriber = nh.subscribe("/HeadBody/TargetPosition", 100,
@@ -53,14 +53,14 @@ XR1ControllerOL::XR1ControllerOL() :
                                              this);
     LeftArmVelocitySubscriber = nh.subscribe("/LeftArm/TargetVelocity", 100, &XR1ControllerOL::subscribeLeftArmVelocity,
                                              this);
-    LeftArmCurrentSubscriber = nh.subscribe("/LeftArm/TargetCurrent", 100, &XR1ControllerOL::subscribeLeftArmCurrent,
+    LeftArmCurrentSubscriber = nh.subscribe("/LeftArm/TargetEffort", 100, &XR1ControllerOL::subscribeLeftArmCurrent,
                                             this);
 
     RightArmPositionSubscriber = nh.subscribe("/RightArm/TargetPosition", 100,
                                               &XR1ControllerOL::subscribeRightArmPosition, this);
     RightArmVelocitySubscriber = nh.subscribe("/RightArm/TargetVelocity", 100,
                                               &XR1ControllerOL::subscribeRightArmVelocity, this);
-    RightArmCurrentSubscriber = nh.subscribe("/RightArm/TargetCurrent", 100, &XR1ControllerOL::subscribeRightArmCurrent,
+    RightArmCurrentSubscriber = nh.subscribe("/RightArm/TargetEffort", 100, &XR1ControllerOL::subscribeRightArmCurrent,
                                              this);
 
     LeftHandPositionSubscriber = nh.subscribe("/LeftHand/TargetPosition", 10,
@@ -127,19 +127,19 @@ XR1ControllerOL::XR1ControllerOL() :
     // Joint Information Publishers ---------------------------------------------------
     HeadBodyPositionPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Position", 1);
     HeadBodyVelocityPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Velocity", 1);
-    HeadBodyCurrentPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Current", 1);
+    HeadBodyCurrentPublisher = nh.advertise<xr1controllerros::HeadMsgs>("/HeadBody/Effort", 1);
 
     MainBodyPositionPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Position", 1);
     MainBodyVelocityPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Velocity", 1);
-    MainBodyCurrentPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Current", 1);
+    MainBodyCurrentPublisher = nh.advertise<xr1controllerros::BodyMsgs>("/MainBody/Effort", 1);
 
     LeftArmPositionPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/Position", 1);
     LeftArmVelocityPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/Velocity", 1);
-    LeftArmCurrentPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/Current", 1);
+    LeftArmCurrentPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/LeftArm/Effort", 1);
 
     RightArmPositionPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/RightArm/Position", 1);
     RightArmVelocityPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/RightArm/Velocity", 1);
-    RightArmCurrentPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/RightArm/Current", 1);
+    RightArmCurrentPublisher = nh.advertise<xr1controllerros::ArmMsgs>("/RightArm/Effort", 1);
 
     LeftHandPositionPublisher = nh.advertise<xr1controllerros::HandMsgs>("/LeftHand/Position", 1);
     RightHandPositionPublisher = nh.advertise<xr1controllerros::HandMsgs>("/RightHand/Position", 1);

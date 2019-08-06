@@ -68,6 +68,7 @@ public:
         T_D_READ_ALL_QUATERNION=0x02,
         T_D_READ_GLOVE_INFO=0x03,
         T_D_READ_VERSION=0x04,
+        T_D_READ_ALL_CVP=0x05,
         T_D_SET_PANEL_IP=0x14,
         T_D_SET_PANEL_MAC=0x15,
         T_D_READ_CURRENT=0x30,

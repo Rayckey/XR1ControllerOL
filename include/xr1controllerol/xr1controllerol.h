@@ -396,8 +396,8 @@ protected:
 private:
 
     // Pay no Attention Here Plz ---------------------------
-    ros::NodeHandle nh;
-    ActuatorController *m_pController;
+        ros::NodeHandle nh;
+        ActuatorController *m_pController;
 
     XR1Controller *XR1_ptr;
     XR1ControllerALP *XRA_ptr;

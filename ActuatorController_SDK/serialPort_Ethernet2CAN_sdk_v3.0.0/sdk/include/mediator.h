@@ -76,6 +76,7 @@ public:
 
 
     void requestBatteryStatus(uint64_t longId);
+    void requestAllCVP();
     void readCircuitCurrent(uint64_t longId, uint8_t channelId);
     void receiveCircuitCurrent(uint64_t longId, uint8_t channelId,double value);
     uint8_t readCircuitSwitch(uint64_t longId, uint8_t channelId);
@@ -85,9 +86,9 @@ public:
     void receiveBatteryStatus(uint64_t longId, BatteryStatus& status);
     void requestUltrasonic(uint64_t longId);
     void receiveUltrasonicStatus(uint64_t longId, Ultrasonic& status);
-    void setPanelIp(uint8_t last);
+    void setPanelIp(uint64_t longId,uint8_t last);
     void resultIpChanged(uint64_t longId,bool bSuccess);
-    void setPanelMac(uint8_t last);
+    void setPanelMac(uint64_t longId,uint8_t last);
     void resultMacChanged(uint64_t longId,bool bSuccess);
     void requestGloveInfo(uint64_t longId);
     void receiveGloveInfo(uint64_t longId,double voltage,uint16_t version);

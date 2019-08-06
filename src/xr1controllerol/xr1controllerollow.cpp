@@ -48,7 +48,7 @@ void XR1ControllerOL::setControlGroupTarget(uint8_t control_group){
                 XR1_ptr->getTargetEffort(control_group , temp_vec7d);
 
                 for (uint8_t joint_id : control_group_map[control_group]){
-                    ROS_INFO("The Current for joint [%d] is [%f]", joint_id, temp_vec7d(joint_id - control_group));
+//                    ROS_INFO("The Current for joint [%d] is [%f]", joint_id, temp_vec7d(joint_id - control_group));
                     m_pController->setCurrent(joint_id , temp_vec7d(joint_id - control_group));
                 }
 
