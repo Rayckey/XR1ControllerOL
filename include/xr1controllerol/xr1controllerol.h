@@ -593,6 +593,8 @@ private:
     Vector3d temp_vec;
     VectorXd temp_vec4d;
     Vector3d temp_omni_cmd;
+    Vector3d temp_pos_1;
+    Vector3d temp_pos_2;
     Matrix4d temp_4d;
     xr1controllerros::HandMsgs temp_handmsgs;
     xr1controllerros::ArmMsgs temp_armmsgs;
@@ -604,6 +606,7 @@ private:
     Affine3d itsafine;
     tf::StampedTransform transform;
     geometry_msgs::Transform temp_geo_trans;
+    geometry_msgs::Vector3 temp_geo_point;
     double temp_value;
     // ---------------------------------------------
     ros::Publisher voltagePub;

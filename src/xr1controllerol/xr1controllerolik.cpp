@@ -10,9 +10,8 @@
 bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest & req ,
                                        xr1controllerol::IKPlannerServiceResponse & res){
 
-    temp_geo_trans = req.TargetTransform;
 
-    tf::transformMsgToEigen(temp_geo_trans , itsafine);
+
 
     uint8_t control_group = req.ControlGroup;
 
@@ -20,6 +19,7 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest 
 
     if (req.BaseGroup == XR1::Knee_X)
         base_group = req.BaseGroup;
+
 
 
 
@@ -36,18 +36,32 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest 
     else {
         if (req.NewTarget){
 
+            // transform the data type
+            temp_geo_trans = req.TargetTransform;
+
+            tf::transformMsgToEigen(temp_geo_trans , itsafine);
+
+            tf::vectorMsgToEigen(req.Reference1,temp_pos_1);
+            tf::vectorMsgToEigen(req.Reference2,temp_pos_2);
+
             setControlMode(control_group , XR1::IKMode);
 
 
             res.inProgress = false;
 
+            if (req.PlannerMethod == XR1::Linear){
+                if (XR1_ptr->setEndEffectorTransformation(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)) {
+                    res.isReachable = true;
+                    res.isAccepted = true;
+                }
+            }else if (req.PlannerMethod == XR1::Bezier3) {
+                if (XR1_ptr->setEndEffectorTransformation(control_group, temp_pos_1 , temp_pos_2 , itsafine , req.TargetElbowAngle,req.Period)){
+                    res.isReachable = true;
+                    res.isAccepted = true;
+                }
+            }
 
-
-            if (XR1_ptr->setEndEffectorTransformation(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
-                res.isReachable = true;
-                res.isAccepted = true;
-
-
+            if (res.isAccepted){
                 if (control_group == XR1::LeftArm){
                     if ( req.Grip){
                         temp_vec5d << 1,1,1,1,1;
@@ -74,11 +88,10 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest 
                     }
                     setControlGroupTarget(XR1::RightHand);
                 }
-
             }
+
         }
         res.inProgress = false;
-
     }
 
     return true;

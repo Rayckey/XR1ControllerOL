@@ -25,7 +25,7 @@ XR1ControllerOL::XR1ControllerOL() :
     XRB_ptr->setActive(false);
     XRB_ptr->setPassive(false);
 
-    XR1_ptr = new XR1Controller(path + "/xr1paras/CrimsonCurrant.xr1para");
+    XR1_ptr = new XR1Controller(path + "/xr1paras/EmeraldEndive.xr1para");
 
     XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1 , XRB_ptr);
 
