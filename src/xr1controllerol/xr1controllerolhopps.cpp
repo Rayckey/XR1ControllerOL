@@ -105,15 +105,21 @@ void XR1ControllerOL::subscribeJointStates(const sensor_msgs::JointState & msg){
 
     for (uint8_t msg_id = 0 ; msg_id < msg.name.size(); msg_id++){
 
-        joint_id = m_jointlookup[msg.name[msg_id]];
+        if(m_jointlookup.find(msg.name[msg_id]) != m_jointlookup.end()){
+            joint_id = m_jointlookup[msg.name[msg_id]];
 
-        if ( XR1_ptr->getSubControlMode(m_control_group_lookup[ joint_id ]) == XR1::MoCapMode ){
+            if ( XR1_ptr->getSubControlMode(m_control_group_lookup[ joint_id ]) == XR1::MoCapMode ){
 
-            temp_id.push_back(joint_id);
+                temp_id.push_back(joint_id);
 
-            XR1_ptr->setJointPosition(joint_id , msg.position[msg_id] );
+                XR1_ptr->setJointPosition(joint_id , msg.position[msg_id] );
 
+            }
         }
+        else{
+            ROS_INFO("/joint_states, unknown joint name : %s", msg.name[msg_id].c_str());
+        }
+        
 
     }
 
