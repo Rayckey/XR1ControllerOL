@@ -25,7 +25,11 @@ XR1ControllerOL::XR1ControllerOL() :
     XRB_ptr->setActive(false);
     XRB_ptr->setPassive(false);
     string param_file;
+    tf_switch = 0;
     ros::param::get("/actuator_bridge/param_file",param_file);
+    ros::param::get("/actuator_bridge/tf_switch",tf_switch);
+    ROS_INFO("param: param_file is %s", param_file.c_str());
+    ROS_INFO("param: tf_switch  is %d", tf_switch);
 
     if (param_file.length()){
         std::cout<< " Parameter file given is: " + param_file << std::endl;
@@ -35,6 +39,16 @@ XR1ControllerOL::XR1ControllerOL() :
 //        abort();
         param_file = "EmeraldEndive.xr1para";
     }
+
+    if (tf_switch){
+        std::cout<< " Parameter tf_switch given is: " << tf_switch << std::endl;
+
+    }else{
+        std::cout<< " No paramters given!!!!!! default open tf_switch" << std::endl;
+//        abort();
+        tf_switch = 1;
+    }
+
 
     XR1_ptr = new XR1Controller(path + "/xr1paras/" + param_file);
 
@@ -547,15 +561,15 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
 
     if (low_frequency_counter == 0){
         // calculate all the tf info and dynamics stuff
-        broadcastTransform();
-
+        if(tf_switch){
+            broadcastTransform();
+        }
+    
         // send out all the joint information
         unleaseJointInfo();
 
-
         // unlease joint states information
         publishJointStates();
-
 
         publishOmni();
     }

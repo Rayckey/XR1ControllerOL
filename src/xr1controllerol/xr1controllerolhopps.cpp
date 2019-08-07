@@ -97,8 +97,8 @@ void XR1ControllerOL::setupJointStateTable(){
 
 void XR1ControllerOL::subscribeJointStates(const sensor_msgs::JointState & msg){
 
-    if(msg.position.size() == 0 && msg.velocity.size()){
-        ROS_INFO("msg.position size is 0, pass");
+    if(msg.position.size() == 0 && msg.velocity.size()==0){
+        ROS_INFO("msg.position && velocity size are 0, pass");
         return;
     }
     std::vector< uint8_t> temp_id;

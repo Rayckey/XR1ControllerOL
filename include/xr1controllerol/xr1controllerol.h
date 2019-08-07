@@ -611,6 +611,8 @@ private:
     // ---------------------------------------------
     ros::Publisher voltagePub;
 
+    int tf_switch;
+
 }; //class
 
 #endif // my_namespace__my_plugin_H
