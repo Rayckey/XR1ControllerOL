@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="xr1controllerol" type="actuator_bridge" name="actuator_bridge" output="screen" respawn="true">
+         <param name="param_file" value="EmeraldEndive.xr1para"/>
+    </node>
+</launch>

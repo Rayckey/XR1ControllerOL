@@ -24,8 +24,10 @@ XR1ControllerOL::XR1ControllerOL() :
     XRB_ptr->setIdle(false);
     XRB_ptr->setActive(false);
     XRB_ptr->setPassive(false);
+    string param_file;
+    ros::param::get("param_file",param_file);
 
-    XR1_ptr = new XR1Controller(path + "/xr1paras/EmeraldEndive.xr1para");
+    XR1_ptr = new XR1Controller(path + "/xr1paras/" + param_file);
 
     XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1 , XRB_ptr);
 
