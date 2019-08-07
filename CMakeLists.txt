@@ -16,6 +16,9 @@ add_compile_options(-O3)
 MESSAGE("CMAKE_SYSTEM_PROCESSOR:   ${CMAKE_SYSTEM_PROCESSOR}")
 
 
+set(DLIB_NO_GUI_SUPPORT true)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dlib/dlib dlib_build)
+
 if( "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 	set(BUILD_PLATFORM
 		X86)
@@ -111,6 +114,7 @@ target_link_libraries(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1IMU.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerALP.so
 		${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerBLC.so
+		dlib::dlib
 )
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
