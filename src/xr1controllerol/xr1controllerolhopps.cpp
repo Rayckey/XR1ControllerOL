@@ -97,7 +97,7 @@ void XR1ControllerOL::setupJointStateTable(){
 
 void XR1ControllerOL::subscribeJointStates(const sensor_msgs::JointState & msg){
 
-    if(msg.position.size() == 0){
+    if(msg.position.size() == 0 && msg.velocity.size()){
         ROS_INFO("msg.position size is 0, pass");
         return;
     }
@@ -106,7 +106,7 @@ void XR1ControllerOL::subscribeJointStates(const sensor_msgs::JointState & msg){
     uint8_t joint_id;
 
 
-
+    // save all the target information
     for (uint8_t msg_id = 0 ; msg_id < msg.name.size(); msg_id++){
         //add by hopps for safe;
         if(m_jointlookup.find(msg.name[msg_id]) != m_jointlookup.end()){
@@ -116,7 +116,10 @@ void XR1ControllerOL::subscribeJointStates(const sensor_msgs::JointState & msg){
 
                 temp_id.push_back(joint_id);
 
-                XR1_ptr->setJointPosition(joint_id , msg.position[msg_id] );
+                if (joint_id < XR1::MainBody)
+                    XR1_ptr->setJointVelocity(joint_id , msg.velocity[msg_id]);
+                else
+                    XR1_ptr->setJointPosition(joint_id , msg.position[msg_id] );
 
             }
         }
@@ -127,11 +130,11 @@ void XR1ControllerOL::subscribeJointStates(const sensor_msgs::JointState & msg){
     }
 
 
+    // send all the target information
     while (temp_id.size()){
 
-
-        if (temp_id.back() <= XR1::MainBody){
-
+        if (temp_id.back() < XR1::MainBody){
+            m_pController->setVelocity(temp_id.back() , XR1_ptr->getTargetJointVelocity(temp_id.back()));
         }
 
         else {
