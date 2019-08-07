@@ -25,7 +25,16 @@ XR1ControllerOL::XR1ControllerOL() :
     XRB_ptr->setActive(false);
     XRB_ptr->setPassive(false);
     string param_file;
-    ros::param::get("param_file",param_file);
+    ros::param::get("/actuator_bridge/param_file",param_file);
+
+    if (param_file.length()){
+        std::cout<< " Parameter file given is: " + param_file << std::endl;
+
+    }else{
+        std::cout<< " No paramters given!!!!!! Using EmeraldEndive version" << std::endl;
+//        abort();
+        param_file = "EmeraldEndive.xr1para";
+    }
 
     XR1_ptr = new XR1Controller(path + "/xr1paras/" + param_file);
 
