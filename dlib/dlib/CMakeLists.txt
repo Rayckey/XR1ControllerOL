@@ -106,26 +106,26 @@ if (NOT TARGET dlib)
    set (DLIB_ISO_CPP_ONLY_STR 
       "Enable this if you don't want to compile any non-ISO C++ code (i.e. you don't use any of the API Wrappers)" )
    set (DLIB_NO_GUI_SUPPORT_STR 
-      "Enable this if you don't want to compile any of the dlib GUI code" )
+      true)
    set (DLIB_ENABLE_STACK_TRACE_STR 
       "Enable this if you want to turn on the DLIB_STACK_TRACE macros" )
    set (DLIB_USE_BLAS_STR
-      "Disable this if you don't want to use a BLAS library" )
+      false )
    set (DLIB_USE_LAPACK_STR
-      "Disable this if you don't want to use a LAPACK library" )
+      false )
    set (DLIB_USE_CUDA_STR
-      "Disable this if you don't want to use NVIDIA CUDA" )
+      false )
    set (DLIB_PNG_SUPPORT_STR
-      "Disable this if you don't want to link against libpng" )
+      false)
    set (DLIB_GIF_SUPPORT_STR
-      "Disable this if you don't want to link against libgif" )
+      false )
    set (DLIB_JPEG_SUPPORT_STR
-      "Disable this if you don't want to link against libjpeg" )
+      false )
    set (DLIB_LINK_WITH_SQLITE3_STR
       "Disable this if you don't want to link against sqlite3" )
    #set (DLIB_USE_FFTW_STR "Disable this if you don't want to link against fftw" )
    set (DLIB_USE_MKL_FFT_STR
-      "Disable this is you don't want to use the MKL DFTI FFT implementation" )
+      false )
    set (DLIB_ENABLE_ASSERTS_STR
       "Enable this if you want to turn on the DLIB_ASSERT macro" )
 
