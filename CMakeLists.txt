@@ -35,6 +35,7 @@ find_package(catkin REQUIRED COMPONENTS
 		std_msgs
 		std_srvs
 		geometry_msgs
+		sensor_msgs
 		message_generation
   		roslib
   		tf_conversions

@@ -279,7 +279,9 @@ XR1ControllerOL::XR1ControllerOL() :
 
     m_special_subscriber = nh.subscribe("/XR1/special_command" , 10 , &XR1ControllerOL::subscribeSpecial , this);
 
+    m_IMUPublisher = nh.advertise<sensor_msgs::Imu>("/Base/IMU" , 32 );
 
+    temp_acc << 0,0,0;
     // ----------------------------------------------------
 
 

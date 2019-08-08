@@ -24,6 +24,7 @@
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/Int32.h>
+#include <sensor_msgs/Imu.h>
 
 // Hopps Port messages
 #include <sensor_msgs/JointState.h>
@@ -436,6 +437,8 @@ private:
     // ---------------------------------------------
 
 
+
+
     // Body States Publishers ------------------------
     ros::Publisher HeadBodyPositionPublisher;
     ros::Publisher HeadBodyVelocityPublisher;
@@ -491,7 +494,12 @@ private:
 
 
 
-    // Tilting related stuff-------------------------------------
+    // Sensor messages publisher ------------------
+    ros::Publisher m_IMUPublisher;
+    // --------------------------------------------
+
+
+    // Tilting related stuff-----------------------
     ros::Subscriber tiltStartSubscriber;
     ros::Subscriber slamStartSubscriber;
     ros::Subscriber slamIdleSubscriber;
@@ -595,6 +603,8 @@ private:
     Vector3d temp_omni_cmd;
     Vector3d temp_pos_1;
     Vector3d temp_pos_2;
+    Vector3d temp_acc;
+    Quaterniond temp_qua;
     Matrix4d temp_4d;
     xr1controllerros::HandMsgs temp_handmsgs;
     xr1controllerros::ArmMsgs temp_armmsgs;
@@ -608,6 +618,12 @@ private:
     geometry_msgs::Transform temp_geo_trans;
     geometry_msgs::Vector3 temp_geo_point;
     double temp_value;
+
+
+    geometry_msgs::Quaternion temp_orientation;
+    geometry_msgs::Vector3 temp_linear_acceleration;
+    sensor_msgs::Imu temp_imu_msg;
+
     // ---------------------------------------------
     ros::Publisher voltagePub;
 

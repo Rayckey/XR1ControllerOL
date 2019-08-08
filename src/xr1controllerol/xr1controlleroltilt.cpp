@@ -14,6 +14,21 @@ void XR1ControllerOL::QuaCallBack(uint64_t id, double w, double x, double y, dou
     if (id == ActuatorController::toLongId("192.168.1.4", 0)){
 //        ROS_INFO("[%f][%f][%f][%f]",w,x,y,z);
         XRB_ptr->tiltCallback(w, x, y, z);
+
+        temp_qua.x() = x;
+        temp_qua.y() = y;
+        temp_qua.z() = z;
+        temp_qua.w() = w;
+
+        // publish the last buffered acceleration and quaternion
+        tf::quaternionEigenToMsg(temp_qua, temp_orientation);
+        tf::vectorEigenToMsg(temp_acc , temp_linear_acceleration);
+        temp_imu_msg.orientation = temp_orientation;
+        temp_imu_msg.linear_acceleration = temp_linear_acceleration;
+        temp_imu_msg.header.stamp = ros::Time::now();
+
+        m_IMUPublisher.publish(temp_imu_msg);
+
     }
 
 
@@ -150,6 +165,11 @@ bool XR1ControllerOL::serviceQueryBalance(xr1controllerol::BalanceQueryRequest &
 
 void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , int pres){
 //   ROS_INFO("[%d][%f][%f][%f]",pres,x,y,z);
+
+    static double gravity_g = 9.81;
+
+    temp_acc << x*gravity_g, y*gravity_g, z*gravity_g;
+
  }
 
 
