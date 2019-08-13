@@ -27,3 +27,9 @@ void Adjoint(MatrixXd & adj, Affine3d &temp_afn);
 MatrixXd invAdjoint(MatrixXd & T);
 MatrixXd EFF2BaseForceAdjoint(MatrixXd & T);
 
+
+void tinyTriPos(double &value, double & qmin , double &pt_s, double &pt_e, int & pi, int & pn, double & pd, double & pps);
+void tinyTriVel(double &value, double & qmin , int &pi , int &pn , double &pd , double &pps);
+void tinyTriAcc(double &value, double & qmin , int &pi, int &pn, double &pd, double &pps);
+
+

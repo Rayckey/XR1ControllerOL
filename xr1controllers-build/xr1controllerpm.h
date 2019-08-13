@@ -383,13 +383,6 @@ private:
 
 
 
-    //private function all calculating states
-    void tinyTriPos(double &value, double & qmin , double &pt_s, double &pt_e, int & pi, int & pn, double & pd, double & pps);
-    void tinyTriVel(double &value, double & qmin , int &pi , int &pn , double &pd , double &pps);
-    void tinyTriAcc(double &value, double & qmin , int &pi, int &pn, double &pd, double &pps);
-
-
-
     // regarding collision detection
     void copyCurrent2Target();
     void passiveLockdown();

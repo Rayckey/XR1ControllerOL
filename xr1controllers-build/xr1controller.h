@@ -348,6 +348,8 @@ public:
 
     double getActuatorRatio(uint8_t id);
 
+    void setActuatorRatio(uint8_t id , double  ratio);
+
 
     // Check Collision Detections
     bool checkCollision();
@@ -469,7 +471,7 @@ private:
     VectorXd temp_vec5d;
 
 
-
+    std::vector<double > nScale;
     // Legacy
 
 //    bool setEndEffectorPosition(uint8_t control_group , const Affine3d &transformation, double elbow_lift_angle = 8 , uint8_t base_group = XR1::Back_Y);
