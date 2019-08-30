@@ -136,7 +136,7 @@ void XR1ControllerOL::readingCallback() {
             if (actuator_ready_4_cvp[i])
                 m_pController->getCVPValue(i);
             else {
-                if (hand_command_switch){
+                if (m_b100Hz_switch){
                     m_pController->regainAttrbute(i,Actuator::ACTUAL_POSITION);
                     m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
 //                m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
@@ -153,7 +153,7 @@ void XR1ControllerOL::readingCallback() {
             if (actuator_ready_4_cvp[i])
                 m_pController->getCVPValue(i);
             else {
-                if (hand_command_switch){
+                if (m_b100Hz_switch){
                     m_pController->regainAttrbute(i,Actuator::ACTUAL_POSITION);
 //                    m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
 //                m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
@@ -171,14 +171,15 @@ void XR1ControllerOL::readingCallback() {
             if (actuator_ready_4_cvp[i])
                 m_pController->getCVPValue(i);
             else {
-                if (hand_command_switch) {
+                if (m_b100Hz_switch) {
+                    m_pController->regainAttrbute(i, Actuator::ACTUAL_POSITION);
                     m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
                 }
             }
         }
     }
 
-    if (hand_command_switch) {
+    if (m_b100Hz_switch) {
 
         for (uint8_t i = XR1::LeftHand; i < XR1::Actuator_Total; ++i) {
             if ((int) m_pController->getActuatorAttribute(i, Actuator::INIT_STATE) == Actuator::Initialized) {
@@ -207,7 +208,7 @@ void XR1ControllerOL::readingCallback() {
         voltagePub.publish(temp);
     }
 
-    hand_command_switch = !hand_command_switch;
+    m_b100Hz_switch = !m_b100Hz_switch;
 
 }
 

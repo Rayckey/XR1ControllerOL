@@ -16,8 +16,9 @@ add_compile_options(-O3)
 MESSAGE("CMAKE_SYSTEM_PROCESSOR:   ${CMAKE_SYSTEM_PROCESSOR}")
 
 
-set(DLIB_NO_GUI_SUPPORT true)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dlib/dlib dlib_build)
+#set(DLIB_NO_GUI_SUPPORT true)
+#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dlib/dlib dlib_build)
+
 
 if( "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 	set(BUILD_PLATFORM
@@ -53,6 +54,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio/asio
   	${catkin_INCLUDE_DIRS}
   	${CMAKE_CURRENT_SOURCE_DIR}/Eigen3
+	${CMAKE_CURRENT_SOURCE_DIR}/dlib
 )
 
 
@@ -114,15 +116,15 @@ target_link_libraries(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1Controller.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1IMU.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerALP.so
-		${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerBLC.so
-		dlib::dlib
+	${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerBLC.so
+#	dlib::dlib
 )
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 
 add_executable(actuator_bridge src/actuator_bridge.cpp) 
-target_link_libraries(actuator_bridge ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(actuator_bridge ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(actuator_bridge  ${PROJECT_NAME})
+add_dependencies(actuator_bridge ${PROJECT_NAME} )
 
 #add_executable(tilt_test src/tilt_test.cpp)
 #target_link_libraries(tilt_test ${catkin_LIBRARIES} ${PROJECT_NAME})
@@ -134,8 +136,8 @@ add_dependencies(actuator_bridge ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
 add_executable(xr1controllerOL_simulator src/xr1controllerOL_simulator.cpp)
-target_link_libraries(xr1controllerOL_simulator ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(xr1controllerOL_simulator ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(xr1controllerOL_simulator  ${PROJECT_NAME})
+add_dependencies(xr1controllerOL_simulator ${PROJECT_NAME} )
 
 
 #add_executable(xr1controllerodom_simulator src/xr1controllerodom_simulator.cpp)

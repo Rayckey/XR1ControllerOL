@@ -3,7 +3,7 @@
 #include <iostream>
 
 XR1ControllerOL::XR1ControllerOL() :
-    hand_command_switch(true)
+        m_b100Hz_switch(true)
     ,power_reading_counter(30000)
     ,previous_omni_state(0)
     ,omni_cmd_expire_counter(0)
@@ -52,7 +52,7 @@ XR1ControllerOL::XR1ControllerOL() :
 
     XR1_ptr = new XR1Controller(path + "/xr1paras/" + param_file);
 
-    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 169, 10, 1 , XRB_ptr);
+    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, XRB_ptr);
 
     IMU_ptr = new XR1IMUmethods();
 
@@ -109,7 +109,6 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
     // Animation callbacks -------------------------------------------------------
-
     XRA_ptr->m_sAnimationFinished.subscribeSignal(this, &XR1ControllerOL::signalAnimationFinished);
     AnimationResultPublisher = nh.advertise<xr1controllerol::AnimationMsgs>("/AnimationResult" , 1 );
     AnimationSwitchSubscriber = nh.subscribe("/startAnimation", 1, &XR1ControllerOL::subscribeStartAnimation, this);
@@ -136,7 +135,6 @@ XR1ControllerOL::XR1ControllerOL() :
     IKPlannerService = nh.advertiseService("XR1/IKPlanner", &XR1ControllerOL::serviceIKPlanner, this);
     IKTrackingService = nh.advertiseService("XR1/IKTT", &XR1ControllerOL::serviceIKTracking, this);
     HandGripService = nh.advertiseService("XR1/HGQ", &XR1ControllerOL::serviceHandGrip, this);
-
     // ---------------------------------------------------------------------------
 
 
@@ -570,11 +568,15 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
         // send out all the joint information
         unleaseJointInfo();
 
-        // unlease joint states information
-        publishJointStates();
-
         publishOmni();
     }
+
+    if (m_b100Hz_switch){
+        // unlease joint states information
+        publishJointStates();
+    }
+
+
 
     // collision detection check
     collisionDetectionCallback();

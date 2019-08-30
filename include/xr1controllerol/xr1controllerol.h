@@ -610,7 +610,7 @@ private:
     xr1controllerros::ArmMsgs temp_armmsgs;
     xr1controllerros::BodyMsgs temp_bodymsgs;
     xr1controllerros::HeadMsgs temp_headmsgs;
-    bool hand_command_switch;
+    bool m_b100Hz_switch;
     int unlease_counter;
     int power_reading_counter;
     Affine3d itsafine;

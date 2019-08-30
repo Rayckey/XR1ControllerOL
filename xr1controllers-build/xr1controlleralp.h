@@ -25,7 +25,7 @@ public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
 
-    XR1ControllerALP(string library_root_path , XR1Controller *pointer_to_xr1controller, int num_of_animation, int num_of_idle, int num_of_teach, XR1ControllerBLC *pointer_to_blc = nullptr);
+    XR1ControllerALP(string library_root_path , XR1Controller *pointer_to_xr1controller, XR1ControllerBLC *pointer_to_blc = nullptr);
 
     // switch between animation mode and drive mode
     void switchAnimationMode(int option , double optional_speed_filter = 0.1 , double optional_angular_speed_filter = 0.1);
@@ -119,9 +119,15 @@ private:
     void judgeAnimationRecovery(int control_group);
 
 
-    std::deque<std::vector<double> > readLibrary(string library_path , uint8_t animation_type);
+    std::deque<std::vector<double> > readLibrary(string library_path, uint8_t animation_type);
+
+    std::vector<std::string> readLibrariesName(string library_path, string prefix_string, string subfix_string);
+
+    int extractLibraryID(const string &file_name, string prefix_string , string subfix_string);
 
     std::vector<std::vector<double> > readIdle(string library_path);
+
+    bool is_digits(const std::string &str);
 
     void setNextState();
 

@@ -555,7 +555,7 @@ int main(int argc, char **argv) {
 
     XRB_ptr = new XR1ControllerBLC(path + "/BLC" ,path + "/ALP" );
 
-    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, 171, 10, 1 , XRB_ptr);
+    XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, XRB_ptr);
 
     EFF_Broadcaster = new tf::TransformBroadcaster();
 

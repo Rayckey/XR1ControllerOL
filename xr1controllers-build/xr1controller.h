@@ -451,6 +451,7 @@ private:
     std::vector<double> P1s;
     std::vector<double> P2s;
     std::vector<double> P3s;
+    std::vector<int> ActuatorEffortOrder;
 
 //    std::vector<double> driveCmd;
 

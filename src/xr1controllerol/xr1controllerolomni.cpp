@@ -60,6 +60,7 @@ void XR1ControllerOL::Omni2Actuator() {
         for (uint8_t i = XR1::OmniWheels ; i < XR1::MainBody ; i++) {
             m_pController->setVelocity(i , temp_vec3d(i - XR1::OmniWheels) );
         }
+
     }
 
 }
