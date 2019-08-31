@@ -9,9 +9,6 @@
 void XR1ControllerOL::launchAllMotors() {
 
     m_pController->launchAllActuators();
-    if (allActuatorHasLaunched()) {
-//        XR1_ptr->setInverseDynamicsOption(XR1::GravityCompensation);
-    }
 
 }
 
@@ -139,7 +136,7 @@ void XR1ControllerOL::readingCallback() {
                 if (m_b100Hz_switch){
                     m_pController->regainAttrbute(i,Actuator::ACTUAL_POSITION);
                     m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
-//                m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
+                    m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
                 }
             }
         }
@@ -155,7 +152,7 @@ void XR1ControllerOL::readingCallback() {
             else {
                 if (m_b100Hz_switch){
                     m_pController->regainAttrbute(i,Actuator::ACTUAL_POSITION);
-//                    m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
+                    m_pController->regainAttrbute(i, Actuator::ACTUAL_VELOCITY);
 //                m_pController->regainAttrbute(i, Actuator::ACTUAL_CURRENT);
                 }
             }

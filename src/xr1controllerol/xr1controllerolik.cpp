@@ -91,7 +91,6 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest 
             }
 
         }
-        res.inProgress = false;
     }
 
     return true;

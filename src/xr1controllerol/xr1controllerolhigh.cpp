@@ -4,38 +4,38 @@
 
 #include "xr1controllerol.h"
 
-
-void XR1ControllerOL::setJointTarget(uint8_t joint_id){
-
-    switch (XR1_ptr->getControlMode(joint_id)){
-
-        case XR1::PositionMode:
-
-            m_pController->setPosition(joint_id , XR1_ptr->getTargetJointPosition(joint_id));
-
-            break;
-
-
-        case XR1::VelocityMode:
-
-            m_pController->setVelocity(joint_id , XR1_ptr->getTargetJointVelocity(joint_id));
-
-            break;
-
-        case XR1::ForceMode:
-
-//            ROS_INFO("The Current for joint [%d] is [%f]", joint_id, XR1_ptr->getTargetJointEffort(joint_id));
-            m_pController->setCurrent(joint_id , XR1_ptr->getTargetJointEffort(joint_id));
-
-            break;
-
-        default:
-
-            break;
-
-    }
-
-}
+//
+//void XR1ControllerOL::setJointTarget(uint8_t joint_id){
+//
+//    switch (XR1_ptr->getControlMode(joint_id)){
+//
+//        case XR1::PositionMode:
+//
+//            m_pController->setPosition(joint_id , XR1_ptr->getTargetJointPosition(joint_id));
+//
+//            break;
+//
+//
+//        case XR1::VelocityMode:
+//
+//            m_pController->setVelocity(joint_id , XR1_ptr->getTargetJointVelocity(joint_id));
+//
+//            break;
+//
+//        case XR1::ForceMode:
+//
+////            ROS_INFO("The Current for joint [%d] is [%f]", joint_id, XR1_ptr->getTargetJointEffort(joint_id));
+//            m_pController->setCurrent(joint_id , XR1_ptr->getTargetJointEffort(joint_id));
+//
+//            break;
+//
+//        default:
+//
+//            break;
+//
+//    }
+//
+//}
 
 void XR1ControllerOL::applyJointsTargets(){
 

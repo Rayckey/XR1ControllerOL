@@ -65,10 +65,10 @@ void XR1ControllerOL::setControlGroupTarget(uint8_t control_group){
 
 
 
-
-double XR1ControllerOL::getTargetJointPosition(uint8_t joint_id, bool vanilla) {
-
-    return XR1_ptr->getTargetJointPosition(joint_id, vanilla);
-
-}
+//
+//double XR1ControllerOL::getTargetJointPosition(uint8_t joint_id, bool vanilla) {
+//
+//    return XR1_ptr->getTargetJointPosition(joint_id, vanilla);
+//
+//}
 
