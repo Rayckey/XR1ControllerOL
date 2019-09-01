@@ -1,0 +1,11 @@
+bool NewTarget
+int32 ControlGroup
+int32 BaseGroup
+float64 Period
+geometry_msgs/Transform TargetTransform
+float64 TargetElbowAngle
+bool Grip
+---
+bool inProgress
+bool isReachable
+bool isAccepted

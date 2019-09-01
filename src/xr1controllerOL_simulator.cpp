@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "xr1controllerol/IKPlannerService.h"
+#include "xr1controllerol/IKLinearService.h"
 #include "xr1controllerol/HandGripQuery.h"
 #include "xr1controllerol/RobotStateQuery.h"
 #include "xr1controllerol/askReadiness.h"
@@ -344,6 +345,55 @@ bool serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest &req,
 }
 // ---------------------------------------------------------------------------------
 
+bool serviceIKLinearPlanner(xr1controllerol::IKLinearServiceRequest &req,
+                      xr1controllerol::IKLinearServiceResponse &res) {
+
+
+
+    temp_geo_trans = req.TargetTransform;
+
+    tf::transformMsgToEigen(temp_geo_trans, itsafine);
+
+    uint8_t control_group = req.ControlGroup;
+
+
+
+    // The default response
+    res.inProgress = true;
+    res.isReachable = false;
+    res.isAccepted = false;
+
+    if (XR1_ptr->isIKPlannerActive(control_group)) {
+        res.inProgress = true;
+    } else {
+        if (req.NewTarget) {
+//            ROS_INFO("getting request with time [%f]" ,req.Period);
+            XR1_ptr->setSubControlMode(control_group, XR1::IKMode);
+
+
+            if (control_group == XR1::LeftArm)
+                XR1_ptr->setSubControlMode(XR1::LeftHand, XR1::IKMode);
+            else if (control_group == XR1::RightArm)
+                XR1_ptr->setSubControlMode(XR1::RightHand, XR1::IKMode);
+
+            res.inProgress = false;
+            std::cout << itsafine.matrix() << std::endl;
+            if (XR1_ptr->setEndEffectorTransformation(control_group, itsafine, req.TargetElbowAngle, req.Period)) {
+                ROS_INFO("doing request" );
+
+                res.isReachable = true;
+                res.isAccepted = true;
+
+                XR1_ptr->setGrippingSwitch(control_group, req.Grip);
+            }
+        }
+        res.inProgress = false;
+
+    }
+
+    return true;
+
+}
 
 
 
@@ -612,6 +662,8 @@ int main(int argc, char **argv) {
     ros::ServiceServer RobotStateService = nh.advertiseService("XR1/State" , serviceState);
 
     ros::ServiceServer IKPlannerService = nh.advertiseService("XR1/IKPlanner", serviceIKPlanner);
+
+    ros::ServiceServer IKLinearPlannerService = nh.advertiseService("XR1/IKLPT", serviceIKLinearPlanner);
 
     ros::ServiceServer HandGripService = nh.advertiseService("XR1/HGQ", serviceHandGrip);
 

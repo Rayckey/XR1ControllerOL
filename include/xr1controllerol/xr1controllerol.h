@@ -33,6 +33,7 @@
 
 // The IK planner message service
 #include "xr1controllerol/IKPlannerService.h"
+#include "xr1controllerol/IKLinearService.h"
 #include "xr1controllerol/IKTrackingService.h"
 #include "xr1controllerol/HandGripQuery.h"
 #include "xr1controllerol/askReadiness.h"
@@ -325,6 +326,9 @@ protected:
     bool serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest &req,
                           xr1controllerol::IKPlannerServiceResponse &res);
 
+    bool serviceIKLinearPlanner(xr1controllerol::IKLinearServiceRequest &req,
+                          xr1controllerol::IKLinearServiceResponse &res);
+
     bool serviceIKTracking(xr1controllerol::IKTrackingServiceRequest &req,
                            xr1controllerol::IKTrackingServiceResponse &res);
 
@@ -483,6 +487,7 @@ private:
     ros::Subscriber RightElbowSubscriber;
     ros::ServiceServer IKPlannerService;
     ros::ServiceServer IKTrackingService;
+    ros::ServiceServer IKLinearPlannerService ;
     ros::ServiceServer HandGripService;
     // --------------------------------------------
 

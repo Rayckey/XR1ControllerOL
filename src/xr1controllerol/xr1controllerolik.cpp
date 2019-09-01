@@ -99,6 +99,87 @@ bool XR1ControllerOL::serviceIKPlanner(xr1controllerol::IKPlannerServiceRequest 
 
 
 
+bool XR1ControllerOL::serviceIKLinearPlanner(xr1controllerol::IKLinearServiceRequest &req,
+                            xr1controllerol::IKLinearServiceResponse &res){
+
+
+    temp_geo_trans = req.TargetTransform;
+
+    tf::transformMsgToEigen(temp_geo_trans , itsafine);
+
+    uint8_t control_group = req.ControlGroup;
+
+    uint8_t base_group = XR1::Back_Y;
+
+    if (req.BaseGroup == XR1::Knee_X)
+        base_group = req.BaseGroup;
+
+
+
+    // The default response
+    res.inProgress = true;
+    res.isReachable = false;
+    res.isAccepted = false;
+
+    if (XR1_ptr->isIKPlannerActive(control_group))
+    {
+        res.inProgress = true;
+    }
+
+    else {
+        if (req.NewTarget){
+
+            setControlMode(control_group , XR1::IKMode);
+//            if (control_group == XR1::LeftArm)
+//                setControlMode(XR1::LeftHand , XR1::IKMode);
+//            else if (control_group == XR1::RightArm)
+//                setControlMode(XR1::RightHand , XR1::IKMode);
+
+            res.inProgress = false;
+            if (XR1_ptr->setEndEffectorTransformation(control_group , itsafine , req.TargetElbowAngle , req.Period , base_group)){
+                res.isReachable = true;
+                res.isAccepted = true;
+
+//                XR1_ptr->setGrippingSwitch( control_group , req.Grip);
+
+
+                if (control_group == XR1::LeftArm){
+                    if ( req.Grip){
+                        temp_vec5d << 1,1,1,1,1;
+                        XR1_ptr->setJointPosition(XR1::LeftHand , temp_vec5d);
+                    }
+                    else {
+                        temp_vec5d << 0,0,0,0,0;
+                        XR1_ptr->setJointPosition(XR1::LeftHand, temp_vec5d);
+                    }
+
+                    setControlGroupTarget(XR1::LeftHand);
+                }
+
+                else {
+
+                    if (req.Grip){
+                        temp_vec5d << 1,1,1,1,1;
+                        XR1_ptr->setJointPosition(XR1::RightHand, temp_vec5d);
+                    }
+                    else {
+                        temp_vec5d << 0,0,0,0,0;
+                        XR1_ptr->setJointPosition(XR1::RightHand , temp_vec5d);
+
+                    }
+                    setControlGroupTarget(XR1::RightHand);
+                }
+
+            }
+        }
+        res.inProgress = false;
+
+    }
+
+    return true;
+}
+
+
 
 bool XR1ControllerOL::serviceIKTracking(xr1controllerol::IKTrackingServiceRequest & req ,
                                        xr1controllerol::IKTrackingServiceResponse & res){

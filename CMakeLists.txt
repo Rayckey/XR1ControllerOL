@@ -73,6 +73,7 @@ add_service_files(
 		BalanceQuery.srv
 		AnimationOverwrite.srv
 		RobotStateQuery.srv
+		IKLinearService.srv
 )
 
 generate_messages(
