@@ -118,6 +118,10 @@ Any control group in gravity compensation mode will switch mode, as the two calc
 When the robot has entered lock down mode (It detected collision) <br>
 Set the collision Detection to false to lift the lockdown <br> 
 
+## Dependencies
+sudo apt-get install libatlas-base-dev
+
+
 
 
 
