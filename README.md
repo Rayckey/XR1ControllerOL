@@ -56,6 +56,8 @@ There are a total of 9 control modes:
 	DriveMode = 9,
 	RoamMode = 10,
 	TeachMode = 11
+##dependencies
+sudo apt-get install libatlas-base-dev
  
 ### 1. Direction Mode
 The user can directly control the robot via ros messages.
