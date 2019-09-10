@@ -1,0 +1,45 @@
+/media/fcz/work/work/Downloads/software/clion-2019.2.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /media/fcz/work/work/SRC/XR1/xr1_catkin_ws/src/xr1controllerol
+-- The C compiler identification is GNU 5.4.0
+-- The CXX compiler identification is GNU 5.4.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMAKE_SYSTEM_PROCESSOR:   x86_64
+-- Using CATKIN_DEVEL_PREFIX: /media/fcz/work/work/SRC/XR1/xr1_catkin_ws/src/xr1controllerol/cmake-build-debug/devel
+-- Using CMAKE_PREFIX_PATH: /media/fcz/work/work/SRC/XR1/xr1_catkin_ws/devel;/media/fcz/work/work/SRC/catkin_ws/devel;/opt/ros/kinetic
+-- This workspace overlays: /media/fcz/work/work/SRC/XR1/xr1_catkin_ws/devel;/media/fcz/work/work/SRC/catkin_ws/devel;/opt/ros/kinetic
+-- Found PythonInterp: /usr/bin/python (found version "2.7.12") 
+-- Using PYTHON_EXECUTABLE: /usr/bin/python
+-- Using Debian Python package layout
+-- Using empy: /usr/bin/empy
+-- Using CATKIN_ENABLE_TESTING: ON
+-- Call enable_testing()
+-- Using CATKIN_TEST_RESULTS_DIR: /media/fcz/work/work/SRC/XR1/xr1_catkin_ws/src/xr1controllerol/cmake-build-debug/test_results
+-- Found gmock sources under '/usr/src/gmock': gmock will be built
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Looking for pthread_create
+-- Looking for pthread_create - not found
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE  
+-- Found gtest sources under '/usr/src/gmock': gtests will be built
+-- Using Python nosetests: /usr/bin/nosetests-2.7
+-- catkin 0.7.18
+-- BUILD_SHARED_LIBS is on
+-- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+-- xr1controllerol: 1 messages, 9 services
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /media/fcz/work/work/SRC/XR1/xr1_catkin_ws/src/xr1controllerol/cmake-build-debug
