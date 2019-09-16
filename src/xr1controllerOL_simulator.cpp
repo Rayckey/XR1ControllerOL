@@ -275,7 +275,6 @@ void stateTransition() {
         if (XR1_ptr->inHighFrequencyControl(control_group) && XR1_ptr->isXR1Okay()){
 
             temp_ids = XR1_ptr->getControlGroupIDs(control_group);
-
             setControlGroupTarget(control_group);
         }
     }

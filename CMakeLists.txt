@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(xr1controllerol)
 
-
-
 add_compile_options(-std=c++14)
 add_compile_options(-fPIC)
 add_compile_options(-DQT_NO_VERSION_TAGGING)
@@ -15,7 +13,6 @@ add_compile_options(-O3)
 
 MESSAGE("CMAKE_SYSTEM_PROCESSOR:   ${CMAKE_SYSTEM_PROCESSOR}")
 
-
 #set(DLIB_NO_GUI_SUPPORT true)
 #add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dlib/dlib dlib_build)
 
@@ -27,7 +24,6 @@ else()
 	set(BUILD_PLATFORM
 		TX2)
 endif()
-
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -107,7 +103,7 @@ catkin_package(
 		 src/${PROJECT_NAME}/xr1controllerollegacy.cpp
  )
 
-
+#add_dependencies(${PROJECT_NAME} XR1ControllerALP XR1ControllerBLC XR1Controller XR1ControllerPM)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}

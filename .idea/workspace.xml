@@ -5,41 +5,41 @@
       <config projectName="xr1controllerol" targetName="tf2_msgs_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="actionlib_msgs_generate_messages_eus" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_generate_messages_eus" />
-      <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_BalanceQuery" />
       <config projectName="xr1controllerol" targetName="tf_generate_messages_nodejs" />
+      <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_BalanceQuery" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_generate_messages" />
       <config projectName="xr1controllerol" targetName="gtest_main" />
-      <config projectName="xr1controllerol" targetName="std_msgs_generate_messages_lisp" />
       <config projectName="xr1controllerol" targetName="std_srvs_generate_messages_lisp" />
+      <config projectName="xr1controllerol" targetName="std_msgs_generate_messages_lisp" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_geneus" />
       <config projectName="xr1controllerol" targetName="tf2_msgs_generate_messages_lisp" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_genlisp" />
       <config projectName="xr1controllerol" targetName="tf_generate_messages_cpp" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_generate_messages_nodejs" />
-      <config projectName="xr1controllerol" targetName="actuator_bridge" />
       <config projectName="xr1controllerol" targetName="geometry_msgs_generate_messages_py" />
+      <config projectName="xr1controllerol" targetName="actuator_bridge" />
       <config projectName="xr1controllerol" targetName="rosgraph_msgs_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="actionlib_generate_messages_lisp" />
       <config projectName="xr1controllerol" targetName="sensor_msgs_generate_messages_eus" />
       <config projectName="xr1controllerol" targetName="tf_generate_messages_py" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_genpy" />
       <config projectName="xr1controllerol" targetName="download_extra_data" />
-      <config projectName="xr1controllerol" targetName="actionlib_generate_messages_eus" />
-      <config projectName="xr1controllerol" targetName="actionlib_msgs_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="geometry_msgs_generate_messages_nodejs" />
+      <config projectName="xr1controllerol" targetName="actionlib_msgs_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="tests" />
+      <config projectName="xr1controllerol" targetName="actionlib_generate_messages_eus" />
       <config projectName="xr1controllerol" targetName="geometry_msgs_generate_messages_lisp" />
       <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_IKTrackingService" />
-      <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_HandGripQuery" />
       <config projectName="xr1controllerol" targetName="std_srvs_generate_messages_cpp" />
+      <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_HandGripQuery" />
       <config projectName="xr1controllerol" targetName="roscpp_generate_messages_eus" />
       <config projectName="xr1controllerol" targetName="actionlib_msgs_generate_messages_cpp" />
       <config projectName="xr1controllerol" targetName="sensor_msgs_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="xr1controllerOL_simulator" />
       <config projectName="xr1controllerol" targetName="gmock_main" />
       <config projectName="xr1controllerol" targetName="std_msgs_generate_messages_cpp" />
-      <config projectName="xr1controllerol" targetName="tf2_msgs_generate_messages_cpp" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_generate_messages_py" />
+      <config projectName="xr1controllerol" targetName="tf2_msgs_generate_messages_cpp" />
       <config projectName="xr1controllerol" targetName="roscpp_generate_messages_lisp" />
       <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_RobotStateQuery" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_gencpp" />
@@ -59,8 +59,8 @@
       <config projectName="xr1controllerol" targetName="std_msgs_generate_messages_py" />
       <config projectName="xr1controllerol" targetName="xr1controllerros_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="actionlib_msgs_generate_messages_lisp" />
-      <config projectName="xr1controllerol" targetName="roscpp_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="std_msgs_generate_messages_eus" />
+      <config projectName="xr1controllerol" targetName="roscpp_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="tf2_msgs_generate_messages_eus" />
       <config projectName="xr1controllerol" targetName="std_srvs_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_gennodejs" />
@@ -72,27 +72,27 @@
       <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_IKLinearService" />
       <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_IKPlannerService" />
       <config projectName="xr1controllerol" targetName="std_msgs_generate_messages_nodejs" />
-      <config projectName="xr1controllerol" targetName="rosgraph_msgs_generate_messages_eus" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_generate_messages_cpp" />
+      <config projectName="xr1controllerol" targetName="rosgraph_msgs_generate_messages_eus" />
       <config projectName="xr1controllerol" targetName="actionlib_msgs_generate_messages_py" />
       <config projectName="xr1controllerol" targetName="tf2_msgs_generate_messages_py" />
       <config projectName="xr1controllerol" targetName="run_tests" />
       <config projectName="xr1controllerol" targetName="tf_generate_messages_eus" />
       <config projectName="xr1controllerol" targetName="actionlib_generate_messages_nodejs" />
       <config projectName="xr1controllerol" targetName="xr1controllerol_generate_messages_lisp" />
-      <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_askReadiness" />
       <config projectName="xr1controllerol" targetName="gmock" />
+      <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_askReadiness" />
       <config projectName="xr1controllerol" targetName="rosgraph_msgs_generate_messages_py" />
       <config projectName="xr1controllerol" targetName="_xr1controllerol_generate_messages_check_deps_AnimationMsgs" />
-      <config projectName="xr1controllerol" targetName="geometry_msgs_generate_messages_cpp" />
       <config projectName="xr1controllerol" targetName="xr1controllerros_generate_messages_lisp" />
+      <config projectName="xr1controllerol" targetName="geometry_msgs_generate_messages_cpp" />
       <config projectName="xr1controllerol" targetName="clean_test_results" />
       <config projectName="xr1controllerol" targetName="sensor_msgs_generate_messages_lisp" />
       <config projectName="xr1controllerol" targetName="roscpp_generate_messages_py" />
       <config projectName="xr1controllerol" targetName="gtest" />
     </generated>
   </component>
-  <component name="CMakeSettings">
+  <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
       <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
     </configurations>
@@ -100,10 +100,109 @@
   <component name="ChangeListManager">
     <list default="true" id="2dd7fba6-609c-429b-80cc-68db7e2b4e49" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xr1controllers-build/X86/libXR1Controller.so" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xr1controllers-build/X86/libXR1ControllerALP.so" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xr1controllers-build/X86/libXR1ControllerBLC.so" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xr1controllers-build/X86/libXR1ControllerPM.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeError.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeError.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeRuleHashes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeRuleHashes.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/xr1controllerOL_simulator.dir/src/xr1controllerOL_simulator.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/xr1controllerol.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/xr1controllerol.dir/CXX.includecache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/catkin_generated/setup_cached.sh" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/catkin_generated/setup_cached.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/AnimationMsgs.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/AnimationOverwrite.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/AnimationOverwriteRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/AnimationOverwriteResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/AnimationQuery.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/AnimationQueryRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/AnimationQueryResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/BalanceQuery.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/BalanceQueryRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/BalanceQueryResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/HandGripQuery.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/HandGripQueryRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/HandGripQueryResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKLinearService.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKLinearServiceRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKLinearServiceResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKPlannerService.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKPlannerServiceRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKPlannerServiceResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKTrackingService.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKTrackingServiceRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/IKTrackingServiceResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/RobotStateQuery.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/RobotStateQueryRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/RobotStateQueryResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/askReadiness.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/askReadinessRequest.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/include/xr1controllerol/askReadinessResponse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/libxr1controllerol.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/msg/_AnimationMsgs.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/msg/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_AnimationOverwrite.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_AnimationQuery.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_BalanceQuery.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_HandGripQuery.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_IKLinearService.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_IKPlannerService.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_IKTrackingService.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_RobotStateQuery.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/python2.7/dist-packages/xr1controllerol/srv/_askReadiness.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/xr1controllerol/actuator_bridge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/xr1controllerol/xr1controllerOL_simulator" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/msg/AnimationMsgs.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/msg/_package.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/msg/_package_AnimationMsgs.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/msg/xr1controllerol-msg.asd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/AnimationOverwrite.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/AnimationQuery.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/BalanceQuery.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/HandGripQuery.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/IKLinearService.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/IKPlannerService.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/IKTrackingService.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/RobotStateQuery.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_AnimationOverwrite.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_AnimationQuery.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_BalanceQuery.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_HandGripQuery.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_IKLinearService.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_IKPlannerService.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_IKTrackingService.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_RobotStateQuery.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/_package_askReadiness.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/askReadiness.lisp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/common-lisp/ros/xr1controllerol/srv/xr1controllerol-srv.asd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/_index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/msg/AnimationMsgs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/msg/_index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/AnimationOverwrite.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/AnimationQuery.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/BalanceQuery.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/HandGripQuery.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/IKLinearService.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/IKPlannerService.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/IKTrackingService.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/RobotStateQuery.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/_index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/gennodejs/ros/xr1controllerol/srv/askReadiness.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/manifest.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/msg/AnimationMsgs.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/AnimationOverwrite.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/AnimationQuery.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/BalanceQuery.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/HandGripQuery.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/IKLinearService.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/IKPlannerService.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/IKTrackingService.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/RobotStateQuery.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/devel/share/roseus/ros/xr1controllerol/srv/askReadiness.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/xr1controllerOL_simulator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/xr1controllerOL_simulator.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xr1controllers-build/X86/libXR1ControllerALP.so" beforeDir="false" afterPath="$PROJECT_DIR$/xr1controllers-build/X86/libXR1ControllerALP.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xr1controllers-build/X86/libXR1ControllerBLC.so" beforeDir="false" afterPath="$PROJECT_DIR$/xr1controllers-build/X86/libXR1ControllerBLC.so" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -129,6 +228,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -690,6 +790,18 @@
       <workItem from="1568103959393" duration="169000" />
       <workItem from="1568104435949" duration="3000" />
       <workItem from="1568108646249" duration="184000" />
+      <workItem from="1568109417522" duration="3793000" />
+      <workItem from="1568164898515" duration="50000" />
+      <workItem from="1568164961506" duration="14000" />
+      <workItem from="1568165802523" duration="3010000" />
+      <workItem from="1568170800848" duration="79000" />
+      <workItem from="1568170893736" duration="255000" />
+      <workItem from="1568172112849" duration="27000" />
+      <workItem from="1568172235770" duration="205000" />
+      <workItem from="1568173462550" duration="33000" />
+      <workItem from="1568174503294" duration="505000" />
+      <workItem from="1568175045910" duration="2544000" />
+      <workItem from="1568180539979" duration="689000" />
     </task>
     <servers />
   </component>
