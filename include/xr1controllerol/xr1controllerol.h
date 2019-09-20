@@ -15,6 +15,7 @@
 #include "xr1controllerros/BodyMsgs.h"
 #include "xr1controllerros/HeadMsgs.h"
 #include "xr1controllerros/HandMsgs.h"
+#include "xr1controllerros/WheelMsg.h"
 
 #include "xr1controllerros/ChainModeChange.h"
 #include <tf/transform_broadcaster.h>
@@ -313,6 +314,7 @@ protected:
     // -----------------------------------------------------------------------------
 
     // Omni messages --------------------------------------------------------
+    void subscribeWheelCurrent(const xr1controllerros::WheelMsg &msg);
     void subscribeOmniCommands(const geometry_msgs::Twist & msg);
     // ----------------------------------------------------------------------
 
@@ -549,6 +551,7 @@ private:
     // OmniWheels Information --------------------
     ros::Publisher OmniSpeedPublisher;
     ros::Subscriber OmniSpeedSubscriber;
+    ros::Subscriber OmniCurrentSubscriber;
     // -------------------------------------------
 
 

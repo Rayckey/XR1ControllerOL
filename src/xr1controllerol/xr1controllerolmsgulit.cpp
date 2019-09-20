@@ -81,6 +81,13 @@ void HeadMsgs2VectorXd(const xr1controllerros::HeadMsgs &msg , VectorXd & output
 
 }
 
+void WheelMsg2VectorXd(const xr1controllerros::WheelMsg &msg , VectorXd & output_ref) {
+
+    output_ref(0) =  msg.Left_Front_Wheel,
+    output_ref(1) =  msg.Right_Front_Wheel,
+    output_ref(2) =  msg.Back_Wheel;
+}
+
 void ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg , VectorXd & output_ref) {
 
     output_ref(0) =  msg.Shoulder_X,

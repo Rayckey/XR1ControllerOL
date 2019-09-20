@@ -13,7 +13,6 @@ void XR1ControllerOL::QuaCallBack(uint64_t id, double w, double x, double y, dou
     // If it is the base frame
     if (id == ActuatorController::toLongId("192.168.1.4", 0)){
 //        ROS_INFO("[%f][%f][%f][%f]",w,x,y,z);
-        XRB_ptr->tiltCallback(w, x, y, z);
 
         temp_qua.x() = x;
         temp_qua.y() = y;
@@ -28,6 +27,8 @@ void XR1ControllerOL::QuaCallBack(uint64_t id, double w, double x, double y, dou
         temp_imu_msg.header.stamp = ros::Time::now();
 
         m_IMUPublisher.publish(temp_imu_msg);
+
+        XRB_ptr->tiltCallback(w, x, y, z);
 
     }
 

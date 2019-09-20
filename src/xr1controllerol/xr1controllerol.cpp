@@ -66,6 +66,9 @@ XR1ControllerOL::XR1ControllerOL() :
     LaunchSubscriber = nh.subscribe("/startSimulation", 1, &XR1ControllerOL::subscribeLaunch, this);
     ShutdownSubscriber = nh.subscribe("/stopSimulation", 1, &XR1ControllerOL::subscribeShutdown, this);
 
+    OmniCurrentSubscriber = nh.subscribe("/Wheel/TargetCurrent", 100,
+                                              &XR1ControllerOL::subscribeWheelCurrent, this);
+
     MainBodyPositionSubscriber = nh.subscribe("/MainBody/TargetPosition", 100,
                                               &XR1ControllerOL::subscribeMainBodyPosition, this);
     MainBodyCurrentSubscriber = nh.subscribe("/MainBody/TargetEffort", 100, &XR1ControllerOL::subscribeMainBodyCurrent,

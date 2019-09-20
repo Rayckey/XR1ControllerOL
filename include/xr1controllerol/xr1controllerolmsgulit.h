@@ -8,6 +8,7 @@
 
 #include <deque>
 #include <vector>
+#include "xr1controllerros/WheelMsg.h"
 #include "xr1controllerros/ArmMsgs.h"
 #include "xr1controllerros/BodyMsgs.h"
 #include "xr1controllerros/HandMsgs.h"
@@ -37,6 +38,7 @@ void ArmMsgs2VectorXd(const xr1controllerros::ArmMsgs &msg     , VectorXd & outp
 
 void HandsMsgs2VectorXd(const xr1controllerros::HandMsgs &msg  , VectorXd & output_ref);
 
+void WheelMsg2VectorXd(const xr1controllerros::WheelMsg &msg , VectorXd & output_ref);
 
 
 xr1controllerros::HandMsgs ConvertHandMsgs(Eigen::VectorXd & HandPosition);

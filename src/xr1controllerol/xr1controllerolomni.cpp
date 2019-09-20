@@ -63,6 +63,21 @@ void XR1ControllerOL::Omni2Actuator() {
 
     }
 
+    // if we're using Forcemode
+    else if (XR1_ptr->getSubControlMode(XR1::OmniWheels) == XR1::ForceMode){
+
+        XR1_ptr->getTargetEffort(XR1::OmniWheels , temp_vec3d, true);
+
+        // simulation call -------------------------------------------------------------
+        //ROS_INFO("Set OmniWheel Current in ForceMode  LF: [%f] , RF: [%f] , BK: [%f] " , temp_vec3d(0) ,temp_vec3d(1) ,temp_vec3d(2)) ;
+        // -----------------------------------------------------------------------------
+
+        for (uint8_t i = XR1::OmniWheels ; i < XR1::MainBody ; i++) {
+            m_pController->setCurrent(i , temp_vec3d(i - XR1::OmniWheels) );
+        }
+
+    }
+
 }
 
 

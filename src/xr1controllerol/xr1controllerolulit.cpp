@@ -81,7 +81,17 @@ void XR1ControllerOL::subscribeRightArmCurrent(const xr1controllerros::ArmMsgs &
     }
 }
 
+void XR1ControllerOL::subscribeWheelCurrent(const xr1controllerros::WheelMsg &msg){
+    if (XR1_ptr->isStateActive()){
 
+    }
+
+    else {
+        WheelMsg2VectorXd(msg , temp_vec3d);
+        XR1_ptr->setJointEffort(XR1::OmniWheels, temp_vec3d);
+        //setControlGroupTarget(XR1::OmniWheels);
+    }
+}
 
 void XR1ControllerOL::subscribeMainBodyPosition(const xr1controllerros::BodyMsgs &msg) {
     if (XR1_ptr->isStateActive()){
