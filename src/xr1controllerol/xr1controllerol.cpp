@@ -8,7 +8,8 @@ XR1ControllerOL::XR1ControllerOL() :
     ,previous_omni_state(0)
     ,omni_cmd_expire_counter(0)
     ,collision_detection_switch(true)
-    ,RecognizeFinished(false),
+    ,RecognizeFinished(false)
+    ,BrakeOpen(false),
     unlease_counter(0),
     low_frequency_threshold(5),
     low_frequency_counter(0)
@@ -506,8 +507,20 @@ void XR1ControllerOL::subscribeLaunch(const std_msgs::Bool &msg) {
 
 
 void XR1ControllerOL::subscribeShutdown(const std_msgs::Bool &msg) {
-    m_pController->setBrakeStatus( false );
-    stopAllMotors();
+    for(uint8_t setBraketimes = 0; setBraketimes < 3 ; setBraketimes ++){
+        BrakeOpen = !(m_pController->setBrakeStatus( false ));
+        if (BrakeOpen){
+            if( setBraketimes >= 2){
+                std::cout << "Close Brake Failed! We entered Position Model and Wait for manual shutting down acutators\n";
+                setControlMode(XR1::MainBody, XR1::DirectMode);
+            }
+        }
+        else{
+            std::cout << "Close Brake successed! \n";
+            stopAllMotors();
+            break;
+        }
+    }
 }
 
 

@@ -412,6 +412,7 @@ private:
     XR1IMUmethods *IMU_ptr;
     std::vector<uint8_t> temp_ids;
     bool RecognizeFinished;
+    bool BrakeOpen;
     int low_frequency_threshold;
     int low_frequency_counter;
     // -----------------------------------------------------
