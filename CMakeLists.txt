@@ -179,3 +179,35 @@ add_dependencies(xr1controllerOL_simulator ${PROJECT_NAME} )
 #add_executable(ik_odom src/IK_odom.cpp)
 #target_link_libraries(ik_odom ${catkin_LIBRARIES} ${PROJECT_NAME})
 #add_dependencies(ik_odom ${catkin_LIBRARIES} ${PROJECT_NAME})
+
+install(
+      FILES 
+      ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/lib/${BUILD_PLATFORM}/libActuatorController.so
+      ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1Controller.so
+      ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerPM.so
+      ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerALP.so
+      ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerBLC.so
+      ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1IMU.so
+
+      DESTINATION    ${CATKIN_PACKAGE_LIB_DESTINATION} )
+
+install(TARGETS ${PROJECT_NAME} actuator_bridge
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY ActuatorController_SDK
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(DIRECTORY srv  msg  launch ALP  BLC  xr1paras xr1controllers-build
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(DIRECTORY include
+    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
+
+
+
