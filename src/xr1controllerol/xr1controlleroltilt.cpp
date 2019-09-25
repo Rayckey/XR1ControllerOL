@@ -40,6 +40,7 @@ void XR1ControllerOL::QuaCallBack(uint64_t id, double w, double x, double y, dou
 void XR1ControllerOL::requestQue() {
     // get the sweet sweet bottom IMU reading
     m_pController->requestSingleQuaternion(ActuatorController::toLongId("192.168.1.4" , 0));
+    //std::cout << "we called request Que\n";
 }
 
 
@@ -170,7 +171,7 @@ void XR1ControllerOL::accCallBack(uint8_t id , double x , double y , double z , 
     static double gravity_g = 9.81;
 
     temp_acc << x*gravity_g, y*gravity_g, z*gravity_g;
-
+    //std::cout <<"\n got temp_acc: "<<temp_acc;
  }
 
 

@@ -98,9 +98,11 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
                 setControlMode(XR1::RightHand, XR1::DirectMode);
 
                 ROS_INFO("Inited tilting");
-                XRB_ptr->tiltInit();
+                //XRB_ptr->tiltInit();
+                XRB_ptr->tiltInit(temp_acc, 1.0, 15.0);
 
                 ROS_INFO("All Actuators Have Launched");
+                ros::Duration(0.1).sleep() ;
 
                 for(uint8_t setBrake_times = 0; setBrake_times < 3; setBrake_times++)
                 {

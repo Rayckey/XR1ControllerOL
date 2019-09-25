@@ -25,6 +25,7 @@ XR1ControllerOL::XR1ControllerOL() :
     XRB_ptr->setIdle(false);
     XRB_ptr->setActive(false);
     XRB_ptr->setPassive(false);
+    Vector3d Acc;
     string param_file;
     tf_switch = 0;
     ros::param::get("/actuator_bridge/param_file",param_file);
@@ -329,6 +330,8 @@ XR1ControllerOL::XR1ControllerOL() :
 
 
     ROS_INFO("OL Constructor finished");
+    //debug code
+
 }
 
 bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
@@ -511,7 +514,7 @@ void XR1ControllerOL::subscribeShutdown(const std_msgs::Bool &msg) {
         BrakeOpen = !(m_pController->setBrakeStatus( false ));
         if (BrakeOpen){
             if( setBraketimes >= 2){
-                std::cout << "Close Brake Failed! We entered Position Model and Wait for manual shutting down acutators\n";
+                std::cout << "Close Brake Failed! We entered Position Model, Please shutdown again or manually shutdown acutators\n";
                 setControlMode(XR1::MainBody, XR1::DirectMode);
             }
         }

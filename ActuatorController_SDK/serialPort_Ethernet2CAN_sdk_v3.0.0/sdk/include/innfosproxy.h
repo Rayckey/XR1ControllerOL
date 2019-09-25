@@ -76,7 +76,12 @@ public:
         T_D_READ_SWITCH=0x32,
         T_D_READ_BATTERY=0x33,
         T_D_READ_ULTRASONIC=0x34,
-        T_D_READ_NRF=0x05,
+        T_D_READ_PM25=0x35,
+        T_D_READ_SMOG=0x36,
+        T_D_READ_DROP=0x37,
+        T_D_READ_TEMP=0x38,
+
+        T_D_READ_NRF=0xff,//original is 0x05,conflicted!
     };
 private:
     static void decodeTmpCmd(uint32_t communicateUnitId,std::vector<uint8_t> &buf);//解析与中间板的协议指令，指令内容里还有指令符

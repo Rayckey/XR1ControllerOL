@@ -8,6 +8,7 @@
 #include <condition_variable>
 #include "CSignal.hpp"
 #include <thread>
+#include <atomic>
 
 class CommunicateUnit
 {
@@ -35,10 +36,10 @@ public:
     virtual std::string getCommunicationUnitName()const=0;
 //public slots:
     virtual void progress()=0;
-    void setSoftwareVersion(uint16_t version);
-    uint16_t readSoftwareVersion()const;
-    void setHardwareVersion(uint16_t version);
-    uint16_t readHardwareVersion()const;
+    void setSoftwareVersion(uint32_t version);
+    uint32_t readSoftwareVersion()const;
+    void setHardwareVersion(uint32_t version);
+    uint32_t readHardwareVersion()const;
     void stopCommunication();
 protected:
 
@@ -48,13 +49,13 @@ protected:
     std::mutex m_qmMutex;
     std::mutex m_dataMutex;
     std::condition_variable wait_cond;
-    bool m_bStop;
+    std::atomic<bool> m_bStop;
     std::thread *m_pCommunicateThread;
     uint32_t m_nUnitId;
     uint8_t m_nConnectionStatus;
     std::list<uint8_t> m_relateIdList;//motors's ids whitch communicate via this unit
-    uint16_t m_hardwareVersion;
-    uint16_t m_softwareVersion;
+    uint32_t m_hardwareVersion;
+    uint32_t m_softwareVersion;
     //asio m_unitAddr;
 public:
     CSignal<uint32_t,std::vector<uint8_t>& > m_sResponse;

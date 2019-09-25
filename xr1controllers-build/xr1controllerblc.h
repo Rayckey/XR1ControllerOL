@@ -37,6 +37,8 @@ public:
 
     void tiltInit();
 
+    void tiltInit(Vector3d Acc, double MaxAngleError, double MaxNormError);
+
     // ---------------------------------------------------------------------------
 
     void setIdle(bool option);

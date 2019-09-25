@@ -47,8 +47,35 @@ struct BatteryStatus{
     };
 };
 
-struct Ultrasonic{
-    std::vector<int> sonicDistance;
-    std::vector<bool> sonicStatus;
+enum SensorType{
+    ULTRASONIC,
+    PM,
+    SMOG,
+    DROPCOLLISION,
+    TEMPERATURE,
 };
+
+//超声波
+struct Ultrasonic{
+    uint16_t distance;//距离
+    bool isValid;//是否有效
+};
+//跌落碰撞
+struct DropCollision{
+    bool isDrop;
+    bool isCollision;
+};
+
+enum Circuit_Channel{
+    CH_NONE=-1,
+    CH_5V=0,
+    CH_12V_1,
+    CH_12V_2,
+    CH_VBAT_1,
+    CH_VBAT_2,
+    CH_VBAT_3,
+    CH_VBAT_4,
+
+};
+
 #endif // GINGERADDITION_H

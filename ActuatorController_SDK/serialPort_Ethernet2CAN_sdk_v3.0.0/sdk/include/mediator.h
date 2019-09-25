@@ -61,6 +61,7 @@ public:
 
     std::string versionString()const;
     int addCommunicationUnit(std::string unitStr,uint32_t unitNumber);
+    std::vector<std::string> communicationUnits()const;
     void setUnitConnectionStatus(uint32_t nUnitId,uint8_t nStatus);
     void initCommunication(int nType);
 //public slots:
@@ -68,7 +69,9 @@ public:
     void reconnectDevice(uint64_t longId);
     void errorOccur(uint64_t longId,uint16_t errorId, std::string errorStr);
     void motorAttrChanged(uint64_t longId,uint8_t nAttrId,double value);
-    void receivePanelVersion(uint32_t communicationId,uint16_t softVersion,uint16_t hardVersion);
+    void receivePanelVersion(uint32_t communicationId,uint32_t softVersion,uint32_t hardVersion);
+    uint32_t hardwareVersion(uint32_t pannelID)const;
+    uint32_t softwareVersion(uint32_t pannelID)const;
     static uint64_t toLongId(uint32_t communicationId, uint8_t byteId);
     static uint32_t toCommunicationId(uint64_t longId);
     static uint8_t toDeviceId(uint64_t longId);
@@ -85,7 +88,12 @@ public:
     void setCircuitSwitchCallback(uint64_t longId, uint8_t channelId,uint8_t value);
     void receiveBatteryStatus(uint64_t longId, BatteryStatus& status);
     void requestUltrasonic(uint64_t longId);
-    void receiveUltrasonicStatus(uint64_t longId, Ultrasonic& status);
+    void requestSensor(uint64_t longId,SensorType sensorType);
+    void receiveUltrasonicStatus(uint64_t longId, std::vector<Ultrasonic>& status);
+    void receivePM25(uint64_t longId,uint16_t value);
+    void receiveSmog(uint64_t longId,double value);
+    void receiveDropCollision(uint64_t longId, std::vector<DropCollision>& dc);
+    void receivePannelTemp(uint64_t longId,double temp);
     void setPanelIp(uint64_t longId,uint8_t last);
     void resultIpChanged(uint64_t longId,bool bSuccess);
     void setPanelMac(uint64_t longId,uint8_t last);
@@ -122,7 +130,7 @@ public:
     CSignal<> m_sNewChartStart;
     CSignal<uint8_t,double> m_sChartValueChange;
     CSignal<uint64_t,BatteryStatus&> m_sBatteryStatus;
-    CSignal<uint64_t,Ultrasonic> m_sUltrasonicStatus;
+    CSignal<std::vector<Ultrasonic>> m_sUltrasonicStatus;
     CSignal<uint64_t,double,uint16_t> m_sGloveInfo;
     CSignal<uint64_t,bool> m_sIpSet;
     CSignal<uint64_t,bool> m_sMacSet;
@@ -131,6 +139,10 @@ public:
     CSignal<uint64_t,double,double,double,int> m_sAcceleration;
     CSignal<uint64_t,uint32_t,uint32_t> m_sLossRatio;
 #endif
+    CSignal<std::vector<DropCollision>> m_sDropCollision;
+    CSignal<uint16_t> m_sPM25;
+    CSignal<double> m_sSmog;
+    CSignal<std::string ,double> m_sPannelTemp;
 private:
     VersionNumber * m_pVersionMgr;
     AbstractAutoRecognize * m_pRecognize;
@@ -153,6 +165,8 @@ private:
     using byteWait = waitStruct<uint8_t>;
     doubleWait circuitCurrent;
     byteWait circuitState;
+    std::map<SensorType,uint8_t> sensorMap;
+    std::vector<std::string > m_CummunicationStr;
 };
 
 #endif // MEDIATOR_H

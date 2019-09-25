@@ -670,10 +670,13 @@ public:
     void requestLossRatio();
     void receiveLossRatio(uint64_t nIMUId, uint32_t receive, uint32_t lost);
 #endif
+    std::vector<std::string> communicationUnits()const;
+    uint32_t hardwareVersion(std::string ipStr);
+    uint32_t softwareVersion(std::string ipStr);
     void requestBatteryStatus(std::string ipStr);
     void receiveBatteryStatus(uint64_t longId,BatteryStatus & bs);
-    void requestUltrasonicStatus(std::string ipStr);
-    void receiveUltrasonicStatus(uint64_t longId, Ultrasonic us);
+    //void requestUltrasonicStatus(std::string ipStr);
+    //void receiveUltrasonicStatus(uint64_t longId, std::vector<Ultrasonic> us);
     bool checkBatteryInfo(BatteryStatus::BtInfo infoIdx);
     double batteryCurrent();
     uint8_t batteryCellsCount();
@@ -695,6 +698,13 @@ public:
     bool setBrakeStatus(bool bOpen);
     bool brakeIsOpen();
     void requestAllCVP();
+    //sensor
+    void requestSensor(SensorType type,std::string ipStr);
+    void addUltrasonicCallback(std::function<void(std::vector<Ultrasonic>)> callback);
+    void addSmogCallback(std::function<void(double)> callback);
+    void addPM25Callback(std::function<void(uint16_t)> callback);
+    void addDropCollisionCallback(std::function<void( std::vector<DropCollision>)> callback);
+    void addTemperatureCallback(std::function<void(std::string,double)> callback);
 private:
     void finishRecognizeCallback();
     void onRequestCallback(uint64_t longId, uint8_t nProxyId,double value);
@@ -769,7 +779,7 @@ public:
     CSignal<uint64_t,double,double,double,double> *m_sQuaternionL;
     CSignal<uint8_t,double,double,double,int> *m_sAcceleration;
     CSignal<uint64_t,double,double,double,int> *m_sAccelerationL;
-    CSignal<uint64_t,Ultrasonic> *m_sUltrasonicStatus;
+    CSignal<uint64_t,std::vector<Ultrasonic>> *m_sUltrasonicStatus;
     CSignal<uint8_t,uint32_t,uint32_t> * m_sLossRatio;
 #endif
 private:
