@@ -331,7 +331,6 @@ XR1ControllerOL::XR1ControllerOL() :
 
     ROS_INFO("OL Constructor finished");
     //debug code
-
 }
 
 bool XR1ControllerOL::serviceReady(xr1controllerol::askReadinessRequest & req,
@@ -511,6 +510,7 @@ void XR1ControllerOL::subscribeLaunch(const std_msgs::Bool &msg) {
 
 void XR1ControllerOL::subscribeShutdown(const std_msgs::Bool &msg) {
     for(uint8_t setBraketimes = 0; setBraketimes < 3 ; setBraketimes ++){
+        ros::Duration(0.1).sleep();
         BrakeOpen = !(m_pController->setBrakeStatus( false ));
         if (BrakeOpen){
             if( setBraketimes >= 2){

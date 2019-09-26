@@ -69,7 +69,7 @@ void XR1ControllerOL::updatingCallback(uint8_t id, uint8_t attrId, double value)
 
         else {
             actuator_ready_4_cvp[id] = false;
-            std::cout << "actuato " << (int)id << " is really fucking old lmao" << std::endl;
+            std::cout << "actuato " << (int)id << " is really old version" << std::endl;
         }
     }
 
@@ -99,13 +99,13 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
 
                 ROS_INFO("Inited tilting");
                 //XRB_ptr->tiltInit();
-                XRB_ptr->tiltInit(temp_acc, 1.0, 15.0);
+                XRB_ptr->tiltInit(temp_acc, 0.5, 10.0);
 
                 ROS_INFO("All Actuators Have Launched");
-                ros::Duration(0.1).sleep() ;
 
                 for(uint8_t setBrake_times = 0; setBrake_times < 3; setBrake_times++)
                 {
+                    ros::Duration(0.1).sleep();
                     BrakeOpen = m_pController->setBrakeStatus( true );
                     if (BrakeOpen){
                         std::cout << "Open Brake successed! \n";

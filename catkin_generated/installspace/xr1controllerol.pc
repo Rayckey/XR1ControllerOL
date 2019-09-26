@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: xr1controllerol
-Description: Description of xr1controllerol
-Version: 0.0.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib -lxr1controllerol
-Requires: roscpp rospy std_msgs geometry_msgs sensor_msgs

@@ -1,8 +1,0 @@
-prefix=/media/fcz/work/work/SRC/XR1/xr1_catkin_ws/src/xr1controllerol
-
-Name: xr1controllerol
-Description: Description of xr1controllerol
-Version: 0.0.0
-Cflags: -I/media/fcz/work/work/SRC/XR1/xr1_catkin_ws/src/xr1controllerol/include
-Libs: -L/media/fcz/work/work/SRC/XR1/xr1_catkin_ws/src/xr1controllerol/lib -lxr1controllerol
-Requires: roscpp rospy std_msgs geometry_msgs sensor_msgs
