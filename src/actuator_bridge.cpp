@@ -1,6 +1,7 @@
 #include "xr1controllerol.h"
 #include "actuatorcontroller.h"
 #include <ros/package.h>
+#include "infoPrinter.h"
 
 XR1ControllerOL * XR1_ptr;
 std::vector<std::vector<double> > recorded_positions;
@@ -99,6 +100,11 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "actuator_bridge");
 
   ros::NodeHandle nh;
+
+  InfoPrinter p("INNFOS XR1 Humanoid Robot","v2.1.0","2019-09-27");
+  p.addCustomInfo("XR1 is a humanoid robot that could move on onmiwheel, it has 34 freedom including body head left_arm right_arm parts, it's used for dancing and grasping something, etc.");
+  p.showInfo();
+
   ROS_INFO("Started Actuator Bridge Ver. 3.1.0");
 
   ActuatorController::initController();

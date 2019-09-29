@@ -101,6 +101,7 @@ catkin_package(
 		 src/${PROJECT_NAME}/xr1controllerolhopps.cpp
 		 src/${PROJECT_NAME}/xr1controlleroltilt.cpp
 		 src/${PROJECT_NAME}/xr1controllerollegacy.cpp
+		 src/${PROJECT_NAME}/infoPrinter.cpp
  )
 
 #add_dependencies(${PROJECT_NAME} XR1ControllerALP XR1ControllerBLC XR1Controller XR1ControllerPM)
