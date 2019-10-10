@@ -45,9 +45,9 @@ include_directories(
 	include
 	include/${PROJECT_NAME}
 	xr1controllers-build
-	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include
-	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio
-	${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/include/asio/asio
+        ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/include/asio
+        ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/include/asio/asio
   	${catkin_INCLUDE_DIRS}
   	${CMAKE_CURRENT_SOURCE_DIR}/Eigen3
 	${CMAKE_CURRENT_SOURCE_DIR}/dlib
@@ -102,6 +102,7 @@ catkin_package(
 		 src/${PROJECT_NAME}/xr1controlleroltilt.cpp
 		 src/${PROJECT_NAME}/xr1controllerollegacy.cpp
 		 src/${PROJECT_NAME}/infoPrinter.cpp
+		 src/${PROJECT_NAME}/xr1controllerolsensor.cpp
  )
 
 #add_dependencies(${PROJECT_NAME} XR1ControllerALP XR1ControllerBLC XR1Controller XR1ControllerPM)
@@ -109,12 +110,12 @@ catkin_package(
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
    ${catkin_LIBRARIES}
-   ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/serialPort_Ethernet2CAN_sdk_v3.0.0/sdk/lib/${BUILD_PLATFORM}/libActuatorController.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/ActuatorController_SDK/lib/${BUILD_PLATFORM}/libActuatorController.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerPM.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1Controller.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1IMU.so
    ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerALP.so
-	${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerBLC.so
+   ${CMAKE_CURRENT_SOURCE_DIR}/xr1controllers-build/${BUILD_PLATFORM}/libXR1ControllerBLC.so
 #	dlib::dlib
 )
 

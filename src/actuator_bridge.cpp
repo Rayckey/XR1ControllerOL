@@ -101,11 +101,11 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle nh;
 
-  InfoPrinter p("INNFOS XR1 Humanoid Robot","v2.1.0","2019-09-27");
+  InfoPrinter p("INNFOS XR1 Humanoid Robot","v3.1.2","2019-10-10");
   p.addCustomInfo("XR1 is a humanoid robot that could move on onmiwheel, it has 34 freedom including body head left_arm right_arm parts, it's used for dancing and grasping something, etc.");
   p.showInfo();
 
-  ROS_INFO("Started Actuator Bridge Ver. 3.1.0");
+  ROS_INFO("Started Actuator Bridge");
 
   ActuatorController::initController();
   ActuatorController::getInstance()->autoRecoginze();

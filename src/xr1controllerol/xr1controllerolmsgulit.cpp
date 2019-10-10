@@ -314,3 +314,40 @@ void MultiArray2DequeVector(const std_msgs::Float64MultiArray & input_msg , std:
     }
 
 }
+
+//Converting battery sensors data to ros msg
+void ConvertBatteryInfoMsgs( BatteryStatus * BatteryInfo_now, xr1controllerros::BatteryState & msg) {
+
+    msg.voltage = float(BatteryInfo_now->voltage_);
+    msg.current = float(BatteryInfo_now->current_);
+    msg.current_capacity = float(BatteryInfo_now->current_capacity_/1000.0);
+    msg.init_capacity = float(BatteryInfo_now->init_capacity_/1000.0);
+    msg.dump_energy = float(BatteryInfo_now->dump_energy_/100.0);
+    msg.cell_type = BatteryInfo_now->cell_type_;
+    msg.id = BatteryInfo_now->id_;
+    msg.status = BatteryInfo_now->status_;
+}
+
+//Converting Ultrasonic data to ros msg
+void ConvertUltrasonicMsgs(std::vector<Ultrasonic> Ultrasonic_now, xr1controllerros::Ultrasonic & msg) {
+
+    msg.distance.clear();
+    msg.isValid.clear();
+    for(uint8_t index = 0; index < Ultrasonic_now.size(); index++){
+        msg.distance.push_back(float(Ultrasonic_now[index].distance)/100.0);
+        msg.isValid.push_back(Ultrasonic_now[index].isValid);
+    }
+}
+
+//Converting DropCollisionDetect data to ros msg
+void ConvertDropCollisionDetectMsgs(std::vector<DropCollision> DropCollision_now, xr1controllerros::DropCollision & msg) {
+
+    msg.isDrop.clear();
+    msg.isCollision.clear();
+    for(uint8_t index = 0; index < DropCollision_now.size(); index++){
+        msg.isDrop.push_back(DropCollision_now[index].isDrop);
+        msg.isCollision.push_back(DropCollision_now[index].isCollision);
+    }
+}
+
+

@@ -99,7 +99,7 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
 
                 ROS_INFO("Inited tilting");
                 //XRB_ptr->tiltInit();
-                XRB_ptr->tiltInit(temp_acc, 0.5, 10.0);
+                XRB_ptr->tiltInit(Sensors_ptr->temp_acc, 10.0, 0.5);
 
                 ROS_INFO("All Actuators Have Launched");
 

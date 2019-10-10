@@ -8,7 +8,7 @@
 #include "xr1controllerblc.h"
 #include "xr1define.h"
 #include "XR1IMUmethods.h"
-
+#include "xr1sensors.h"
 
 // Messages for Communication
 #include "xr1controllerros/ArmMsgs.h"
@@ -22,10 +22,13 @@
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
+
+//standard ros message
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/Int32.h>
-#include <sensor_msgs/Imu.h>
+#include <std_msgs/UInt16.h>
+#include <std_msgs/Float32.h>
 
 // Hopps Port messages
 #include <sensor_msgs/JointState.h>
@@ -200,7 +203,6 @@ public:
     void publishOmni();
     // --------------------------------------------------------------
 
-
     // Collision Detection messages ---------------------------------------
 
     //Receive a message to start collision detection
@@ -370,11 +372,8 @@ protected:
 
 
     // tilting and stuff -----------------------------------------------
-    void requestQue();
     void subscribeTiltStart(const std_msgs::Bool &msg);
     void subscribeSLAMStart(const std_msgs::Bool &msg);
-    void QuaCallBack(uint64_t id, double w, double x, double y, double z);
-    void accCallBack(uint8_t id , double x , double y , double z , int pres);
     void subscribeBLCIdle(const std_msgs::Bool &msg);
     void subscribeBLCActive(const std_msgs::Bool &msg);
     void subscribeBLCPassive(const std_msgs::Bool &msg);
@@ -397,24 +396,21 @@ protected:
     // -----------------------------------------------------------------------
 
 
-
-
-
 private:
-
     // Pay no Attention Here Plz ---------------------------
-        ros::NodeHandle nh;
-        ActuatorController *m_pController;
+    ros::NodeHandle nh;
+    ActuatorController *m_pController;
 
     XR1Controller *XR1_ptr;
     XR1ControllerALP *XRA_ptr;
     XR1ControllerBLC *XRB_ptr;
-    XR1IMUmethods *IMU_ptr;
+    XR1Sensors *Sensors_ptr;
+
     std::vector<uint8_t> temp_ids;
     bool RecognizeFinished;
     bool BrakeOpen;
-    int low_frequency_threshold;
-    int low_frequency_counter;
+    uint16_t low_frequency_interval;
+    uint16_t low_frequency_counter;
     // -----------------------------------------------------
 
 
@@ -498,12 +494,6 @@ private:
     // FK related stuff ---------------------------
     tf::TransformBroadcaster EFF_Broadcaster;
     tf::TransformListener EFF_Listener;
-    // --------------------------------------------
-
-
-
-    // Sensor messages publisher ------------------
-    ros::Publisher m_IMUPublisher;
     // --------------------------------------------
 
 
@@ -612,8 +602,6 @@ private:
     Vector3d temp_omni_cmd;
     Vector3d temp_pos_1;
     Vector3d temp_pos_2;
-    Vector3d temp_acc;
-    Quaterniond temp_qua;
     Matrix4d temp_4d;
     xr1controllerros::HandMsgs temp_handmsgs;
     xr1controllerros::ArmMsgs temp_armmsgs;
@@ -627,11 +615,6 @@ private:
     geometry_msgs::Transform temp_geo_trans;
     geometry_msgs::Vector3 temp_geo_point;
     double temp_value;
-
-
-    geometry_msgs::Quaternion temp_orientation;
-    geometry_msgs::Vector3 temp_linear_acceleration;
-    sensor_msgs::Imu temp_imu_msg;
 
     // ---------------------------------------------
     ros::Publisher voltagePub;

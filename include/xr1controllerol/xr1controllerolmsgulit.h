@@ -5,6 +5,7 @@
 #ifndef PROJECT_XR1CONTROLLEROLMSGULIT_H
 
 #include "Eigen/Dense"
+#include "actuatorcontroller.h"
 
 #include <deque>
 #include <vector>
@@ -15,6 +16,10 @@
 #include "xr1controllerros/JointAttributeMsgs.h"
 #include "xr1controllerros/HeadMsgs.h"
 #include "std_msgs/Float64MultiArray.h"
+
+#include <xr1controllerros/Ultrasonic.h>
+#include <xr1controllerros/BatteryState.h>
+#include <xr1controllerros/DropCollision.h>
 
 #include <eigen_conversions/eigen_msg.h>
 
@@ -75,11 +80,12 @@ void  ConvertHeadMsgs(std::vector<double> input , xr1controllerros::HeadMsgs & m
 
 void  ConvertHeadMsgs(Eigen::VectorXd & input , xr1controllerros::HeadMsgs & msg);
 
-
-
 void MultiArray2DequeVector(const std_msgs::Float64MultiArray & input_msg , std::deque<std::vector<double>> & output_data);
 
-
+//Converting sensors data to ros msg
+void ConvertBatteryInfoMsgs( BatteryStatus * BatteryInfo_now, xr1controllerros::BatteryState & msg);
+void ConvertUltrasonicMsgs(std::vector<Ultrasonic> Ultrasonic_now, xr1controllerros::Ultrasonic & msg);
+void ConvertDropCollisionDetectMsgs(std::vector<DropCollision> DropCollision_now, xr1controllerros::DropCollision & msg);
 
 
 #define PROJECT_XR1CONTROLLEROLMSGULIT_H

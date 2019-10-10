@@ -11,7 +11,7 @@ XR1ControllerOL::XR1ControllerOL() :
     ,RecognizeFinished(false)
     ,BrakeOpen(false),
     unlease_counter(0),
-    low_frequency_threshold(5),
+    low_frequency_interval(6),
     low_frequency_counter(0)
     ,debug_switch(false){
 
@@ -25,7 +25,7 @@ XR1ControllerOL::XR1ControllerOL() :
     XRB_ptr->setIdle(false);
     XRB_ptr->setActive(false);
     XRB_ptr->setPassive(false);
-    Vector3d Acc;
+
     string param_file;
     tf_switch = 0;
     ros::param::get("/actuator_bridge/param_file",param_file);
@@ -56,10 +56,9 @@ XR1ControllerOL::XR1ControllerOL() :
 
     XRA_ptr = new XR1ControllerALP(path + "/ALP", XR1_ptr, XRB_ptr);
 
-    IMU_ptr = new XR1IMUmethods();
-
     m_pController = ActuatorController::getInstance();
 
+    Sensors_ptr = new XR1Sensors(nh, XRB_ptr, m_pController);
     // --------------------------------------------------------------------
 
 
@@ -282,18 +281,7 @@ XR1ControllerOL::XR1ControllerOL() :
     m_joint_state_subscriber = nh.subscribe("/joint_states", 10 , &XR1ControllerOL::subscribeJointStates , this);
 
     m_special_subscriber = nh.subscribe("/XR1/special_command" , 10 , &XR1ControllerOL::subscribeSpecial , this);
-
-    m_IMUPublisher = nh.advertise<sensor_msgs::Imu>("/Base/IMU" , 32 );
-
-    temp_acc << 0,0,0;
     // ----------------------------------------------------
-
-
-
-
-
-
-
 
     temp_vec5d = VectorXd::Zero(5);
     temp_vec7d = VectorXd::Zero(7);
@@ -312,8 +300,14 @@ XR1ControllerOL::XR1ControllerOL() :
     slamStartSubscriber = nh.subscribe("/startSLAMing", 1, &XR1ControllerOL::subscribeSLAMStart, this);
     QueryBalanceService = nh.advertiseService("/queryBalance", &XR1ControllerOL::serviceQueryBalance, this);
 //    MoCapInitSubscriber = nh.subscribe("XR1/MoCapInit", 1, &XR1ControllerOL::subscribeMoCapInit, this);
-     m_pController->m_sAcceleration->connect_member(this, &XR1ControllerOL::accCallBack);
-     m_pController->m_sQuaternionL->connect_member(this, &XR1ControllerOL::QuaCallBack);
+    m_pController->m_sAcceleration->connect_member(Sensors_ptr, &XR1Sensors::accCallBack);
+    m_pController->m_sQuaternionL->connect_member(Sensors_ptr, &XR1Sensors::QuaCallBack);
+    //sensors callback fuction
+    m_pController->addPM25Callback( std::bind(&XR1Sensors::PM25Callback, Sensors_ptr, std::placeholders::_1) );
+    m_pController->addSmogCallback( std::bind(&XR1Sensors::SmogCallback, Sensors_ptr, std::placeholders::_1) );
+    m_pController->addUltrasonicCallback( std::bind(&XR1Sensors::ultrasonicCallback, Sensors_ptr, std::placeholders::_1) );
+    m_pController->addTemperatureCallback( std::bind(&XR1Sensors::temperatureCallback, Sensors_ptr, std::placeholders::_1, std::placeholders::_2) );
+    m_pController->addDropCollisionCallback( std::bind(&XR1Sensors::dropCollisionCallback, Sensors_ptr, std::placeholders::_1) );
     // ----------------------------------------------------------------------------
 
 
@@ -553,16 +547,14 @@ void XR1ControllerOL::subscribeEStop(const std_msgs::Bool &msg) {
 }
 
 
-
-
-
 void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
-
-
+    //low frequency counter add one always
+    low_frequency_counter++;
+    if( low_frequency_counter >= 60000 ) low_frequency_counter = 0;
 
     // Things to do On each loop
 
-    requestQue();
+    Sensors_ptr->requestSensorQue(low_frequency_counter);
 
     // request to read all the values
     readingCallback();
@@ -574,12 +566,7 @@ void XR1ControllerOL::unleaseCallback(const ros::TimerEvent &) {
     // This function triggers almost all the computation in the library
     XR1_ptr->triggerCalculation(true);
 
-
-    low_frequency_counter++;
-
-    if (low_frequency_counter > low_frequency_threshold ) low_frequency_counter = 0;
-
-    if (low_frequency_counter == 0){
+    if ((low_frequency_counter % low_frequency_interval) == 0){  //33hz
         // calculate all the tf info and dynamics stuff
         if(tf_switch){
             broadcastTransform();
