@@ -503,21 +503,9 @@ void XR1ControllerOL::subscribeLaunch(const std_msgs::Bool &msg) {
 
 
 void XR1ControllerOL::subscribeShutdown(const std_msgs::Bool &msg) {
-    for(uint8_t setBraketimes = 0; setBraketimes < 3 ; setBraketimes ++){
-        ros::Duration(0.1).sleep();
-        BrakeOpen = !(m_pController->setBrakeStatus( false ));
-        if (BrakeOpen){
-            if( setBraketimes >= 2){
-                std::cout << "Close Brake Failed! We entered Position Model, Please shutdown again or manually shutdown acutators\n";
-                setControlMode(XR1::MainBody, XR1::DirectMode);
-            }
-        }
-        else{
-            std::cout << "Close Brake successed! \n";
-            stopAllMotors();
-            break;
-        }
-    }
+
+    m_pController->setBrakeStatus( false );
+    stopAllMotors();
 }
 
 

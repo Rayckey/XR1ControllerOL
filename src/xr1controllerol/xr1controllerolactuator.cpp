@@ -102,23 +102,9 @@ void XR1ControllerOL::actuatorOperation(uint8_t nId, uint8_t nType) {
                 XRB_ptr->tiltInit(Sensors_ptr->temp_acc, 10.0, 0.5);
 
                 ROS_INFO("All Actuators Have Launched");
+                m_pController->setBrakeStatus( true );
 
-                for(uint8_t setBrake_times = 0; setBrake_times < 3; setBrake_times++)
-                {
-                    ros::Duration(0.1).sleep();
-                    BrakeOpen = m_pController->setBrakeStatus( true );
-                    if (BrakeOpen){
-                        std::cout << "Open Brake successed! \n";
-                        break;
-                    }
-                    if (setBrake_times >=2)
-                        {
-                            std::cout <<"Open Brake Failed! We would Shutdown the actuators \n";
-                            std_msgs::Bool param;
-                            param.data = true;
-                            subscribeShutdown( param );
-                    }
-                }
+
 
             }
 
